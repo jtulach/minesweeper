@@ -28,6 +28,6 @@ public class AndroidMain {
     }
 
     public static void main(String... args) throws Exception {
-        DataModel.onPageLoad();
+        Main.onPageLoad();
     }
 }
