@@ -153,7 +153,7 @@
                             <pattern>java.util.logging.ConsoleHandler</pattern>
                             <pattern>java.util.logging.SimpleFormatter</pattern>
                         </forceLinkClasses>
-                        <executableName>minesweeper</executableName>
+                        <executableName>Fair Minesweeper</executableName>
                         <resources>
                             <resource>target/web/pages/</resource>
                             <resource>
