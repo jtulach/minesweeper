@@ -105,7 +105,7 @@
                     modern <strong>HTML5</strong> browser.
                 </p>
                 <p><a class="btn btn-primary btn-lg" role="button" 
-                      target="_blank" href="https://dukescript.com"
+                      data-bind="click: $root.urlProjectPage" href="#"
                 >Visit Project Page!</a>
                 </p>
             </div>
@@ -137,7 +137,7 @@
               our documentation.
           </p>
           <p><a class="btn btn-default"
-                target="_blank" href="https://dukescript.com/documentation.html"
+                data-bind="click: $root.urlProjectDoc" href="#"
                 role="button">Read more &raquo;</a></p>
        </div>
         <div class="col-md-4">
@@ -147,11 +147,11 @@
               or as a tablet or phone application, it is possible
               to execute the same unchanged code in a browser 
               as well. To do so, one needs a 
-              <a href="http://bck2brwsr.apidesign.org">bck2brwsr</a>
+              <a href="#" data-bind="click: urlBck2Brwsr">bck2brwsr</a>
               virtual machine.
           </p>
           <p><a class="btn btn-default"
-                target="_blank" href="http://xelfi.cz/minesweeper/bck2brwsr/"
+                target="_blank" href="#" data-bind="click: urlBrowserSweeper"
                 role="button">Try it &raquo;</a></p>
        </div>
       </div>
@@ -169,12 +169,11 @@
             It uses Android's WebView to display the UI and execute
             generated JavaScript. Both these components are
             bound together via DukeScript's
-            <a href="https://github.com/dukescript/dukescript-presenters">
+            <a href="#" data-bind="click: urlPresenters">
             Android presenter</a>.
         </p>
         <p>
-            <a href="https://play.google.com/store/apps/details?id=org.apidesign.demo.minesweeper"
-               target="_blank"
+            <a href="#" data-bind="click: urlGooglePlay"
                class="btn btn-primary" role="button"
                >Install &raquo;</a> 
         </p>
@@ -190,17 +189,17 @@
             This application has been packaged to run on your iPhone
             or iPad and made available on AppStore.
             In this mode it
-            uses <a target="_blank" href="http://www.robovm.org">RoboVM</a> 
+            uses <a data-bind="click: urlRoboVM" href="#">RoboVM</a>
             virtual machine to execute Java code natively.
             It uses iOS WebView to display the UI and execute
             generated JavaScript. Both these components are
-            bound together via DukeScript's <a target="_blank"
-            href="https://github.com/dukescript/dukescript-presenters">
+            bound together via DukeScript's <a data-bind="click: urlPresenters"
+            href="#">
             iOS presenter</a>.
         </p>
         <p>
-            <a href="https://itunes.apple.com/us/app/fair-minesweeper/id903688146"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlAppStore"
                class="btn btn-primary" role="button"
                >Install &raquo;</a> 
         </p>
@@ -214,10 +213,10 @@
         <h3>Develop Own App!</h3>
         <p>
             One can package this application as a 
-            <a href="http://plugins.netbeans.org/plugin/53864/"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlNetBeansPlugin"
             >plugin for NetBeans</a> or
-            use <a href="http://www.netbeans.org" target="_blank">
+            use <a href="#" data-bind="click: urlNetBeans">
             NetBeans</a> IDE to create
             application like this yourself. Enjoy the
             power of <em>HTML</em> and <em>Java</em>.
@@ -225,8 +224,8 @@
             them on any device!
         </p>
         <p>
-            <a href="https://dukescript.com/getting_started.html"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlDevelop"
                class="btn btn-primary" role="button"
                >Develop &raquo;</a> 
         </p>

@@ -18,8 +18,8 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package org.apidesign.demo.minesweeper;
 
@@ -32,22 +32,26 @@ import net.java.html.json.Model;
 import net.java.html.json.ModelOperation;
 import net.java.html.json.Property;
 import net.java.html.sound.AudioClip;
+import org.apidesign.demo.minesweeper.js.Dialogs;
 
-/** Model of the mine field.
+/**
+ * Model of the mine field.
  */
 @Model(className = "Mines", targetId = "", properties = {
     @Property(name = "state", type = MinesModel.GameState.class),
-    @Property(name = "rows", type = Row.class, array = true),
-})
+    @Property(name = "rows", type = Row.class, array = true),})
 public final class MinesModel {
+
     enum GameState {
+
         IN_PROGRESS, MARKING_MINE, WON, LOST;
     }
-    
-    @ComputedProperty static String gameStyle(GameState state) {
+
+    @ComputedProperty
+    static String gameStyle(GameState state) {
         return state == GameState.MARKING_MINE ? "MARKING" : "PLAYING";
     }
-    
+
     @Model(className = "Row", properties = {
         @Property(name = "columns", type = Square.class, array = true)
     })
@@ -59,15 +63,18 @@ public final class MinesModel {
         @Property(name = "mine", type = boolean.class)
     })
     static class SquareModel {
-        @ComputedProperty static String style(SquareType state) {
+
+        @ComputedProperty
+        static String style(SquareType state) {
             return state == null ? null : state.toString();
         }
     }
-    
+
     enum SquareType {
+
         N_0, N_1, N_2, N_3, N_4, N_5, N_6, N_7, N_8,
         UNKNOWN, EXPLOSION, DISCOVERED, MARKED;
-        
+
         final boolean isVisible() {
             return name().startsWith("N_");
         }
@@ -83,38 +90,47 @@ public final class MinesModel {
             return values()[ordinal() + 1];
         }
     }
-    
-    @ComputedProperty static boolean fieldShowing(GameState state) {
+
+    @ComputedProperty
+    static boolean fieldShowing(GameState state) {
         return state != null;
     }
-    
-    @ComputedProperty static boolean gameInProgress(GameState state) {
+
+    @ComputedProperty
+    static boolean gameInProgress(GameState state) {
         return state == GameState.IN_PROGRESS;
     }
-    
-    @Function static void showHelp(Mines model) {
+
+    @Function
+    static void showHelp(Mines model) {
         model.setState(null);
     }
-    
-    @Function static void smallGame(Mines model) {
+
+    @Function
+    static void smallGame(Mines model) {
         model.init(5, 5, 5);
     }
-    @Function static void normalGame(Mines model) {
+
+    @Function
+    static void normalGame(Mines model) {
         model.init(10, 10, 10);
     }
-    
-    @Function static void giveUp(Mines model) {
+
+    @Function
+    static void giveUp(Mines model) {
         showAllBombs(model, SquareType.EXPLOSION);
         model.setState(GameState.LOST);
     }
-    
-    @Function static void markMine(Mines model) {
+
+    @Function
+    static void markMine(Mines model) {
         if (model.getState() == GameState.IN_PROGRESS) {
             model.setState(GameState.MARKING_MINE);
         }
     }
-    
-    @ModelOperation static void init(Mines model, int width, int height, int mines) {
+
+    @ModelOperation
+    static void init(Mines model, int width, int height, int mines) {
         List<Row> rows = model.getRows();
         if (rows.size() != height || rows.get(0).getColumns().size() != width) {
             rows = new ArrayList<Row>(height);
@@ -133,7 +149,7 @@ public final class MinesModel {
                 }
             }
         }
-        
+
         Random r = new Random();
         while (mines > 0) {
             int x = r.nextInt(width);
@@ -152,8 +168,9 @@ public final class MinesModel {
             model.getRows().addAll(rows);
         }
     }
-    
-    @ModelOperation static void computeMines(Mines model) {
+
+    @ModelOperation
+    static void computeMines(Mines model) {
         List<Integer> xBombs = new ArrayList<Integer>();
         List<Integer> yBombs = new ArrayList<Integer>();
         final List<Row> rows = model.getRows();
@@ -180,7 +197,7 @@ public final class MinesModel {
         for (int i = 0; i < xBombs.size(); i++) {
             int x = xBombs.get(i);
             int y = yBombs.get(i);
-            
+
             incrementAround(arr, x, y);
         }
         for (int y = 0; y < rows.size(); y++) {
@@ -193,7 +210,7 @@ public final class MinesModel {
                 }
             }
         }
-        
+
         if (!emptyHidden) {
             model.setState(GameState.WON);
             showAllBombs(model, SquareType.DISCOVERED);
@@ -201,7 +218,7 @@ public final class MinesModel {
             applause.play();
         }
     }
-    
+
     private static void incrementAround(SquareType[][] arr, int x, int y) {
         incrementAt(arr, x - 1, y - 1);
         incrementAt(arr, x - 1, y);
@@ -210,11 +227,11 @@ public final class MinesModel {
         incrementAt(arr, x + 1, y - 1);
         incrementAt(arr, x + 1, y);
         incrementAt(arr, x + 1, y + 1);
-        
+
         incrementAt(arr, x, y - 1);
         incrementAt(arr, x, y + 1);
     }
-    
+
     private static void incrementAt(SquareType[][] arr, int x, int y) {
         if (y >= 0 && y < arr.length) {
             SquareType[] r = arr[y];
@@ -226,7 +243,7 @@ public final class MinesModel {
             }
         }
     }
-    
+
     static void showAllBombs(Mines model, SquareType state) {
         for (Row row : model.getRows()) {
             for (Square square : row.getColumns()) {
@@ -236,8 +253,9 @@ public final class MinesModel {
             }
         }
     }
-    
-    @Function static void click(Mines model, Square data) {
+
+    @Function
+    static void click(Mines model, Square data) {
         if (model.getState() == GameState.MARKING_MINE) {
             if (data.getState() == SquareType.UNKNOWN) {
                 data.setState(SquareType.MARKED);
@@ -286,6 +304,76 @@ public final class MinesModel {
         }
     }
 
+    @Function
+    static void urlProjectPage(Mines model) {
+        String url = "https://dukescript.com";
+        openURL(url);
+    }
+
+    @Function
+    static void urlProjectDoc(Mines model) {
+        String url = "https://dukescript.com/documentation.html"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlBck2Brwsr(Mines model) {
+        String url = "http://bck2brwsr.apidesign.org"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlBrowserSweeper(Mines model) {
+        String url = "http://xelfi.cz/minesweeper/bck2brwsr/"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlPresenters(Mines model) {
+        String url = "https://github.com/dukescript/dukescript-presenters"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlGooglePlay(Mines model) {
+        String url = "https://play.google.com/store/apps/details?id=org.apidesign.demo.minesweeper"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlRoboVM(Mines model) {
+        String url = "http://www.robovm.org"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlAppStore(Mines model) {
+        String url = "https://itunes.apple.com/us/app/fair-minesweeper/id903688146"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlNetBeansPlugin(Mines model) {
+        String url = "http://plugins.netbeans.org/plugin/53864/"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlNetBeans(Mines model) {
+        String url = "http://www.netbeans.org"; // NOI18N
+        openURL(url);
+    }
+
+    @Function
+    static void urlDevelop(Mines model) {
+        String url = "https://dukescript.com/getting_started.html"; // NOI18N
+        openURL(url);
+    }
+
+    private static void openURL(String url) {
+        Dialogs.changeURL(url);
+    }
+
     private static void cleanedUp(Mines model, Square data) {
         AudioClip touch = AudioClip.create("move.mp3");
         touch.play();
@@ -299,7 +387,7 @@ public final class MinesModel {
         AudioClip oops = AudioClip.create("oops.mp3");
         oops.play();
     }
-    
+
     private static Square tryStealBomb(Mines model, Square data) {
         data.setMine(true);
         final List<Row> rows = model.getRows();
@@ -321,10 +409,10 @@ public final class MinesModel {
                 }
             }
         }
-        data.setMine(false);        
+        data.setMine(false);
         return null;
     }
-    
+
     private static Square atLeastOnePlaceWhereBombCantBe(Mines model) {
         final List<Row> rows = model.getRows();
         Square cantBe = null;
@@ -344,14 +432,14 @@ public final class MinesModel {
                 }
             }
         }
-        
+
         if (discovered > 5) {
             return cantBe;
         }
-        
+
         return null;
     }
-    
+
     private static boolean placeBombElseWhere(Mines model, Square moveBomb) {
         List<Square> ok = new ArrayList<Square>();
         moveBomb.setMine(false);
@@ -379,7 +467,7 @@ public final class MinesModel {
             return true;
         }
     }
-    
+
     private static void expandKnown(Mines model, Square data) {
         final List<Row> rows = model.getRows();
         for (int y = 0; y < rows.size(); y++) {
@@ -393,7 +481,8 @@ public final class MinesModel {
             }
         }
     }
-    private static void expandKnown(Mines model, int x , int y) {
+
+    private static void expandKnown(Mines model, int x, int y) {
         if (y < 0 || y >= model.getRows().size()) {
             return;
         }
@@ -410,7 +499,7 @@ public final class MinesModel {
                 expandKnown(model, x - 1, y - 1);
                 expandKnown(model, x - 1, y);
                 expandKnown(model, x - 1, y + 1);
-                expandKnown(model, x , y - 1);
+                expandKnown(model, x, y - 1);
                 expandKnown(model, x, y + 1);
                 expandKnown(model, x + 1, y - 1);
                 expandKnown(model, x + 1, y);
@@ -420,17 +509,16 @@ public final class MinesModel {
     }
 
     private static int around(Mines model, int x, int y) {
-        return 
-            minesAt(model, x - 1, y - 1) +
-            minesAt(model, x - 1, y) +
-            minesAt(model, x - 1, y + 1) +
-            minesAt(model, x , y - 1) +
-            minesAt(model, x, y + 1) +
-            minesAt(model, x + 1, y - 1) +
-            minesAt(model, x + 1, y) +
-            minesAt(model, x + 1, y + 1);
+        return minesAt(model, x - 1, y - 1)
+            + minesAt(model, x - 1, y)
+            + minesAt(model, x - 1, y + 1)
+            + minesAt(model, x, y - 1)
+            + minesAt(model, x, y + 1)
+            + minesAt(model, x + 1, y - 1)
+            + minesAt(model, x + 1, y)
+            + minesAt(model, x + 1, y + 1);
     }
-    
+
     private static int minesAt(Mines model, int x, int y) {
         if (y < 0 || y >= model.getRows().size()) {
             return 0;
@@ -442,7 +530,7 @@ public final class MinesModel {
         Square sq = columns.get(x);
         return sq.isMine() ? 1 : 0;
     }
-    
+
     private static boolean isConsistent(Mines m) {
         for (int row = 0; row < m.getRows().size(); row++) {
             Row r = m.getRows().get(row);
@@ -458,7 +546,7 @@ public final class MinesModel {
         }
         return true;
     }
-    
+
     private static boolean allMarked(Mines m) {
         for (Row r : m.getRows()) {
             for (Square sq : r.getColumns()) {
@@ -481,6 +569,7 @@ public final class MinesModel {
     }
 
     private static Mines ui;
+
     public static void main(String... args) throws Exception {
         ui = new Mines();
         ui.applyBindings();
