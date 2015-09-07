@@ -25,12 +25,16 @@ package org.apidesign.demo.minesweeper.js;
 
 import net.java.html.js.JavaScriptBody;
 
-public final class Dialogs {
-    private Dialogs() {
+public final class OpenURL {
+    private OpenURL() {
+    }
+
+    public static void openURL(String url) {
+        changeURL(url);
     }
 
     @JavaScriptBody(args = { "url" }, body =
         "window.location.href=url;"
     )
-    public static native String changeURL(String url);
+    private static native void changeURL(String url);
 }

@@ -32,7 +32,7 @@ import net.java.html.json.Model;
 import net.java.html.json.ModelOperation;
 import net.java.html.json.Property;
 import net.java.html.sound.AudioClip;
-import org.apidesign.demo.minesweeper.js.Dialogs;
+import org.apidesign.demo.minesweeper.js.OpenURL;
 
 /**
  * Model of the mine field.
@@ -371,7 +371,7 @@ public final class MinesModel {
     }
 
     private static void openURL(String url) {
-        Dialogs.changeURL(url);
+        OpenURL.openURL(url);
     }
 
     private static void cleanedUp(Mines model, Square data) {
