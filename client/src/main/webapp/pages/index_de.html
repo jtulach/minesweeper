@@ -104,7 +104,7 @@
                     modernen <strong>HTML5</strong> Browser verfügen.
                 </p>
                 <p><a class="btn btn-primary btn-lg" role="button" 
-                      target="_blank" href="https://dukescript.com"
+                      data-bind="click: $root.urlProjectPage" href="#"
                 >Zur Projektseite!</a>
                 </p>
             </div>
@@ -130,7 +130,7 @@
               helfen wir Dir gerne weiter. Folge diesem Link zu unserer Dokumentation.
           </p>
           <p><a class="btn btn-default"
-                target="_blank" href="https://dukescript.com/documentation.html"
+                data-bind="click: $root.urlProjectDoc" href="#"
                 role="button">Lies mehr &raquo;</a></p>
        </div>
         <div class="col-md-4">
@@ -138,11 +138,11 @@
           <p>
               Die primären Zielplattformen unserer Technologie sind Desktop, Mobiltelephone und Tablets.
               Die Anwendung läuft aber unverändert auch im Browser! Dazu verwenden wir die
-              <a href="http://bck2brwsr.apidesign.org">bck2brwsr</a>
+              <a href="#" data-bind="click: urlBck2Brwsr">bck2brwsr</a>
               virtual machine.
           </p>
           <p><a class="btn btn-default"
-                target="_blank" href="http://xelfi.cz/minesweeper/bck2brwsr/"
+                target="_blank" href="#" data-bind="click: urlBrowserSweeper"
                 role="button">Probier es aus &raquo;</a></p>
        </div>
       </div>
@@ -159,12 +159,11 @@
             und führt den Java code nativ aus.
             Sie verwendet Android's WebView um das UI darzustellen und das generierte JavaScript auszuführen.
             Diese beiden Komponenten werden durch DukeScript's
-            <a href="https://github.com/dukescript/dukescript-presenters">
+            <a href="#" data-bind="click: urlPresenters">
             Android presenter</a> zusammengebunden.
         </p>
         <p>
-            <a href="https://play.google.com/store/apps/details?id=org.apidesign.demo.minesweeper"
-               target="_blank"
+            <a href="#" data-bind="click: urlGooglePlay"
                class="btn btn-primary" role="button"
                >Installieren &raquo;</a> 
         </p>
@@ -178,16 +177,16 @@
         <h3>iPhone und iPad</h3>
         <p>
             Diese Anwendung läuft auch auf iPad und iPhone und ist verfügbar im AppStore.
-            In diesem Modus verwendet sie die <a target="_blank" href="http://www.robovm.org">RoboVM</a> 
+            In diesem Modus verwendet sie die <a data-bind="click: urlRoboVM" href="#">RoboVM</a>
             virtual machine um Java code nativ auszuführen.
             Sie verwendet den iOS WebView um das UI darzustellen und für das generierte JavaScript.
-            Beide Komponenten werden mit DukeScript's <a target="_blank"
-            href="https://github.com/dukescript/dukescript-presenters">
+            Beide Komponenten werden mit DukeScript's
+            <a data-bind="click: urlPresenters" href="#">
             iOS presenter</a> zusammengebunden.
         </p>
         <p>
-            <a href="https://itunes.apple.com/us/app/fair-minesweeper/id903688146"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlAppStore"
                class="btn btn-primary" role="button"
                >Installieren &raquo;</a> 
         </p>
@@ -201,17 +200,17 @@
         <h3>Bau Deine eigene App!</h3>
         <p>
            Du kannst Deine Anwendung als  
-            <a href="http://plugins.netbeans.org/plugin/53864/"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlNetBeansPlugin"
             >Plugin für NetBeans</a> verpacken, oder
-            <a href="http://www.netbeans.org" target="_blank">
+            <a href="#" data-bind="click: urlNetBeans">
             NetBeans</a> IDE verwenden um selbst eine eigene Anwendung zu entwickeln. 
             Profitiere von der Kombination von <em>HTML</em> und <em>Java</em>.
             Schreib Deine eigenen Anwendungen, die auf allen Plattformen laufen!
         </p>
         <p>
-            <a href="https://dukescript.com/getting_started.html"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlDevelop"
                class="btn btn-primary" role="button"
                >Entwickeln &raquo;</a> 
         </p>

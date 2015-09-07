@@ -105,7 +105,7 @@
                    <strong>HTML5</strong> prohlížeč.
                 </p>
                 <p><a class="btn btn-primary btn-lg" role="button" 
-                      target="_blank" href="https://dukescript.com"
+                      data-bind="click: $root.urlProjectPage" href="#"
                 >Navštívit stránky projektu</a>
                 </p>
             </div>
@@ -138,7 +138,7 @@
               stránky s dokumentací.
           </p>
           <p><a class="btn btn-default"
-                target="_blank" href="https://dukescript.com/documentation.html"
+                data-bind="click: $root.urlProjectDoc" href="#"
                 role="button">Více &raquo;</a></p>
        </div>
         <div class="col-md-4">
@@ -149,10 +149,10 @@
               Přesto je však možné spustit tu samou aplikaci
               s nezměným kódem v prohlížeči. Je k tomu potřeba
               implementace <b>Java</b> virtuálního stroje zvaná
-              <a href="http://bck2brwsr.apidesign.org">bck2brwsr</a>.
+              <a href="#" data-bind="click: urlBck2Brwsr">bck2brwsr</a>.
           </p>
           <p><a class="btn btn-default"
-                target="_blank" href="http://xelfi.cz/minesweeper/bck2brwsr/"
+                target="_blank" href="#" data-bind="click: urlBrowserSweeper"
                 role="button">Vyzkoušet &raquo;</a></p>
        </div>
       </div>
@@ -170,12 +170,11 @@
             a Androidí WebView k zobrazení uživatelského rozhraní a 
             interpretaci generovaného JavaScriptu. Tyto komponenty jsou
             spojeny dohromady pomocí DukeScript
-            <a href="https://github.com/dukescript/dukescript-presenters">
+            <a href="#" data-bind="click: urlPresenters">
             zobrazovače pro Android</a>.
         </p>
         <p>
-            <a href="https://play.google.com/store/apps/details?id=org.apidesign.demo.minesweeper"
-               target="_blank"
+            <a href="#" data-bind="click: urlGooglePlay"
                class="btn btn-primary" role="button"
                >Instalovat &raquo;</a> 
         </p>
@@ -192,17 +191,17 @@
             Vašem iPhonu
             nebo iPadu a je dostupná na tržišti AppStore.
             V této konfiguraci se používá
-            virtuální stroj <a target="_blank" href="http://www.robovm.org">RoboVM</a> 
-            pro přeložení <b>Java</b> kódu do nativního formátu.
+            virtuální stroj <a data-bind="click: urlRoboVM" href="#">RoboVM</a>
+            pro přeložení <b>Java</b> bytekódu do nativního formátu.
             Pro zobrazení a provádění vygenerovaného JavaScriptu
             se využívá iOS WebView. Obě tyto komponenty jsou spojeny 
-            pomocí DukeScript <a target="_blank"
-                href="https://github.com/dukescript/dukescript-presenters">
+            pomocí DukeScript
+            <a data-bind="click: urlPresenters" href="#">
             zobrazovače pro iOS</a>.
         </p>
         <p>
-            <a href="https://itunes.apple.com/us/app/fair-minesweeper/id903688146"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlAppStore"
                class="btn btn-primary" role="button"
                >Instalovat &raquo;</a> 
         </p>
@@ -216,11 +215,11 @@
         <h3>Vyvíjejte své aplikace!</h3>
         <p>
             Tuto aplikaci lze zabalit jako 
-            <a href="http://plugins.netbeans.org/plugin/53864/"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlNetBeansPlugin"
             >rozšíření pro NetBeans</a> a nebo
             lze použít vývojové prostředí 
-            <a href="http://www.netbeans.org" target="_blank">
+            <a href="#" data-bind="click: urlNetBeans">
             NetBeans</a> k vytvoření své vlastní aplikace,
             jež bude využívat synergie 
             <em>HTML</em> a <em>Javy</em>.
@@ -228,8 +227,8 @@
             každém zařízení schopném zobrazit <em>HTML</em>!
         </p>
         <p>
-            <a href="https://dukescript.com/getting_started.html"
-               target="_blank"
+            <a href="#"
+               data-bind="click: urlDevelop"
                class="btn btn-primary" role="button"
                >Vyvíjejte &raquo;</a> 
         </p>
