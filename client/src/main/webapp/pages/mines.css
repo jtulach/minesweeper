@@ -43,6 +43,7 @@ table {
 }
 
 table.field {
+    position: relative;
 }
 table.field td {
     border: 1px solid black;
@@ -53,7 +54,15 @@ table.field td {
     height: 8vw;
     font-size: 8vh;
 }
+
+#navbar-vertical {
+    position: absolute;
+}
+
 @media screen and (orientation: landscape){
+    #navbar-horizonal {
+        display: none;
+    }
     table.field td {
         width: 8vh;
         height: 8vh;
@@ -61,6 +70,9 @@ table.field td {
     }
 }
 @media screen and (orientation: portrait){
+    #navbar-vertical {
+        display: none;
+    }
     table.field td {
         width: 8vw;
         height: 8vw;
