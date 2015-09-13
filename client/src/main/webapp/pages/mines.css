@@ -34,6 +34,11 @@
 }
 
 table {
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
     table-layout: fixed;
 }
 
@@ -41,12 +46,26 @@ table.field {
 }
 table.field td {
     border: 1px solid black;
-    padding:10px;
-    width: 56px;
-    height: 56px;
     vertical-align: middle;
     text-align: center;
-    font-size:4em;
+    padding: 1px;
+    width: 8vw;
+    height: 8vw;
+    font-size: 8vh;
+}
+@media screen and (orientation: landscape){
+    table.field td {
+        width: 8vh;
+        height: 8vh;
+        font-size: 8vh;
+    }
+}
+@media screen and (orientation: portrait){
+    table.field td {
+        width: 8vw;
+        height: 8vw;
+        font-size: 8vw;
+    }
 }
 
 table.field td div {

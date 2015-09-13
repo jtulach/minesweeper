@@ -21,13 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-table.field td {
-    padding: 3px;
-    width: 13px;
-    height: 13px;
-    line-height: 10px;
-    font-size: 1em;
-}
 h1 {
     font-size: 8px;
 }
