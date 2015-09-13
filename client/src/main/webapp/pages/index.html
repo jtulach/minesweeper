@@ -51,8 +51,7 @@
               rel="stylesheet" />
     </head>
     <body>
-        <script type="text/html" id="field">
-            <div id="navbar-horizonal" class="navbar">
+        <script type="text/html" id="horizontal-navbar">
                 <div class="navbar-inner">
                     <a id="apptitle" class="brand" href="#" data-bind="click: showHelp">
                         <img height="20" width="20" src="DukeSweeper.png">
@@ -71,8 +70,8 @@
                         <span class="info-text">Mark Mine!</span>
                     </button>
                 </div>
-            </div>
-            <div id="navbar-vertical" >
+        </script>
+        <script type="text/html" id="vertical-navbar">
                 <div>
                     <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: false, click: showHelp">
                         <img height="20" width="20" src="DukeSweeper.png">
@@ -93,8 +92,15 @@
                         <span>&#x26A0;</span>
                     </button>
                 </div>
+        </script>
+        <script type="text/html" id="field">
+            <div id="navbar-horizontal" class="navbar">
+                <div data-bind="template: 'horizontal-navbar'"></div>
             </div>
-        <center>
+            <div id="navbar-vertical" >
+                <div data-bind="template: 'vertical-navbar'"></div>
+            </div>
+            <center>
               <table class="field" data-bind="css: gameStyle">
                 <tbody>
                     <!-- ko foreach: rows -->
@@ -116,22 +122,7 @@
         <div class="jumbotron control-label" data-bind="visible: !fieldShowing() ">
             <div class="navbar">
                 <div class="navbar-inner">
-                    <a id="apptitle" class="brand" href="#" data-bind="click: showHelp">
-                        <img height="20" width="20" src="DukeSweeper.png">
-                        <span class="hidden-phone">Minesweeper</span>
-                    </a>
-                    <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: false, click: normalGame">
-                        <span>&#x21bb;</span>
-                        <span class="info-text">New!</span>
-                    </button>
-                    <button class="hidden-phone btn btn-default navbar-btn" disabled="true" data-bind="disable: !gameInProgress(), click: giveUp ">
-                        <span>&#x2717;</span>
-                        <span>Show Mines!</span>
-                    </button>
-                    <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: !gameInProgress(), click: markMine">
-                        <span>&#x26A0;</span>
-                        <span class="info-text">Mark Mine!</span>
-                    </button>
+                    <div data-bind="template: 'horizontal-navbar'"></div>
                 </div>
             </div>
             <div class="container">

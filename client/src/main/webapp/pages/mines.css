@@ -60,7 +60,7 @@ table.field td {
 }
 
 @media screen and (orientation: landscape){
-    #navbar-horizonal {
+    #navbar-horizontal {
         display: none;
     }
     table.field td {
