@@ -140,7 +140,7 @@ table.field td.DISCOVERED {
 }
 
 table.PLAYING td.UNKNOWN div::after {
-    content: "\0026a0";
+    content: "\002680";
     visibility: hidden;
 }
 table.field td.EXPLOSION div::after {
