@@ -34,7 +34,7 @@ public final class OpenURL {
     }
 
     @JavaScriptBody(args = { "url" }, body =
-        "window.location.href=url;"
+        "window.open(url, '_blank');"
     )
     private static native void changeURL(String url);
 }
