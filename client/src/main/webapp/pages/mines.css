@@ -104,7 +104,7 @@ table.field td div {
     50% { opacity: 0.1; }
     100% { opacity: 0.9; }
 } 
-table.MARKING td.UNKNOWN div:before {
+table.MARKING td.UNKNOWN div.sign:before {
     content: "\0026a0";
     color: #802420;
     
@@ -140,45 +140,56 @@ table.field td.DISCOVERED {
     background-color: #9DB2B1;
 }
 
-table.PLAYING td.UNKNOWN div::after {
-    content: "\002680";
+table td div.cell::after {
+    position: relative;
+    left: 0px;
+    top: 0px;
+}
+table td div.fill {
+    position: relative;
+    left: 0px;
+    top: 0px;
+}
+table td div.sign {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+table td div.fill::after {
+    content: "\002780";
     visibility: hidden;
 }
-table.field td.EXPLOSION div::after {
+table.field td.EXPLOSION div.sign::after {
     content: "\002717";
 }
-table.field td.DISCOVERED div::after {
+table.field td.DISCOVERED div.sign::after {
     content: "\002714";
 }
-table.field td.MARKED div::after {
+table.field td.MARKED div.sign::after {
     content: "\0026a0";
 }
-table.field td.N_0 div::after {
-    content: "\002780";
-    visibility: hidden;
-}
-table.field td.N_1 div::after {
+table.field td.N_1 div.sign::after {
     content: "\002780";
 }
-table.field td.N_2 div::after {
+table.field td.N_2 div.sign::after {
     content: "\002781";
 }
-table.field td.N_3 div::after {
+table.field td.N_3 div.sign::after {
     content: "\002782";
 }
-table.field td.N_4 div::after {
+table.field td.N_4 div.sign::after {
     content: "\002783";
 }
-table.field td.N_5 div::after {
+table.field td.N_5 div.sign::after {
     content: "\002784";
 }
-table.field td.N_6 div::after {
+table.field td.N_6 div.sign::after {
     content: "\002785";
 }
-table.field td.N_7 div::after {
+table.field td.N_7 div.sign::after {
     content: "\002786";
 }
-table.field td.N_8 div::after {
+table.field td.N_8 div.sign::after {
     content: "\002787";
 }
 .but-orientation {
