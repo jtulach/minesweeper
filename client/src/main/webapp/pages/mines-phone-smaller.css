@@ -48,3 +48,10 @@ h1 {
 .info-text {
     font-size: xx-small;
 }
+table.field td {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    vertical-align: middle;
+    text-align: center;
+}
