@@ -46,13 +46,10 @@ table.field {
     position: relative;
 }
 table.field td {
-    border: 1px solid black;
+    border-color: #e5e5e5;
+    border-style: ridge;
     vertical-align: middle;
     text-align: center;
-    padding: 1px;
-    width: 8vw;
-    height: 8vw;
-    font-size: 8vh;
 }
 
 #navbar-vertical {
@@ -64,9 +61,11 @@ table.field td {
         display: none;
     }
     table.field td {
-        width: 8vh;
-        height: 8vh;
-        font-size: 8vh;
+        width: 6vh;
+        height: 6vh;
+        font-size: 6vh;
+        padding: 1vh;
+        border-width: 1vh;
     }
 }
 @media screen and (orientation: portrait){
@@ -74,9 +73,11 @@ table.field td {
         display: none;
     }
     table.field td {
-        width: 8vw;
-        height: 8vw;
-        font-size: 8vw;
+        width: 6vw;
+        height: 6vw;
+        font-size: 6vw;
+        padding: 1vw;
+        border-width: 1vw;
     }
 }
 
