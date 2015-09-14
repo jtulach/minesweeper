@@ -154,7 +154,7 @@ table.field td.MARKED div::after {
     content: "\0026a0";
 }
 table.field td.N_0 div::after {
-    content: "\002680";
+    content: "\002780";
     visibility: hidden;
 }
 table.field td.N_1 div::after {
