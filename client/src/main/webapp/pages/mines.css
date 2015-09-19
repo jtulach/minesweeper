@@ -81,6 +81,65 @@ table.field td {
     }
 }
 
+.navbar-topleft {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+
+.navbar-topleft button {
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+
+.navbar-topright {
+    position: relative;
+    top: 0px;
+    right: 0px;
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+.navbar-topright button {
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+
+.navbar-bottomleft {
+    position: relative;
+    bottom: 0px;
+    left: 0px;
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+
+.navbar-bottomleft button {
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+
+.navbar-bottomright button {
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+
+.navbar-bottomright {
+    position: relative;
+    bottom: 0px;
+    right: 0px;
+    width: 10vh;
+    height: 10vh;
+    font-size: 10vh;
+}
+
 table.field td div {
     position: relative;
     left: 0;
