@@ -66,30 +66,30 @@
                     <span>Zeige Minen!</span>
                 </button>
                 <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: !gameInProgress(), click: markMine">
-                    <span>&#x26A0;</span>
+                    <span>&#x2730;</span>
                     <span class="info-text">Mark Mine!</span>
                 </button>
             </div>
         </script>
         <script type="text/html" id="vertical-navbar">
-            <div>
-                <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: false, click: showHelp">
-                    <img height="20" width="20" src="DukeSweeper.png">
+            <div class="navbar-topleft">
+                <button class="btn navbar-btn" disabled="true" data-bind="disable: false, click: showHelp">
+                    <img src="DukeSweeperLarge.png">
                 </button>
             </div>
-            <div>
-                <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: false, click: normalGame">
+            <div class="navbar-topright">
+                <button class="btn" disabled="true" data-bind="disable: false, click: normalGame">
                     <span>&#x21bb;</span>
                 </button>
             </div>
-            <div>
+            <div class="navbar-bottomleft">
                 <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: !gameInProgress(), click: giveUp">
                     <span>&#x2717;</span>
                 </button>
             </div>
-            <div>
+            <div class="navbar-bottomright">
                 <button class="btn btn-default navbar-btn" disabled="true" data-bind="disable: !gameInProgress(), click: markMine">
-                    <span>&#x26A0;</span>
+                    <span>&#x2730;</span>
                 </button>
             </div>
         </script>
