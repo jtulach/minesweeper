@@ -164,7 +164,7 @@ table.field td div {
     100% { opacity: 0.9; }
 } 
 table.MARKING td.UNKNOWN div.sign:before {
-    content: "\0026a0";
+    content: "\002730";
     color: #802420;
     
     -webkit-animation-name: blinker;
@@ -225,7 +225,7 @@ table.field td.DISCOVERED div.sign::after {
     content: "\002714";
 }
 table.field td.MARKED div.sign::after {
-    content: "\0026a0";
+    content: "\002730";
 }
 table.field td.N_1 div.sign::after {
     content: "\002780";
