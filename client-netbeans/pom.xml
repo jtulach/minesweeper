@@ -86,7 +86,7 @@
                 <executions>
                     <execution>
                         <id>unpack</id>
-                        <phase>process-resources</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
