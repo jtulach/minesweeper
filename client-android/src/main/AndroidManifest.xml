@@ -26,8 +26,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.apidesign.demo.minesweeper"
-    android:versionCode="1"
-    android:versionName="1.0-SNAPSHOT" >
+    android:versionCode="6"
+    android:versionName="3.0" >
 
     <uses-sdk
         android:minSdkVersion="8"

@@ -116,7 +116,11 @@
                 <version>${android.plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <apkDebug>${debug}</apkDebug>
+                    <apkDebug>false</apkDebug>
+                    <release>true</release>
+                    <sign>
+                        <debug>false</debug>
+                    </sign>
                     <resourceDirectory>target/res</resourceDirectory>
                     <sdk>
                         <platform>${android.platform.version}</platform>
