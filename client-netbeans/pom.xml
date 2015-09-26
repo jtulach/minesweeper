@@ -12,11 +12,12 @@
     <groupId>org.apidesign.demo</groupId>
     <artifactId>minesweeper-nb</artifactId>
     <version>3.0-SNAPSHOT</version>
-    <packaging>nbm</packaging>
+    <packaging>nbm-application</packaging>
 
     <name>minesweeper Client for NetBeans</name>
 
     <properties>
+        <netbeans.version>RELEASE81-BETA</netbeans.version>
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <project.mainclass>org.apidesign.demo.minesweeper.NbMain</project.mainclass>
     </properties>
@@ -55,6 +56,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>jar</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- to have the jar plugin pickup the nbm generated manifest -->
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -86,7 +100,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>3.13</version>
+                <version>3.14.1</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -117,20 +131,12 @@
                 </executions>
                 <configuration>
                     <useOSGiDependencies>true</useOSGiDependencies>
-                    <brandingToken>minesweeper</brandingToken>
+                    <brandingToken>netbeans</brandingToken>
                     <cluster>minesweeper</cluster>
                     <verifyIntegrity>false</verifyIntegrity>
+                    <nbmBuildDir>${project.build.directory}</nbmBuildDir>
                 </configuration>
             </plugin>                      
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <!-- to have the jar plugin pickup the nbm generated manifest -->
-                    <useDefaultManifestFile>true</useDefaultManifestFile>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>com.filmon.maven</groupId>
                 <artifactId>image-maven-plugin</artifactId>
@@ -162,26 +168,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.netbeans.html</groupId>
-            <artifactId>nbrwsr</artifactId>
-            <version>${nb.html.version}</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.oracle</groupId>
-                    <artifactId>javafx</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.html</groupId>
-                    <artifactId>net.java.html.boot</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.html</groupId>
-                    <artifactId>net.java.html.boot.fx</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.apidesign.demo</groupId>
             <artifactId>minesweeper</artifactId>
             <version>${project.version}</version>
@@ -202,6 +188,17 @@
             <artifactId>net.java.html.boot.fx</artifactId>
             <version>${net.java.html.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-htmlui</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cluster</groupId>
+            <artifactId>platform</artifactId>
+            <version>${netbeans.version}</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
 </project>

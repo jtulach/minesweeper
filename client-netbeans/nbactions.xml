@@ -31,7 +31,7 @@
             <goal>clean</goal>
             <goal>package</goal>
             <goal>nbm:cluster</goal>
-            <goal>nbm:run-ide</goal>
+            <goal>nbm:run-platform</goal>
         </goals>
         <properties>
             <skipTests>true</skipTests>
