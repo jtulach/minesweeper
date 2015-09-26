@@ -169,7 +169,7 @@
             <plugin>
                 <groupId>org.robovm</groupId>
                 <artifactId>robovm-maven-plugin</artifactId>
-                <version>1.2.0</version>
+                <version>1.8.0</version>
                 <configuration>
                     <config>
                         <mainClass>${project.mainclass}</mainClass>
@@ -237,6 +237,18 @@
             <artifactId>net.java.html.geo</artifactId>
             <version>${net.java.html.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.robovm</groupId>
+            <artifactId>robovm-cocoatouch</artifactId>
+            <version>1.8.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.robovm</groupId>
+            <artifactId>robovm-rt</artifactId>
+            <version>1.8.0</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

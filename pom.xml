@@ -55,6 +55,7 @@
     </dependencyManagement>
     <build>
         <plugins>
+            <!-- XXX temporarily disabled
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -73,6 +74,7 @@
                     </execution>
                 </executions>              
             </plugin>
+            -->
             <plugin>
                 <inherited>false</inherited>
                 <groupId>com.mycila.maven-license-plugin</groupId>
