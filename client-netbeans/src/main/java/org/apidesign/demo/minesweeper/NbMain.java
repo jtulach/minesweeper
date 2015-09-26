@@ -38,7 +38,7 @@ public class NbMain {
     )
     @OpenHTMLRegistration(
         url="index.html",
-        displayName = "Open Your Page",
+        displayName = "Fair Mainsweeper!",
         iconBase = "org/apidesign/demo/minesweeper/icon.png"
     )
     @ActionReferences({
