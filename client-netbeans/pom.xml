@@ -14,7 +14,16 @@
     <version>3.0-SNAPSHOT</version>
     <packaging>nbm-application</packaging>
 
-    <name>minesweeper Client for NetBeans</name>
+    <name>Fair Minesweeper for NetBeans</name>
+    <description>
+At first sight this is an old good &lt;em&gt;minesweeper&lt;/em&gt;
+game. At closer look, this is a demo of a revolutionary
+technology that allows you to use &lt;strong&gt;Java&lt;/strong&gt;
+to code your application logic and present it using
+&lt;strong&gt;HTML&lt;/strong&gt; on any device capable of rendering
+modern &lt;strong&gt;HTML5&lt;/strong&gt; browser.
+Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
+    </description>
 
     <properties>
         <netbeans.version>RELEASE81-BETA</netbeans.version>
