@@ -42,7 +42,7 @@ public class NbMain {
         iconBase = "org/apidesign/demo/minesweeper/icon.png"
     )
     @ActionReferences({
-        @ActionReference(path = "Menu/Window"),
+        @ActionReference(path = "Menu/Window", position = 153),
         @ActionReference(path = "Toolbars/Games")
     })
     public static void onPageLoad() throws Exception {
