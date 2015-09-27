@@ -23,22 +23,67 @@
  */
 package org.apidesign.demo.minesweeper;
 
+import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.Action;
 import org.apidesign.demo.minesweeper.js.OpenURL;
 import org.openide.awt.HtmlBrowser;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = OpenURL.class)
 public final class NbOpenURL extends OpenURL {
     @Override
     protected boolean handleURL(String url) {
+        if (url.endsWith("/getting_started.html")) {
+            if (invokeProjectWizard()) {
+                return true;
+            }
+        }
         try {
             HtmlBrowser.URLDisplayer.getDefault().showURLExternal(new URL(url));
             return true;
         } catch (MalformedURLException ex) {
             return false;
         }
+    }
+
+    private static final Logger LOG = Logger.getLogger(NbOpenURL.class.getName());
+    private boolean invokeProjectWizard() {
+        Action a = null;
+        try {
+            ClassLoader l = Lookup.getDefault().lookup(ClassLoader.class);
+            if (l == null) {
+                l = Thread.currentThread().getContextClassLoader();
+            }
+            if (l == null) {
+                l = NbOpenURL.class.getClassLoader();
+            }
+            Class<?> newPrj = Class.forName("org.netbeans.spi.project.ui.support.CommonProjectActions", true, l); // NOI18N
+            a = (Action) newPrj.getMethod("newProjectAction").invoke(null); // NOI18N
+        } catch (Exception ex) {
+            LOG.log(Level.FINE, "Cannot find New project action!", ex);
+        }
+        if (a != null) {
+            FileObject fo = FileUtil.getConfigFile("Templates/Project/ClientSide"); // NOI18N
+            if (fo != null) {
+                a.putValue("PRESELECT_CATEGORY", "ClientSide"); // NOI18N
+                for (FileObject template : fo.getChildren()) {
+                    final String n = template.getName();
+                    if (n.contains("htmljava") || n.contains("dukescript")) { // NOI18N
+                        a.putValue("PRESELECT_TEMPLATE", template.getName()); // NOI18N
+                        a.actionPerformed(new ActionEvent(this, 0, null));
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }
