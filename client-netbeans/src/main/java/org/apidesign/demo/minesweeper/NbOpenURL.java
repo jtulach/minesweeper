@@ -21,29 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.apidesign.demo.minesweeper.js;
+package org.apidesign.demo.minesweeper;
 
-import java.util.ServiceLoader;
-import net.java.html.js.JavaScriptBody;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.apidesign.demo.minesweeper.js.OpenURL;
+import org.openide.awt.HtmlBrowser;
+import org.openide.util.lookup.ServiceProvider;
 
-public abstract class OpenURL {
-    protected OpenURL() {
-    }
-
-    protected abstract boolean handleURL(String url);
-
-    public static void openURL(String url) {
-        for (OpenURL handler : ServiceLoader.load(OpenURL.class)) {
-            if (handler.handleURL(url)) {
-                return;
-            }
+@ServiceProvider(service = OpenURL.class)
+public final class NbOpenURL extends OpenURL {
+    @Override
+    protected boolean handleURL(String url) {
+        try {
+            HtmlBrowser.URLDisplayer.getDefault().showURLExternal(new URL(url));
+            return true;
+        } catch (MalformedURLException ex) {
+            return false;
         }
-
-        changeURL(url);
     }
 
-    @JavaScriptBody(args = { "url" }, body =
-        "window.open(url, '_blank');"
-    )
-    private static native void changeURL(String url);
 }
