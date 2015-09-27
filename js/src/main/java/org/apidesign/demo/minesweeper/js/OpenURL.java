@@ -23,13 +23,22 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
+import java.util.ServiceLoader;
 import net.java.html.js.JavaScriptBody;
 
-public final class OpenURL {
-    private OpenURL() {
+public abstract class OpenURL {
+    protected OpenURL() {
     }
 
+    protected abstract boolean handleURL(String url);
+
     public static void openURL(String url) {
+        for (OpenURL handler : ServiceLoader.load(OpenURL.class)) {
+            if (handler.handleURL(url)) {
+                return;
+            }
+        }
+
         changeURL(url);
     }
 

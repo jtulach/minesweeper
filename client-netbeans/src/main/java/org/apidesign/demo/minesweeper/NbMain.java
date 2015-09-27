@@ -23,7 +23,7 @@
  */
 package org.apidesign.demo.minesweeper;
 
-import org.netbeans.api.nbrwsr.OpenHTMLRegistration;
+import org.netbeans.api.htmlui.OpenHTMLRegistration;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -38,11 +38,11 @@ public class NbMain {
     )
     @OpenHTMLRegistration(
         url="index.html",
-        displayName = "Open Your Page",
+        displayName = "Fair Mainsweeper!",
         iconBase = "org/apidesign/demo/minesweeper/icon.png"
     )
     @ActionReferences({
-        @ActionReference(path = "Menu/Window"),
+        @ActionReference(path = "Menu/Window", position = 153),
         @ActionReference(path = "Toolbars/Games")
     })
     public static void onPageLoad() throws Exception {

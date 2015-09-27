@@ -70,7 +70,7 @@ public final class MinesModel {
         }
     }
 
-    enum SquareType {
+    public enum SquareType {
 
         N_0, N_1, N_2, N_3, N_4, N_5, N_6, N_7, N_8,
         UNKNOWN, EXPLOSION, DISCOVERED, MARKED;

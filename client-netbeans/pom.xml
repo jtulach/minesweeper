@@ -12,11 +12,21 @@
     <groupId>org.apidesign.demo</groupId>
     <artifactId>minesweeper-nb</artifactId>
     <version>3.0-SNAPSHOT</version>
-    <packaging>nbm</packaging>
+    <packaging>nbm-application</packaging>
 
-    <name>minesweeper Client for NetBeans</name>
+    <name>Fair Minesweeper for NetBeans</name>
+    <description>
+At first sight this is an old good &lt;em&gt;minesweeper&lt;/em&gt;
+game. At closer look, this is a demo of a revolutionary
+technology that allows you to use &lt;strong&gt;Java&lt;/strong&gt;
+to code your application logic and present it using
+&lt;strong&gt;HTML&lt;/strong&gt; on any device capable of rendering
+modern &lt;strong&gt;HTML5&lt;/strong&gt; browser.
+Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
+    </description>
 
     <properties>
+        <netbeans.version>RELEASE81-BETA</netbeans.version>
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <project.mainclass>org.apidesign.demo.minesweeper.NbMain</project.mainclass>
     </properties>
@@ -45,7 +55,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.3</version>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -55,6 +74,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>jar</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- to have the jar plugin pickup the nbm generated manifest -->
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -63,7 +95,7 @@
                 <executions>
                     <execution>
                         <id>unpack</id>
-                        <phase>process-resources</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
@@ -86,7 +118,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>3.13</version>
+                <version>3.14.1</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -117,20 +149,12 @@
                 </executions>
                 <configuration>
                     <useOSGiDependencies>true</useOSGiDependencies>
-                    <brandingToken>minesweeper</brandingToken>
+                    <brandingToken>netbeans</brandingToken>
                     <cluster>minesweeper</cluster>
                     <verifyIntegrity>false</verifyIntegrity>
+                    <nbmBuildDir>${project.build.directory}</nbmBuildDir>
                 </configuration>
             </plugin>                      
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <!-- to have the jar plugin pickup the nbm generated manifest -->
-                    <useDefaultManifestFile>true</useDefaultManifestFile>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>com.filmon.maven</groupId>
                 <artifactId>image-maven-plugin</artifactId>
@@ -162,26 +186,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.netbeans.html</groupId>
-            <artifactId>nbrwsr</artifactId>
-            <version>${nb.html.version}</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.oracle</groupId>
-                    <artifactId>javafx</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.html</groupId>
-                    <artifactId>net.java.html.boot</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.html</groupId>
-                    <artifactId>net.java.html.boot.fx</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.apidesign.demo</groupId>
             <artifactId>minesweeper</artifactId>
             <version>${project.version}</version>
@@ -202,6 +206,43 @@
             <artifactId>net.java.html.boot.fx</artifactId>
             <version>${net.java.html.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-htmlui</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cluster</groupId>
+            <artifactId>platform</artifactId>
+            <version>${netbeans.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apidesign.demo</groupId>
+            <artifactId>minesweeper-js</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-extbrowser</artifactId>
+            <version>${netbeans.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -267,18 +267,6 @@
     </div>
   </div>
 </div>
-        <!-- boot bck2brwsr -->
-        <script type="text/javascript" src="bck2brwsr.js"></script>
-        <script>
-            if (!this.hasOwnProperty("main")) {
-                this.main = function() {
-                    var vm = bck2brwsr('minesweeper.js');
-                    var c = vm.loadClass('org.apidesign.demo.minesweeper.MinesModel');
-                    c.invoke('main');
-                }
-            }
-            this.main();
-        </script>
-
+<!-- ${browser.bootstrap} -->
     </body>
 </html>
