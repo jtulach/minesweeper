@@ -2,3 +2,4 @@ Manifest-Version: 1.0
 OpenIDE-Module-Display-Category: Games
 OpenIDE-Module-Name: Fair Minesweeper!
 OpenIDE-Module-Recommends: cnb.com.dukescript
+OpenIDE-Module-Java-Dependencies: Java > 1.8
