@@ -144,6 +144,9 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
                             <useOSGiDependencies>true</useOSGiDependencies>
                             <cluster>extra</cluster>
                             <verifyIntegrity>false</verifyIntegrity>
+                            <keystore>${user.home}/.keystore</keystore>
+                            <keystorealias>dlvkbrwsr</keystorealias>
+                            <keystorepassword>${password}</keystorepassword>
                         </configuration>
                     </execution>
                 </executions>
