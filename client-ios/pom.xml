@@ -188,6 +188,7 @@
                                 </includes>
                             </resource>
                         </resources>
+                        <iosInfoPList>Info.plist.xml</iosInfoPList>
                     </config>
                     <includeJFX>false</includeJFX>
                 </configuration>
