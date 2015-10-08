@@ -30,15 +30,15 @@
         <key>CFBundleDevelopmentRegion</key>
         <string>en</string>
         <key>CFBundleDisplayName</key>
-        <string>Karel the Game</string>
+        <string>Fair Mines</string>
         <key>CFBundleExecutable</key>
-        <string>Karel</string>
+        <string>Fair Mines</string>
         <key>CFBundleIdentifier</key>
-        <string>cz.xelfi.karel</string>
+        <string>jst</string>
         <key>CFBundleInfoDictionaryVersion</key>
         <string>6.0</string>
         <key>CFBundleName</key>
-        <string>Karel the Game</string>
+        <string>Fair Mines</string>
         <key>CFBundlePackageType</key>
         <string>APPL</string>
         <key>CFBundleShortVersionString</key>
