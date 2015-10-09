@@ -186,12 +186,15 @@
                                 <includes>
                                     <include>*.png</include>
                                 </includes>
+                                <skipPngCrush>true</skipPngCrush>
                             </resource>
                         </resources>
                         <iosInfoPList>Info.plist.xml</iosInfoPList>
                         <os>ios</os>
                     </config>
                     <includeJFX>false</includeJFX>
+                    <iosSignIdentity>iPhone Distribution</iosSignIdentity>
+                    <iosProvisioningProfile>4bdc7fea-db4b-4c79-8bc4-ebb1d4ad83f0</iosProvisioningProfile>                    
                 </configuration>
                 <!--
                 <executions>
