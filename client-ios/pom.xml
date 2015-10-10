@@ -90,7 +90,7 @@
                                 </image>
                                 <image>
                                     <source>src/main/icons/launcher.png</source>
-                                    <destination>Icon@2.png</destination>
+                                    <destination>Icon-114.png</destination>
                                     <width>114</width>
                                 </image>
                                 <image>
@@ -100,7 +100,7 @@
                                 </image>
                                 <image>
                                     <source>src/main/icons/launcher.png</source>
-                                    <destination>Icon-60@2.png</destination>
+                                    <destination>Icon-120.png</destination>
                                     <width>120</width>
                                 </image>
                                 <image>
@@ -112,6 +112,11 @@
                                     <source>src/main/icons/launcher.png</source>
                                     <destination>Icon-76.png</destination>
                                     <width>76</width>
+                                </image>
+                                <image>
+                                    <source>src/main/icons/launcher.png</source>
+                                    <destination>Icon-152.png</destination>
+                                    <width>152</width>
                                 </image>
                                 <image>
                                     <source>src/main/icons/launcher.png</source>
