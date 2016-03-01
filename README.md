@@ -1,5 +1,7 @@
-# minesweeper
-Fair Minesweeper for any device on the Planet:
+# Fair Minesweeper
+
+Fair Minesweeper is a cross-platform game written in Java and rendered with
+client side only HTML. It runs on any device on the Planet:
 * [play on-line](http://xelfi.cz/minesweeper/bck2brwsr) in your browser
 * [install Android version](https://play.google.com/store/apps/details?id=org.apidesign.demo.minesweeper)
 * [install iOS version](https://itunes.apple.com/us/app/fair-minesweeper/id903688146)
