@@ -26,7 +26,7 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
     </description>
 
     <properties>
-        <netbeans.version>RELEASE81-BETA</netbeans.version>
+        <netbeans.version>RELEASE81</netbeans.version>
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <project.mainclass>org.apidesign.demo.minesweeper.NbMain</project.mainclass>
     </properties>
@@ -135,12 +135,6 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
                         <goals>
                             <goal>manifest</goal>
                         </goals>
-                        <configuration>
-                            <useOSGiDependencies>true</useOSGiDependencies>
-                            <brandingToken>minesweeper</brandingToken>
-                            <cluster>minesweeper</cluster>
-                            <verifyIntegrity>false</verifyIntegrity>
-                        </configuration>
                     </execution>                       
                     <execution>
                         <id>default-nbm</id>
@@ -148,14 +142,6 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
                         <goals>
                             <goal>nbm</goal>
                         </goals>
-                        <configuration>
-                            <useOSGiDependencies>true</useOSGiDependencies>
-                            <cluster>extra</cluster>
-                            <verifyIntegrity>false</verifyIntegrity>
-                            <keystore>${user.home}/.keystore</keystore>
-                            <keystorealias>dlvkbrwsr</keystorealias>
-                            <keystorepassword>${password}</keystorepassword>
-                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
@@ -164,6 +150,9 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
                     <cluster>minesweeper</cluster>
                     <verifyIntegrity>false</verifyIntegrity>
                     <nbmBuildDir>${project.build.directory}</nbmBuildDir>
+                    <keystore>${user.home}/.keystore</keystore>
+                    <keystorealias>dlvkbrwsr</keystorealias>
+                    <keystorepassword>${password}</keystorepassword>
                 </configuration>
             </plugin>                      
             <plugin>
@@ -204,6 +193,10 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
                 <exclusion>
                     <groupId>org.netbeans.html</groupId>
                     <artifactId>net.java.html.boot.fx</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>net.java.html.sound</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
