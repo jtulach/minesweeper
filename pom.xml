@@ -5,7 +5,7 @@
 
     <groupId>org.apidesign.demo</groupId>
     <artifactId>minesweeper-pom</artifactId>
-    <version>3.1</version>
+    <version>3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>minesweeper</name>
