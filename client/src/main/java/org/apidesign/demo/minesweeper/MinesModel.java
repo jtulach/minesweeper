@@ -26,6 +26,9 @@ package org.apidesign.demo.minesweeper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executor;
 import net.java.html.json.ComputedProperty;
 import net.java.html.json.Function;
 import net.java.html.json.Model;
@@ -39,8 +42,23 @@ import org.apidesign.demo.minesweeper.js.OpenURL;
  */
 @Model(className = "Mines", targetId = "", properties = {
     @Property(name = "state", type = MinesModel.GameState.class),
-    @Property(name = "rows", type = Row.class, array = true),})
+    @Property(name = "rows", type = Row.class, array = true),
+    @Property(name = "mines", type = int.class),
+    @Property(name = "clicks", type = int.class),
+})
 public final class MinesModel {
+    private static final Executor QUANTUM = new Executor() {
+        private final Timer TIMER = new Timer("Fair mines");
+        @Override
+        public void execute(Runnable command) {
+            TIMER.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    command.run();
+                }
+            }, 10);
+        }
+    };
 
     enum GameState {
 
@@ -58,12 +76,20 @@ public final class MinesModel {
     static class RowModel {
     }
 
+    @Model(className = "Location", properties = {
+        @Property(name = "x", type = int.class),
+        @Property(name = "y", type = int.class),
+    })
+    static class LocationModel {
+    }
+    
     @Model(className = "Square", properties = {
+        @Property(name = "location", type = Location.class),
         @Property(name = "state", type = SquareType.class),
-        @Property(name = "mine", type = boolean.class)
+        @Property(name = "mine", type = boolean.class),
+        @Property(name = "unsafe", type = Location.class, array = true)
     })
     static class SquareModel {
-
         @ComputedProperty
         static String style(SquareType state) {
             return state == null ? null : state.toString();
@@ -79,6 +105,10 @@ public final class MinesModel {
             return name().startsWith("N_");
         }
 
+        final boolean isUnknown() {
+            return this == UNKNOWN;
+        }
+
         final SquareType moreBombsAround() {
             switch (this) {
                 case EXPLOSION:
@@ -89,6 +119,16 @@ public final class MinesModel {
             }
             return values()[ordinal() + 1];
         }
+    }
+
+    @ComputedProperty
+    static int width(List<Row> rows) {
+        return rows.isEmpty() ? 0 : rows.get(0).getColumns().size();
+    }
+
+    @ComputedProperty
+    static int height(List<Row> rows) {
+        return rows.size();
     }
 
     @ComputedProperty
@@ -137,7 +177,7 @@ public final class MinesModel {
             for (int y = 0; y < height; y++) {
                 Square[] columns = new Square[width];
                 for (int x = 0; x < width; x++) {
-                    columns[x] = new Square(SquareType.UNKNOWN, false);
+                    columns[x] = new Square(new Location(x, y), SquareType.UNKNOWN, false);
                 }
                 rows.add(new Row(columns));
             }
@@ -151,6 +191,7 @@ public final class MinesModel {
         }
 
         Random r = new Random();
+        model.setMines(mines);
         while (mines > 0) {
             int x = r.nextInt(width);
             int y = r.nextInt(height);
@@ -254,10 +295,20 @@ public final class MinesModel {
         }
     }
 
+    @ModelOperation
+    static void click(Mines model, int x, int y, Executor compute) {
+        Square sq = FairMines.at(model, x, y);
+        click(model, sq, compute);
+    }
+
     @Function
     static void click(Mines model, Square data) {
+        click(model, data, QUANTUM);
+    }
+
+    static void click(Mines model, Square data, Executor compute) {
         if (model.getState() == GameState.MARKING_MINE) {
-            if (data.getState() == SquareType.UNKNOWN) {
+            if (data.getState().isUnknown()) {
                 data.setState(SquareType.MARKED);
                 if (allMarked(model)) {
                     model.setState(GameState.WON);
@@ -277,7 +328,7 @@ public final class MinesModel {
             }
             return;
         }
-        if (data.getState() != SquareType.UNKNOWN) {
+        if (!data.getState().isUnknown()) {
             return;
         }
         if (data.isMine()) {
@@ -301,6 +352,12 @@ public final class MinesModel {
                 }
             }
             cleanedUp(model, data);
+            FairMines run = new FairMines(model, compute);
+            if (compute == null) {
+                run.run();
+            } else {
+                compute.execute(run);
+            }
         }
     }
 
@@ -400,7 +457,7 @@ public final class MinesModel {
                 }
                 if (sq.isMine()) {
                     sq.setMine(false);
-                    final boolean ok = isConsistent(model);
+                    final boolean ok = FairMines.isConsistent(model);
                     sq.setMine(true);
                     if (ok) {
                         data.setMine(false);
@@ -421,7 +478,7 @@ public final class MinesModel {
             final List<Square> columns = rows.get(y).getColumns();
             for (int x = 0; x < columns.size(); x++) {
                 Square sq = columns.get(x);
-                if (sq.getState() == SquareType.UNKNOWN) {
+                if (sq.getState().isUnknown()) {
                     if (!sq.isMine()) {
                         if (tryStealBomb(model, sq) == null) {
                             cantBe = sq;
@@ -452,7 +509,7 @@ public final class MinesModel {
                     continue;
                 }
                 sq.setMine(true);
-                if (isConsistent(model)) {
+                if (FairMines.isConsistent(model)) {
                     ok.add(sq);
                 }
                 sq.setMine(false);
@@ -491,8 +548,8 @@ public final class MinesModel {
             return;
         }
         final Square sq = columns.get(x);
-        if (sq.getState() == SquareType.UNKNOWN) {
-            int around = around(model, x, y);
+        if (sq.getState().isUnknown()) {
+            int around = FairMines.countMinesAround(model, x, y);
             final SquareType t = SquareType.valueOf("N_" + around);
             sq.setState(t);
             if (t == SquareType.N_0) {
@@ -506,45 +563,6 @@ public final class MinesModel {
                 expandKnown(model, x + 1, y + 1);
             }
         }
-    }
-
-    private static int around(Mines model, int x, int y) {
-        return minesAt(model, x - 1, y - 1)
-            + minesAt(model, x - 1, y)
-            + minesAt(model, x - 1, y + 1)
-            + minesAt(model, x, y - 1)
-            + minesAt(model, x, y + 1)
-            + minesAt(model, x + 1, y - 1)
-            + minesAt(model, x + 1, y)
-            + minesAt(model, x + 1, y + 1);
-    }
-
-    private static int minesAt(Mines model, int x, int y) {
-        if (y < 0 || y >= model.getRows().size()) {
-            return 0;
-        }
-        final List<Square> columns = model.getRows().get(y).getColumns();
-        if (x < 0 || x >= columns.size()) {
-            return 0;
-        }
-        Square sq = columns.get(x);
-        return sq.isMine() ? 1 : 0;
-    }
-
-    private static boolean isConsistent(Mines m) {
-        for (int row = 0; row < m.getRows().size(); row++) {
-            Row r = m.getRows().get(row);
-            for (int col = 0; col < r.getColumns().size(); col++) {
-                Square sq = r.getColumns().get(col);
-                if (sq.getState().isVisible()) {
-                    int around = around(m, col, row);
-                    if (around != sq.getState().ordinal()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
     }
 
     private static boolean allMarked(Mines m) {
