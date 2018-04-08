@@ -1,7 +1,7 @@
-/*
- * The MIT License
+/**
+ * The MIT License (MIT)
  *
- * Copyright 2018 API Design.
+ * Copyright (C) 2013-2018 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

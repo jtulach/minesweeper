@@ -53,6 +53,10 @@ final class Fairness implements Runnable {
         if (finished) {
             return true;
         }
+        if (unknowns.size() < bombs.length) {
+            finished = true;
+            return true;
+        }
 
         Bomb[] select = new Bomb[bombs.length];
         for (int i = 0; i < bombs.length; i++) {
@@ -68,6 +72,12 @@ final class Fairness implements Runnable {
             return false;
         } else {
             finished = true;
+            seachSquares((x, y, sq, m) -> {
+                if (!m.isSafe(countConsistent)) {
+                    sq.setMine(true);
+                }
+                return false;
+            });
             return finished;
         }
     }

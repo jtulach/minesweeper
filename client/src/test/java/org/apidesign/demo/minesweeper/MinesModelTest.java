@@ -24,8 +24,8 @@
 package org.apidesign.demo.minesweeper;
 
 import org.apidesign.demo.minesweeper.MinesModel.SquareType;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MinesModelTest {
     @Test public void tenTenTen() {
@@ -131,7 +131,7 @@ public class MinesModelTest {
         m.init(2, 1, 0);
         set(m, 0, 0, SquareType.UNKNOWN, true);
         m.computeMines();
-        assertEquals(m.getState(), MinesModel.GameState.IN_PROGRESS);
+        Assert.assertEquals(m.getState(), MinesModel.GameState.IN_PROGRESS);
         set(m, 1, 0, SquareType.N_0, false);
         m.computeMines();
         assertEquals(m.getState(), MinesModel.GameState.WON, "All non-bomb squares discovered");
@@ -162,5 +162,9 @@ public class MinesModelTest {
     private static void assertSquare(Mines m, int x, int y, SquareType t) {
         Square sq = m.getRows().get(y).getColumns().get(x);
         assertEquals(sq.getState(), t, "Expecting at " + x + ":" + y);
+    }
+
+    private static void assertEquals(Object act, Object exp, String msg) {
+        Assert.assertEquals(msg, exp, act);
     }
 }

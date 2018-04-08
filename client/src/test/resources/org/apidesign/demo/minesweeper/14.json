@@ -1,0 +1,336 @@
+{
+    "state": "IN_PROGRESS",
+    "rows": [
+        {
+            "columns": [{
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "UNKNOWN",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "UNKNOWN",
+                    "mine": false
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "N_2",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }]
+        },
+        {
+            "columns": [{
+                    "state": "UNKNOWN",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_0",
+                    "mine": false
+                }, {
+                    "state": "N_1",
+                    "mine": false
+                }, {
+                    "state": "UNKNOWN",
+                    "mine": true
+                }]
+        }
+    ],
+    "mines": 10
+}
