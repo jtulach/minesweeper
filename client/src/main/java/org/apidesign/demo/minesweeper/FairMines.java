@@ -35,12 +35,14 @@ final class FairMines implements Runnable {
     private final List<Bomb> bombs;
     private final Executor reschedule;
     private boolean finished;
+    private int countConsistent;
 
     FairMines(Mines mines, Executor reschedule) {
         this.mines = mines;
         this.minesClicks = mines.getClicks();
         this.reschedule = reschedule;
         this.count = mines.getMines();
+        this.countConsistent = 0;
         prepareNoMinesEverythingIsSafe();
 
         List<Bomb> tmp = new ArrayList<>(count);
@@ -53,13 +55,18 @@ final class FairMines implements Runnable {
         bombs = tmp;
     }
 
+    int getCountConsistent() {
+        return countConsistent;
+    }
+
     private boolean oneRoundCheck() {
         if (finished) {
             return true;
         }
 
         if (checkConsistent(bombs)) {
-            markUnsafe(mines, bombs);
+            countConsistent++;
+            markUnsafe(bombs);
         }
         if (nextBombsLocations(count - 1)) {
             return false;
@@ -91,7 +98,7 @@ final class FairMines implements Runnable {
         do {
             if (oneRoundCheck()) {
                 int[] oneSafe = seachSquares((__, ___, sq, m) -> {
-                    return sq.getState().isUnknown() && m.isSafe();
+                    return sq.getState().isUnknown() && m.isSafe(countConsistent);
                 });
 
                 if (oneSafe == null) {
@@ -161,6 +168,14 @@ final class FairMines implements Runnable {
     int[] seachSquares(VisitSquare v) {
         return searchSquares(0, 0, v);
     }
+
+    SquareModel at(int x, int y) {
+        Square sq = mines.getRows().get(y).getColumns().get(x);
+        SquareModel[] arr = { null };
+        sq.read(false, arr);
+        assert arr[0] != null;
+        return arr[0];
+    }
     
     private int[] searchSquares(int beginX, int beginY, VisitSquare v) {
         int y = 0;
@@ -187,8 +202,7 @@ final class FairMines implements Runnable {
 
     private void prepareNoMinesEverythingIsSafe() {
         seachSquares((__, ___, sq, m) -> {
-            sq.setMine(false);
-            m.unsafe(sq, null);
+            m.clean();
             return false;
         });
     }
@@ -216,14 +230,19 @@ final class FairMines implements Runnable {
         return isConsistent(mines);
     }
 
-    private static void markUnsafe(Mines mines, List<Bomb> bombs) {
+    private void markUnsafe(List<Bomb> bombs) {
         List<Location> locations = new ArrayList<>();
+        seachSquares((x, y, sq, m) -> {
+            m.incEmpty();
+            return false;
+        });
         for (Bomb b : bombs) {
             locations.add(new Location(b.x, b.y));
         }
         for (Bomb b : bombs) {
             final Square square = at(mines, b.x, b.y);
             square.unsafe(locations);
+            square.decEmptyIncMine();
         }
     }
 

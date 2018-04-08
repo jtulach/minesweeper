@@ -90,6 +90,8 @@ public final class MinesModel {
     static class SquareModel {
         private int x, y;
         private List<Location> unsafe;
+        private int countMine;
+        private int countEmpty;
 
         @ModelOperation
         void at(Square square, int x, int y) {
@@ -116,8 +118,24 @@ public final class MinesModel {
             return unsafe;
         }
 
-        boolean isSafe() {
-            return unsafe == null || unsafe.isEmpty();
+        boolean isSafe(int count) {
+            return countEmpty == count;
+        }
+
+        void clean() {
+            unsafe = null;
+            countMine = 0;
+            countEmpty = 0;
+        }
+
+        void incEmpty() {
+            countEmpty++;
+        }
+
+        @ModelOperation
+        void decEmptyIncMine() {
+            countEmpty--;
+            countMine++;
         }
     }
 

@@ -32,7 +32,7 @@ public class FairMinesTest {
     }
 
     @Test
-    public void thereHasToBeBombAtOneOne() {
+    public void thereCannotBeBombsInTwoCorners() {
         Mines m = new Mines();
         m.init(3, 3, 0);
         m.setMines(3);
@@ -42,21 +42,33 @@ public class FairMinesTest {
         FairMines compute = new FairMines(m, null);
         compute.run();
 
-        int[] found = { -1, -1 };
-        int[] unsafeCounter = { 0 };
+        assertCounts(compute, 2, 5);
+        assertSafe("Left bottom corner", compute, 0, 2);
+        assertSafe("Right top corner", compute, 2, 0);
+    }
+
+    private void assertSafe(String msg, FairMines compute, int x, int y) {
+        assertTrue(msg, compute.at(x, y).isSafe(compute.getCountConsistent()));
+    }
+
+    private void assertCounts(FairMines compute, int safe, int unsafe) {
+        StringBuilder sb = new StringBuilder();
+        int[] counter = { 0, 0 };
         compute.seachSquares((x, y, sq, sqModel) -> {
-            if (!sqModel.isSafe()) {
-                unsafeCounter[0]++;
-                found[0] = x;
-                found[1] = y;
-                System.err.println(x + ":" + y + " = " + sqModel.getUnsafe());
+            if (sq.getState() != SquareType.UNKNOWN) {
+                return false;
+            }
+            if (!sqModel.isSafe(compute.getCountConsistent())) {
+                counter[1]++;
+                sb.append("\nunsafe ").append(x).append(":").append(y).append(" = ").append(sqModel.getUnsafe());
+            } else {
+                counter[0]++;
+                sb.append("\nsafe   ").append(x).append(":").append(y);
             }
             return false;
         });
-
-        assertEquals("Square 1, 1 has to contain the bomb!", 1, unsafeCounter[0]);
-        assertEquals("Square 1,1 x", 1, found[0]);
-        assertEquals("Square 1,1 y", 1, found[1]);
+        assertEquals("Safe count is OK" + sb, safe, counter[0]);
+        assertEquals("Unsafe count is OK" + sb, unsafe, counter[1]);
     }
 
     @Test
@@ -73,7 +85,7 @@ public class FairMinesTest {
 
         int[] safeCounter = { 0 };
         compute.seachSquares((x, y, sq, sqModel) -> {
-            if (sq.getState() == SquareType.UNKNOWN && sqModel.isSafe()) {
+            if (sq.getState() == SquareType.UNKNOWN && sqModel.isSafe(compute.getCountConsistent())) {
                 safeCounter[0]++;
                 assertEquals("Row 0 for " + sq, 0, y);
             }
