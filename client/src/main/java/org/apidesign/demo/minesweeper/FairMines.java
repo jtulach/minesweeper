@@ -25,6 +25,7 @@ package org.apidesign.demo.minesweeper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import org.apidesign.demo.minesweeper.MinesModel.SquareModel;
@@ -192,10 +193,15 @@ final class FairMines implements Runnable {
         seachSquares((x, y, sq, m) -> {
             m.clean();
             if (sq.getState() == MinesModel.SquareType.UNKNOWN) {
-                arr.add(new Bomb(x, y));
+                int visibleAround = countMinesAround(mines, x, y, (__, ___, around, ____) -> {
+                    MinesModel.SquareType s = around.getState();
+                    return s.isVisible() ? 1 : 0;
+                });
+                arr.add(new Bomb(x, y, visibleAround));
             }
             return false;
         });
+        Collections.sort(arr);
         return arr;
     }
     
@@ -255,18 +261,34 @@ final class FairMines implements Runnable {
         public R visit(int x, int y, Square sq, SquareModel m);
     }
 
-    static class Bomb {
+    static class Bomb implements Comparable<Bomb> {
         final int x;
         final int y;
+        final int expose;
 
-        Bomb(int x, int y) {
+        Bomb(int x, int y, int expose) {
             this.x = x;
             this.y = y;
+            this.expose = expose;
         }
 
         @Override
         public String toString() {
-            return "Bomb{" + "x=" + x + ", y=" + y + '}';
+            return "Bomb{" + "x=" + x + ", y=" + y + ", #=" + expose + '}';
+        }
+
+        @Override
+        public int compareTo(Bomb o) {
+            int d;
+            d = expose - o.expose;
+            if (d != 0) {
+                return d;
+            }
+            d = x - o.x;
+            if (d != 0) {
+                return d;
+            }
+            return y - o.y;
         }
     }
 }
