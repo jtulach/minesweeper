@@ -24,6 +24,7 @@
 package org.apidesign.demo.minesweeper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import org.apidesign.demo.minesweeper.MinesModel.SquareModel;
@@ -31,8 +32,8 @@ import org.apidesign.demo.minesweeper.MinesModel.SquareModel;
 final class FairMines implements Runnable {
     private final Mines mines;
     private final int minesClicks;
-    private final int count;
-    private final List<Bomb> bombs;
+    private final List<Bomb> unknowns;
+    private final int[] bombs;
     private final Executor reschedule;
     private boolean finished;
     private int countConsistent;
@@ -41,18 +42,12 @@ final class FairMines implements Runnable {
         this.mines = mines;
         this.minesClicks = mines.getClicks();
         this.reschedule = reschedule;
-        this.count = mines.getMines();
-        this.countConsistent = 0;
-        prepareNoMinesEverythingIsSafe();
-
-        List<Bomb> tmp = new ArrayList<>(count);
-        Bomb first = new Bomb(mines, 0, 0);
-        Bomb b = first;
-        for (int i = 0; i < count; i++) {
-            tmp.add(b);
-            b = nextLocation(mines, b);
+        this.bombs = new int[mines.getMines()];
+        for (int i = 0; i < this.bombs.length; i++) {
+            this.bombs[i] = i;
         }
-        bombs = tmp;
+        this.countConsistent = 0;
+        this.unknowns = prepareNoMinesEverythingIsSafe();
     }
 
     private boolean oneRoundCheck() {
@@ -60,32 +55,21 @@ final class FairMines implements Runnable {
             return true;
         }
 
-        if (checkConsistent(bombs)) {
-            countConsistent++;
-            markUnsafe(bombs);
+        Bomb[] select = new Bomb[bombs.length];
+        for (int i = 0; i < bombs.length; i++) {
+            select[i] = unknowns.get(bombs[i]);
         }
-        if (nextBombsLocations(count - 1)) {
+        List<Bomb> selectList = Arrays.asList(select);
+
+        if (checkConsistent(selectList)) {
+            countConsistent++;
+            markUnsafe(selectList);
+        }
+        if (nextBombsLocations(bombs, unknowns.size())) {
             return false;
         } else {
             finished = true;
-            return true;
-        }
-    }
-
-    private boolean nextBombsLocations(int i) {
-        if (i < 0) {
-            return false;
-        }
-        Bomb next = nextLocation(mines, bombs.get(i));
-        if (next != null) {
-            bombs.set(i, next);
-            return true;
-        } else {
-            if (nextBombsLocations(i - 1)) {
-                bombs.set(i, nextLocation(mines, bombs.get(i - 1)));
-                return true;
-            }
-            return false;
+            return finished;
         }
     }
 
@@ -204,11 +188,16 @@ final class FairMines implements Runnable {
         return null;
     }
 
-    private void prepareNoMinesEverythingIsSafe() {
-        seachSquares((__, ___, sq, m) -> {
+    private List<Bomb> prepareNoMinesEverythingIsSafe() {
+        List<Bomb> arr = new ArrayList<>();
+        seachSquares((x, y, sq, m) -> {
             m.clean();
+            if (sq.getState() == MinesModel.SquareType.UNKNOWN) {
+                arr.add(new Bomb(x, y));
+            }
             return false;
         });
+        return arr;
     }
     
     static Square at(Mines tmp, int x, int y) {
@@ -249,21 +238,18 @@ final class FairMines implements Runnable {
         }
     }
 
-    private static Bomb nextLocation(Mines mines, Bomb b) {
-        if (b == null) {
-            return null;
-        }
-        int nextX = b.x + 1;
-        if (nextX < mines.getWidth()) {
-            return new Bomb(mines, nextX, b.y);
-        } else {
-            int nextY = b.y + 1;
-            if (nextY < mines.getHeight()) {
-                return new Bomb(mines, 0, nextY);
-            } else {
-                return null;
+    static boolean nextBombsLocations(int[] indices, int maxLimit) {
+        int roundLimit = maxLimit;
+        for (int i = indices.length - 1; i >= 0; i--) {
+            if (++indices[i] < roundLimit) {
+                while (++i < indices.length) {
+                    indices[i] = indices[i - 1] + 1;
+                }
+                return indices[indices.length - 1] < maxLimit;
             }
+            roundLimit--;
         }
+        return false;
     }
 
     static interface VisitSquare {
@@ -274,7 +260,7 @@ final class FairMines implements Runnable {
         final int x;
         final int y;
 
-        Bomb(Mines mines, int x, int y) {
+        Bomb(int x, int y) {
             this.x = x;
             this.y = y;
         }

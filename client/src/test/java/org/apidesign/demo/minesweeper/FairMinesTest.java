@@ -24,6 +24,7 @@
 package org.apidesign.demo.minesweeper;
 
 import org.apidesign.demo.minesweeper.MinesModel.SquareType;
+import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -58,6 +59,55 @@ public class FairMinesTest {
         assertCounts(compute, 2, 5);
         assertSafe("Left bottom corner", compute, 0, 2);
         assertSafe("Right top corner", compute, 2, 0);
+    }
+
+    @Test
+    public void nextArrFromNextLine() {
+        int[] arr = { 0, 5, 6 };
+        assertNextLoc(arr, 7);
+        assertArr(arr, 1, 2, 3);
+        assertNextLoc(arr, 7);
+        assertNextLoc(arr, 7);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 1, 2, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 1, 3, 4);
+        assertNextLoc(arr, 7);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 1, 3, 6);
+        assertNextLoc(arr, 7);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 1, 4, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 1, 5, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 2, 3, 4);
+        assertNextLoc(arr, 7);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 2, 3, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 2, 4, 5);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 2, 4, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 2, 5, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 3, 4, 5);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 3, 4, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 3, 5, 6);
+        assertNextLoc(arr, 7);
+        assertArr(arr, 4, 5, 6);
+        assertFalse("No more", FairMines.nextBombsLocations(arr, 7));
+    }
+
+    private static void assertNextLoc(int[] arr, int limit) {
+        assertTrue("Next location available", FairMines.nextBombsLocations(arr, limit));
+    }
+
+    private static void assertArr(int[] arr, int... exp) {
+        Assert.assertArrayEquals(exp, arr);
     }
 
     private void assertSafe(String msg, FairMines compute, int x, int y) {
