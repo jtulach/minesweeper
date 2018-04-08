@@ -55,10 +55,6 @@ final class FairMines implements Runnable {
         bombs = tmp;
     }
 
-    int getCountConsistent() {
-        return countConsistent;
-    }
-
     private boolean oneRoundCheck() {
         if (finished) {
             return true;
@@ -169,7 +165,11 @@ final class FairMines implements Runnable {
         return searchSquares(0, 0, v);
     }
 
-    SquareModel at(int x, int y) {
+    boolean isSafe(int x, int y) {
+        return at(x, y).isSafe(countConsistent);
+    }
+
+    private SquareModel at(int x, int y) {
         Square sq = mines.getRows().get(y).getColumns().get(x);
         SquareModel[] arr = { null };
         sq.read(false, arr);
