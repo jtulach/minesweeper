@@ -32,6 +32,19 @@ public class FairMinesTest {
     }
 
     @Test
+    public void uncertainPosition() {
+        Mines m = new Mines();
+        m.init(3, 3, 0);
+        m.setMines(3);
+        FairMines.at(m, 1, 1).setState(SquareType.N_3);
+
+        FairMines compute = new FairMines(m, null);
+        compute.run();
+
+        assertCounts(compute, 0, 8);
+    }
+
+    @Test
     public void thereCannotBeBombsInTwoCorners() {
         Mines m = new Mines();
         m.init(3, 3, 0);
