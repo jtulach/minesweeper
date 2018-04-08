@@ -44,12 +44,12 @@ public class FairMinesTest {
 
         int[] found = { -1, -1 };
         int[] unsafeCounter = { 0 };
-        compute.seachSquares((x, y, sq) -> {
-            if (!sq.getUnsafe().isEmpty()) {
+        compute.seachSquares((x, y, sq, sqModel) -> {
+            if (!sqModel.isSafe()) {
                 unsafeCounter[0]++;
                 found[0] = x;
                 found[1] = y;
-                System.err.println(x + ":" + y + " = " + sq.getUnsafe());
+                System.err.println(x + ":" + y + " = " + sqModel.getUnsafe());
             }
             return false;
         });
@@ -72,8 +72,8 @@ public class FairMinesTest {
         compute.run();
 
         int[] safeCounter = { 0 };
-        compute.seachSquares((x, y, sq) -> {
-            if (sq.getState() == SquareType.UNKNOWN && sq.getUnsafe().isEmpty()) {
+        compute.seachSquares((x, y, sq, sqModel) -> {
+            if (sq.getState() == SquareType.UNKNOWN && sqModel.isSafe()) {
                 safeCounter[0]++;
                 assertEquals("Row 0 for " + sq, 0, y);
             }

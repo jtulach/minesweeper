@@ -26,6 +26,7 @@ package org.apidesign.demo.minesweeper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import org.apidesign.demo.minesweeper.MinesModel.SquareModel;
 
 final class FairMines implements Runnable {
     private final Mines mines;
@@ -89,13 +90,13 @@ final class FairMines implements Runnable {
         long up = time < 0 ? Long.MAX_VALUE : System.currentTimeMillis() + time;
         do {
             if (oneRoundCheck()) {
-                int[] oneSafe = seachSquares((__, ___, sq) -> {
-                    return sq.getState().isUnknown() && sq.getUnsafe().isEmpty();
+                int[] oneSafe = seachSquares((__, ___, sq, m) -> {
+                    return sq.getState().isUnknown() && m.isSafe();
                 });
 
                 if (oneSafe == null) {
-                    seachSquares((__, ___, sq) -> {
-                        sq.getUnsafe().clear();
+                    seachSquares((__, ___, sq, m) -> {
+                        m.unsafe(null, null);
                         return false;
                     });
                 }
@@ -169,7 +170,10 @@ final class FairMines implements Runnable {
                 boolean check = y == beginY;
                 for (Square sq : row.getColumns()) {
                     if (!check || x >= beginX) {
-                        if (v.visit(x, y, sq)) {
+                        SquareModel[] arr = { null };
+                        sq.read(false, arr);
+                        assert arr[0] != null;
+                        if (v.visit(x, y, sq, arr[0])) {
                             return new int[] { x, y };
                         }
                     }
@@ -182,9 +186,9 @@ final class FairMines implements Runnable {
     }
 
     private void prepareNoMinesEverythingIsSafe() {
-        seachSquares((__, ___, sq) -> {
+        seachSquares((__, ___, sq, m) -> {
             sq.setMine(false);
-            sq.getUnsafe().clear();
+            m.unsafe(sq, null);
             return false;
         });
     }
@@ -194,7 +198,7 @@ final class FairMines implements Runnable {
     }
 
     private boolean checkConsistent(List<Bomb> bombs) {
-        seachSquares((x, y, sq) -> {
+        seachSquares((x, y, sq, __) -> {
             sq.setMine(false);
             return false;
         });
@@ -215,13 +219,11 @@ final class FairMines implements Runnable {
     private static void markUnsafe(Mines mines, List<Bomb> bombs) {
         List<Location> locations = new ArrayList<>();
         for (Bomb b : bombs) {
-            locations.add(b.square.getLocation());
+            locations.add(new Location(b.x, b.y));
         }
         for (Bomb b : bombs) {
             final Square square = at(mines, b.x, b.y);
-            final List<Location> unsafe = square.getUnsafe();
-            unsafe.clear();
-            unsafe.addAll(locations);
+            square.unsafe(locations);
         }
     }
 
@@ -243,7 +245,7 @@ final class FairMines implements Runnable {
     }
 
     static interface VisitSquare {
-        public boolean visit(int x, int y, Square sq);
+        public boolean visit(int x, int y, Square sq, SquareModel m);
     }
 
     static class Bomb {

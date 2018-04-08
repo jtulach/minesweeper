@@ -83,16 +83,41 @@ public final class MinesModel {
     static class LocationModel {
     }
     
-    @Model(className = "Square", properties = {
-        @Property(name = "location", type = Location.class),
+    @Model(className = "Square", instance = true, properties = {
         @Property(name = "state", type = SquareType.class),
         @Property(name = "mine", type = boolean.class),
-        @Property(name = "unsafe", type = Location.class, array = true)
     })
     static class SquareModel {
+        private int x, y;
+        private List<Location> unsafe;
+
+        @ModelOperation
+        void at(Square square, int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @ModelOperation
+        void unsafe(Square square, List<Location> l) {
+            unsafe = l;
+        }
+
+        @ModelOperation
+        void read(Square square, boolean ignore, SquareModel[] arr) {
+            arr[0] = this;
+        }
+
         @ComputedProperty
         static String style(SquareType state) {
             return state == null ? null : state.toString();
+        }
+
+        List<Location> getUnsafe() {
+            return unsafe;
+        }
+
+        boolean isSafe() {
+            return unsafe == null || unsafe.isEmpty();
         }
     }
 
@@ -177,7 +202,9 @@ public final class MinesModel {
             for (int y = 0; y < height; y++) {
                 Square[] columns = new Square[width];
                 for (int x = 0; x < width; x++) {
-                    columns[x] = new Square(new Location(x, y), SquareType.UNKNOWN, false);
+                    Square sq = new Square(SquareType.UNKNOWN, false);
+                    sq.at(x, y);
+                    columns[x] = sq;
                 }
                 rows.add(new Row(columns));
             }
