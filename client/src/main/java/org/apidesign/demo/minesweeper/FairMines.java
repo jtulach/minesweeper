@@ -121,18 +121,18 @@ final class FairMines implements Runnable {
     }
 
 
-    static int countMinesAround(Mines model, int x, int y) {
-        return minesAt(model, x - 1, y - 1)
-            + minesAt(model, x - 1, y)
-            + minesAt(model, x - 1, y + 1)
-            + minesAt(model, x, y - 1)
-            + minesAt(model, x, y + 1)
-            + minesAt(model, x + 1, y - 1)
-            + minesAt(model, x + 1, y)
-            + minesAt(model, x + 1, y + 1);
+    static int countMinesAround(Mines model, int x, int y, boolean bombs) {
+        return minesAt(model, x - 1, y - 1, bombs)
+            + minesAt(model, x - 1, y, bombs)
+            + minesAt(model, x - 1, y + 1, bombs)
+            + minesAt(model, x, y - 1, bombs)
+            + minesAt(model, x, y + 1, bombs)
+            + minesAt(model, x + 1, y - 1, bombs)
+            + minesAt(model, x + 1, y, bombs)
+            + minesAt(model, x + 1, y + 1, bombs);
     }
 
-    private static int minesAt(Mines model, int x, int y) {
+    private static int minesAt(Mines model, int x, int y, boolean bombs) {
         if (y < 0 || y >= model.getRows().size()) {
             return 0;
         }
@@ -141,16 +141,22 @@ final class FairMines implements Runnable {
             return 0;
         }
         Square sq = columns.get(x);
-        return sq.isMine() ? 1 : 0;
+        if (bombs) {
+            SquareModel[] arr = { null };
+            sq.read(false, arr);
+            return arr[0].getBomb() != null ? 1 : 0;
+        } else {
+            return sq.isMine() ? 1 : 0;
+        }
     }
 
-    static boolean isConsistent(Mines m) {
+    static boolean isConsistent(Mines m, boolean bombs) {
         for (int row = 0; row < m.getRows().size(); row++) {
             Row r = m.getRows().get(row);
             for (int col = 0; col < r.getColumns().size(); col++) {
                 Square sq = r.getColumns().get(col);
                 if (sq.getState().isVisible()) {
-                    int around = countMinesAround(m, col, row);
+                    int around = countMinesAround(m, col, row, bombs);
                     if (around != sq.getState().ordinal()) {
                         return false;
                     }
@@ -212,8 +218,8 @@ final class FairMines implements Runnable {
     }
 
     private boolean checkConsistent(List<Bomb> bombs) {
-        seachSquares((x, y, sq, __) -> {
-            sq.setMine(false);
+        seachSquares((x, y, sq, m) -> {
+            m.setBomb(null);
             return false;
         });
 
@@ -225,9 +231,11 @@ final class FairMines implements Runnable {
             if (!sq.getState().isUnknown() || sq.isMine()) {
                 return false;
             }
-            sq.setMine(true);
+            SquareModel[] arr = { null };
+            sq.read(false, arr);
+            arr[0].setBomb(bomb);
         }
-        return isConsistent(mines);
+        return isConsistent(mines, true);
     }
 
     private void markUnsafe(List<Bomb> bombs) {

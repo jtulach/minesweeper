@@ -85,6 +85,7 @@ public final class MinesModel {
         private List<FairMines.Bomb> unsafe;
         private int countMine;
         private int countEmpty;
+        private FairMines.Bomb bomb;
 
         @ModelOperation
         void at(Square square, int x, int y) {
@@ -129,6 +130,14 @@ public final class MinesModel {
         void decEmptyIncMine() {
             countEmpty--;
             countMine++;
+        }
+
+        void setBomb(FairMines.Bomb b) {
+            this.bomb = b;
+        }
+
+        FairMines.Bomb getBomb() {
+            return bomb;
         }
     }
 
@@ -495,7 +504,7 @@ public final class MinesModel {
                 }
                 if (sq.isMine()) {
                     sq.setMine(false);
-                    final boolean ok = FairMines.isConsistent(model);
+                    final boolean ok = FairMines.isConsistent(model, false);
                     sq.setMine(true);
                     if (ok) {
                         data.setMine(false);
@@ -547,7 +556,7 @@ public final class MinesModel {
                     continue;
                 }
                 sq.setMine(true);
-                if (FairMines.isConsistent(model)) {
+                if (FairMines.isConsistent(model, false)) {
                     ok.add(sq);
                 }
                 sq.setMine(false);
@@ -587,7 +596,7 @@ public final class MinesModel {
         }
         final Square sq = columns.get(x);
         if (sq.getState().isUnknown()) {
-            int around = FairMines.countMinesAround(model, x, y);
+            int around = FairMines.countMinesAround(model, x, y, false);
             final SquareType t = SquareType.valueOf("N_" + around);
             sq.setState(t);
             if (t == SquareType.N_0) {
