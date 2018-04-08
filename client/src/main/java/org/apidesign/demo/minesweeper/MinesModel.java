@@ -603,7 +603,9 @@ public final class MinesModel {
         }
         final Square sq = columns.get(x);
         if (sq.getState().isUnknown()) {
-            int around = FairMines.countMinesAround(model, x, y, false);
+            int around = FairMines.countMinesAround(model, x, y, (__, ___, sqn, ____) -> {
+                return sqn.isMine() ? 1 : 0;
+            });
             final SquareType t = SquareType.valueOf("N_" + around);
             sq.setState(t);
             if (t == SquareType.N_0) {
