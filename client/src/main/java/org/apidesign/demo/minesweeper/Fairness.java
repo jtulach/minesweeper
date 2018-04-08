@@ -159,7 +159,7 @@ final class Fairness implements Runnable {
     }
 
     boolean isSafe(int x, int y) {
-        return at(x, y).isSafe(countConsistent);
+        return finished && at(x, y).isSafe(countConsistent);
     }
 
     private SquareModel at(int x, int y) {
@@ -225,11 +225,14 @@ final class Fairness implements Runnable {
                 return false;
             }
             final Square sq = at(mines, bomb.x, bomb.y);
-            if (!sq.getState().isUnknown() || sq.isMine()) {
+            if (!sq.getState().isUnknown()) {
                 return false;
             }
             SquareModel[] arr = { null };
             sq.read(false, arr);
+            if (arr[0].getBomb() != null) {
+                return false;
+            }
             arr[0].setBomb(bomb);
         }
         return isConsistent(mines, true);

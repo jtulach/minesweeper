@@ -24,6 +24,9 @@
 package org.apidesign.demo.minesweeper;
 
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import net.java.html.BrwsrCtx;
 import net.java.html.json.Models;
 import net.java.html.junit.BrowserRunner;
@@ -45,9 +48,41 @@ public class SolveFourteenTest {
         assertEquals("Non empty model loaded", MinesModel.SquareType.N_1, Fairness.at(model, 3, 0).getState());
 
         Fairness fair = new Fairness(model, null);
+
+        dumpMines(fair, System.err);
+
         fair.run();
 
         assertTrue("finished", fair.compute(0));
+        List<Square> safe = dumpMines(fair, System.err);
+        assertEquals("four safe places", 4, safe.size());
+    }
+
+    private List<Square> dumpMines(Fairness fair, final PrintStream ps) {
+        List<Square> safe = new ArrayList<>();
+        fair.seachSquares((x, y, sq, m) -> {
+            if (x == 0) {
+                ps.println();
+            }
+            char ch = '?';
+            if (sq.getState().isVisible()) {
+                if (sq.getState() == MinesModel.SquareType.N_0) {
+                    ch = ' ';
+                } else {
+                    ch = (char) ('0' + sq.getState().ordinal());
+                }
+            } else if (sq.getState().isUnknown()) {
+                if (fair.isSafe(x, y)) {
+                    ch = 'X';
+                    safe.add(sq);
+                }
+            }
+            ps.print(ch);
+            ps.print(' ');
+            return false;
+        });
+        ps.println();
+        return safe;
     }
 
 }
