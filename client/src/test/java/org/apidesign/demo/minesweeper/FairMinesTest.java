@@ -59,4 +59,28 @@ public class FairMinesTest {
         assertEquals("Square 1,1 y", 1, found[1]);
     }
 
+    @Test
+    public void noBombAtZeroRow() {
+        Mines m = new Mines();
+        m.init(3, 3, 0);
+        m.setMines(3);
+        FairMines.at(m, 0, 2).setState(SquareType.N_2);
+        FairMines.at(m, 1, 2).setState(SquareType.N_3);
+        FairMines.at(m, 2, 2).setState(SquareType.N_2);
+
+        FairMines compute = new FairMines(m, null);
+        compute.run();
+
+        int[] safeCounter = { 0 };
+        compute.seachSquares((x, y, sq) -> {
+            if (sq.getState() == SquareType.UNKNOWN && sq.getUnsafe().isEmpty()) {
+                safeCounter[0]++;
+                assertEquals("Row 0 for " + sq, 0, y);
+            }
+            return false;
+        });
+
+        assertEquals("No square in row 0 can contain the bomb", 3, safeCounter[0]);
+    }
+
 }
