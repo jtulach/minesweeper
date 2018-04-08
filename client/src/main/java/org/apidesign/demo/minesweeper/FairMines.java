@@ -231,14 +231,11 @@ final class FairMines implements Runnable {
     }
 
     private void markUnsafe(List<Bomb> bombs) {
-        List<Location> locations = new ArrayList<>();
+        List<Bomb> locations = new ArrayList<>(bombs);
         seachSquares((x, y, sq, m) -> {
             m.incEmpty();
             return false;
         });
-        for (Bomb b : bombs) {
-            locations.add(new Location(b.x, b.y));
-        }
         for (Bomb b : bombs) {
             final Square square = at(mines, b.x, b.y);
             square.unsafe(locations);
@@ -270,10 +267,8 @@ final class FairMines implements Runnable {
     static class Bomb {
         final int x;
         final int y;
-        final Square square;
 
         Bomb(Mines mines, int x, int y) {
-            this.square = at(mines, x, y);
             this.x = x;
             this.y = y;
         }

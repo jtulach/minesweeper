@@ -75,13 +75,6 @@ public final class MinesModel {
     })
     static class RowModel {
     }
-
-    @Model(className = "Location", properties = {
-        @Property(name = "x", type = int.class),
-        @Property(name = "y", type = int.class),
-    })
-    static class LocationModel {
-    }
     
     @Model(className = "Square", instance = true, properties = {
         @Property(name = "state", type = SquareType.class),
@@ -89,7 +82,7 @@ public final class MinesModel {
     })
     static class SquareModel {
         private int x, y;
-        private List<Location> unsafe;
+        private List<FairMines.Bomb> unsafe;
         private int countMine;
         private int countEmpty;
 
@@ -100,7 +93,7 @@ public final class MinesModel {
         }
 
         @ModelOperation
-        void unsafe(Square square, List<Location> l) {
+        void unsafe(Square square, List<FairMines.Bomb> l) {
             unsafe = l;
         }
 
@@ -114,7 +107,7 @@ public final class MinesModel {
             return state == null ? null : state.toString();
         }
 
-        List<Location> getUnsafe() {
+        List<FairMines.Bomb> getUnsafe() {
             return unsafe;
         }
 
