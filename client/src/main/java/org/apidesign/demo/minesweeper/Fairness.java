@@ -30,18 +30,16 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import org.apidesign.demo.minesweeper.MinesModel.SquareModel;
 
-final class FairMines implements Runnable {
+final class Fairness implements Runnable {
     private final Mines mines;
-    private final int minesClicks;
     private final List<Bomb> unknowns;
     private final int[] bombs;
     private final Executor reschedule;
     private boolean finished;
     private int countConsistent;
 
-    FairMines(Mines mines, Executor reschedule) {
+    Fairness(Mines mines, Executor reschedule) {
         this.mines = mines;
-        this.minesClicks = mines.getClicks();
         this.reschedule = reschedule;
         this.bombs = new int[mines.getMines()];
         for (int i = 0; i < this.bombs.length; i++) {
@@ -97,9 +95,6 @@ final class FairMines implements Runnable {
 
     @Override
     public void run() {
-        if (mines.getClicks() != minesClicks) {
-            return;
-        }
         mines.computeFairness(this, reschedule);
     }
 

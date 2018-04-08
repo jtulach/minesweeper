@@ -51,11 +51,11 @@ public class MinesModelTest {
         
         final Square sq = m.getRows().get(5).getColumns().get(5);
         MinesModel.markMine(m);
-        MinesModel.click(m, sq);
+        m.click(sq);
         
         assertEquals(sq.getState(), SquareType.MARKED, "Changed to marked");
         
-        MinesModel.click(m, sq);
+        m.click(sq);
         
         assertEquals(sq.getState(), SquareType.UNKNOWN, "Changed back to unknown");
     }
@@ -68,7 +68,7 @@ public class MinesModelTest {
             for (Square sq : row.getColumns()) {
                 if (sq.isMine()) {
                     MinesModel.markMine(m);
-                    MinesModel.click(m, sq);
+                    m.click(sq);
                 }
             }
         }
@@ -85,10 +85,10 @@ public class MinesModelTest {
             for (Square sq : row.getColumns()) {
                 if (sq.isMine()) {
                     MinesModel.markMine(m);
-                    MinesModel.click(m, sq);
+                    m.click(sq);
                 } else if (additional == null) {
                     MinesModel.markMine(m);
-                    MinesModel.click(m, additional = sq);
+                    m.click(additional = sq);
                 }
             } 
         }
@@ -96,7 +96,7 @@ public class MinesModelTest {
         assertEquals(m.getState(), MinesModel.GameState.IN_PROGRESS, "One additional mine is marked!");
         
         // remove the mark
-        MinesModel.click(m, additional);
+        m.click(additional);
         
         assertEquals(m.getState(), MinesModel.GameState.WON, "All mines found. You have won!");
         
@@ -141,7 +141,7 @@ public class MinesModelTest {
         Mines m = new Mines();
         m.init(3, 3, 0);
         set(m, 0, 0, SquareType.UNKNOWN, true);
-        MinesModel.click(m, m.getRows().get(2).getColumns().get(2));
+        m.click(m.getRows().get(2).getColumns().get(2));
 
         assertSquare(m, 0, 0, SquareType.DISCOVERED);
         assertSquare(m, 0, 1, SquareType.N_1);

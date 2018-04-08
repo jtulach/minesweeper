@@ -37,9 +37,9 @@ public class FairMinesTest {
         Mines m = new Mines();
         m.init(3, 3, 0);
         m.setMines(3);
-        FairMines.at(m, 1, 1).setState(SquareType.N_3);
+        Fairness.at(m, 1, 1).setState(SquareType.N_3);
 
-        FairMines compute = new FairMines(m, null);
+        Fairness compute = new Fairness(m, null);
         compute.run();
 
         assertCounts(compute, 0, 8);
@@ -50,10 +50,10 @@ public class FairMinesTest {
         Mines m = new Mines();
         m.init(3, 3, 0);
         m.setMines(3);
-        FairMines.at(m, 0, 0).setState(SquareType.N_2);
-        FairMines.at(m, 2, 2).setState(SquareType.N_2);
+        Fairness.at(m, 0, 0).setState(SquareType.N_2);
+        Fairness.at(m, 2, 2).setState(SquareType.N_2);
 
-        FairMines compute = new FairMines(m, null);
+        Fairness compute = new Fairness(m, null);
         compute.run();
 
         assertCounts(compute, 2, 5);
@@ -99,22 +99,22 @@ public class FairMinesTest {
         assertArr(arr, 3, 5, 6);
         assertNextLoc(arr, 7);
         assertArr(arr, 4, 5, 6);
-        assertFalse("No more", FairMines.nextBombsLocations(arr, 7));
+        assertFalse("No more", Fairness.nextBombsLocations(arr, 7));
     }
 
     private static void assertNextLoc(int[] arr, int limit) {
-        assertTrue("Next location available", FairMines.nextBombsLocations(arr, limit));
+        assertTrue("Next location available", Fairness.nextBombsLocations(arr, limit));
     }
 
     private static void assertArr(int[] arr, int... exp) {
         Assert.assertArrayEquals(exp, arr);
     }
 
-    private void assertSafe(String msg, FairMines compute, int x, int y) {
+    private void assertSafe(String msg, Fairness compute, int x, int y) {
         assertTrue(msg, compute.isSafe(x, y));
     }
 
-    private void assertCounts(FairMines compute, int safe, int unsafe) {
+    private void assertCounts(Fairness compute, int safe, int unsafe) {
         StringBuilder sb = new StringBuilder();
         int[] counter = { 0, 0 };
         compute.seachSquares((x, y, sq, sqModel) -> {
@@ -139,11 +139,11 @@ public class FairMinesTest {
         Mines m = new Mines();
         m.init(3, 3, 0);
         m.setMines(3);
-        FairMines.at(m, 0, 2).setState(SquareType.N_2);
-        FairMines.at(m, 1, 2).setState(SquareType.N_3);
-        FairMines.at(m, 2, 2).setState(SquareType.N_2);
+        Fairness.at(m, 0, 2).setState(SquareType.N_2);
+        Fairness.at(m, 1, 2).setState(SquareType.N_3);
+        Fairness.at(m, 2, 2).setState(SquareType.N_2);
 
-        FairMines compute = new FairMines(m, null);
+        Fairness compute = new Fairness(m, null);
         compute.run();
 
         int[] safeCounter = { 0 };

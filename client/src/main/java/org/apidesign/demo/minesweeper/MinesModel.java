@@ -40,13 +40,14 @@ import org.apidesign.demo.minesweeper.js.OpenURL;
 /**
  * Model of the mine field.
  */
-@Model(className = "Mines", targetId = "", properties = {
+@Model(className = "Mines", targetId = "", instance = true, properties = {
     @Property(name = "state", type = MinesModel.GameState.class),
     @Property(name = "rows", type = Row.class, array = true),
-    @Property(name = "mines", type = int.class),
-    @Property(name = "clicks", type = int.class),
+    @Property(name = "mines", type = int.class)
 })
 public final class MinesModel {
+    private Fairness current;
+
     private static final Executor QUANTUM = new Executor() {
         private final Timer TIMER = new Timer("Fair mines");
         @Override
@@ -82,10 +83,10 @@ public final class MinesModel {
     })
     static class SquareModel {
         private int x, y;
-        private List<FairMines.Bomb> unsafe;
+        private List<Fairness.Bomb> unsafe;
         private int countMine;
         private int countEmpty;
-        private FairMines.Bomb bomb;
+        private Fairness.Bomb bomb;
 
         @ModelOperation
         void at(Square square, int x, int y) {
@@ -94,7 +95,7 @@ public final class MinesModel {
         }
 
         @ModelOperation
-        void unsafe(Square square, List<FairMines.Bomb> l) {
+        void unsafe(Square square, List<Fairness.Bomb> l) {
             unsafe = l;
         }
 
@@ -108,7 +109,7 @@ public final class MinesModel {
             return state == null ? null : state.toString();
         }
 
-        List<FairMines.Bomb> getUnsafe() {
+        List<Fairness.Bomb> getUnsafe() {
             return unsafe;
         }
 
@@ -132,11 +133,11 @@ public final class MinesModel {
             countMine++;
         }
 
-        void setBomb(FairMines.Bomb b) {
+        void setBomb(Fairness.Bomb b) {
             this.bomb = b;
         }
 
-        FairMines.Bomb getBomb() {
+        Fairness.Bomb getBomb() {
             return bomb;
         }
     }
@@ -343,24 +344,29 @@ public final class MinesModel {
     }
 
     @ModelOperation
-    static void computeFairness(Mines model, FairMines fair, Executor reschedule) {
+    void computeFairness(Mines model, Fairness fair, Executor reschedule) {
+        if (current != null && fair != current) {
+            return;
+        }
+
         if (!fair.compute(reschedule == null ? -1 : 50)) {
             reschedule.execute(fair);
         }
     }
 
     @ModelOperation
-    static void click(Mines model, int x, int y, Executor compute) {
-        Square sq = FairMines.at(model, x, y);
+    void click(Mines model, int x, int y, Executor compute) {
+        Square sq = Fairness.at(model, x, y);
         click(model, sq, compute);
     }
 
+    @ModelOperation
     @Function
-    static void click(Mines model, Square data) {
+    void click(Mines model, Square data) {
         click(model, data, QUANTUM);
     }
 
-    static void click(Mines model, Square data, Executor compute) {
+    void click(Mines model, Square data, Executor compute) {
         if (model.getState() == GameState.MARKING_MINE) {
             if (data.getState().isUnknown()) {
                 data.setState(SquareType.MARKED);
@@ -406,7 +412,8 @@ public final class MinesModel {
                 }
             }
             cleanedUp(model, data);
-            FairMines run = new FairMines(model, compute);
+            Fairness run = new Fairness(model, compute);
+            current = run;
             if (compute == null) {
                 run.run();
             } else {
@@ -511,7 +518,7 @@ public final class MinesModel {
                 }
                 if (sq.isMine()) {
                     sq.setMine(false);
-                    final boolean ok = FairMines.isConsistent(model, false);
+                    final boolean ok = Fairness.isConsistent(model, false);
                     sq.setMine(true);
                     if (ok) {
                         data.setMine(false);
@@ -563,7 +570,7 @@ public final class MinesModel {
                     continue;
                 }
                 sq.setMine(true);
-                if (FairMines.isConsistent(model, false)) {
+                if (Fairness.isConsistent(model, false)) {
                     ok.add(sq);
                 }
                 sq.setMine(false);
@@ -603,7 +610,7 @@ public final class MinesModel {
         }
         final Square sq = columns.get(x);
         if (sq.getState().isUnknown()) {
-            int around = FairMines.countMinesAround(model, x, y, (__, ___, sqn, ____) -> {
+            int around = Fairness.countMinesAround(model, x, y, (__, ___, sqn, ____) -> {
                 return sqn.isMine() ? 1 : 0;
             });
             final SquareType t = SquareType.valueOf("N_" + around);
