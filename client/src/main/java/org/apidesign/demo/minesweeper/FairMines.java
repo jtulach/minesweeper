@@ -89,7 +89,7 @@ final class FairMines implements Runnable {
         }
     }
 
-    private boolean compute(int time) {
+    boolean compute(int time) {
         long up = time < 0 ? Long.MAX_VALUE : System.currentTimeMillis() + time;
         do {
             if (oneRoundCheck()) {
@@ -115,9 +115,7 @@ final class FairMines implements Runnable {
         if (mines.getClicks() != minesClicks) {
             return;
         }
-        if (!compute(reschedule == null ? -1 : 50)) {
-            reschedule.execute(this);
-        }
+        mines.computeFairness(this, reschedule);
     }
 
 

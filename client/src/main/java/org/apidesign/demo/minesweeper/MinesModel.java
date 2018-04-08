@@ -343,6 +343,13 @@ public final class MinesModel {
     }
 
     @ModelOperation
+    static void computeFairness(Mines model, FairMines fair, Executor reschedule) {
+        if (!fair.compute(reschedule == null ? -1 : 50)) {
+            reschedule.execute(fair);
+        }
+    }
+
+    @ModelOperation
     static void click(Mines model, int x, int y, Executor compute) {
         Square sq = FairMines.at(model, x, y);
         click(model, sq, compute);
