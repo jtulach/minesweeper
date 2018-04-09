@@ -303,8 +303,7 @@ public final class MinesModel {
         if (!emptyHidden) {
             model.setState(GameState.WON);
             showAllBombs(model, SquareType.DISCOVERED);
-            AudioClip applause = AudioClip.create("applause.mp3");
-            applause.play();
+            playMp3("applause.mp3");
         }
     }
 
@@ -493,17 +492,24 @@ public final class MinesModel {
     }
 
     private static void cleanedUp(Mines model, Square data) {
-        AudioClip touch = AudioClip.create("move.mp3");
-        touch.play();
+        playMp3("move.mp3");
         expandKnown(model, data);
         model.computeMines();
+    }
+
+    private static void playMp3(String mp3) {
+        try {
+            AudioClip clip = AudioClip.create(mp3);
+            clip.play();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private static void explosion(Mines model) {
         showAllBombs(model, SquareType.EXPLOSION);
         model.setState(GameState.LOST);
-        AudioClip oops = AudioClip.create("oops.mp3");
-        oops.play();
+        playMp3("oops.mp3");
     }
 
     private static Square tryStealBomb(Mines model, Square data) {
