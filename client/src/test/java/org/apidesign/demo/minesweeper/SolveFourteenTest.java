@@ -33,6 +33,7 @@ import net.java.html.junit.BrowserRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,6 +57,17 @@ public class SolveFourteenTest {
         assertTrue("finished", fair.compute(0));
         List<Square> safe = dumpMines(fair, System.err);
         assertEquals("four safe places", 4, safe.size());
+
+        fair.seachSquares((x, y, sq, m) -> {
+            if (fair.isSafe(x, y)) {
+                model.click(x, y, null);
+            }
+            return false;
+        });
+
+        dumpMines(fair, System.err);
+
+        assertEquals("game is won", MinesModel.GameState.WON, model.getState());
     }
 
     private List<Square> dumpMines(Fairness fair, final PrintStream ps) {
