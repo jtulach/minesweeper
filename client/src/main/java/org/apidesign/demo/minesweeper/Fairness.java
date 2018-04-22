@@ -36,7 +36,7 @@ final class Fairness implements Runnable {
     private final List<Bomb> unknowns;
     private final int[] bombs;
     private final Executor reschedule;
-    private boolean finished;
+    private Stage stage;
     private int countConsistent;
 
     Fairness(Mines mines, Executor reschedule) {
@@ -48,14 +48,15 @@ final class Fairness implements Runnable {
         }
         this.countConsistent = 0;
         this.unknowns = prepareNoMinesEverythingIsSafe();
+        this.stage = Stage.SAT;
     }
 
     private boolean oneRoundCheck() {
-        if (finished) {
+        if (stage == Stage.FINISHED) {
             return true;
         }
         if (unknowns.size() < bombs.length) {
-            finished = true;
+            stage = Stage.FINISHED;
             return true;
         }
 
@@ -72,7 +73,7 @@ final class Fairness implements Runnable {
         if (nextBombsLocations(bombs, unknowns.size())) {
             return false;
         } else {
-            finished = true;
+            stage = Stage.FINISHED;
             seachSquares((x, y, sq, m) -> {
                 if (x == 0) {
                     System.err.println("");
@@ -96,7 +97,7 @@ final class Fairness implements Runnable {
                 return false;
             });
             System.err.println("\n****************");
-            return finished;
+            return true;
         }
     }
 
@@ -177,7 +178,7 @@ final class Fairness implements Runnable {
     }
 
     boolean isSafe(int x, int y) {
-        return finished && at(x, y).isSafe(countConsistent);
+        return stage.isFinished() && at(x, y).isSafe(countConsistent);
     }
 
     private SquareModel at(int x, int y) {
@@ -315,6 +316,14 @@ final class Fairness implements Runnable {
                 return d;
             }
             return y - o.y;
+        }
+    }
+
+    private enum Stage {
+        SAT, FINISHED;
+
+        boolean isFinished() {
+            return this == FINISHED;
         }
     }
 }
