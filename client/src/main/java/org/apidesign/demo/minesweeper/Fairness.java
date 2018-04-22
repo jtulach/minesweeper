@@ -86,7 +86,11 @@ final class Fairness implements Runnable {
                     if (sq.getState() == MinesModel.SquareType.UNKNOWN) {
                         sq.setSafe(true);
                     }
+                    sq.setBomb(false);
                 } else {
+                    if (m.getCountEmpty() == 0 && m.getCountMine() > 0) {
+                        sq.setBomb(true);
+                    }
                     sq.setSafe(false);
                 }
                 return false;

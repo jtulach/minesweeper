@@ -80,6 +80,7 @@ public final class MinesModel {
     @Model(className = "Square", instance = true, properties = {
         @Property(name = "state", type = SquareType.class),
         @Property(name = "mine", type = boolean.class),
+        @Property(name = "bomb", type = boolean.class),
         @Property(name = "safe", type = boolean.class),
     })
     static class SquareModel {
@@ -114,10 +115,18 @@ public final class MinesModel {
 
         @ComputedProperty
         static String style(SquareType state, boolean safe) {
-            if (safe) {
-                return "safe";
-            }
             return state == null ? null : state.toString();
+        }
+
+        @ComputedProperty
+        static String hint(SquareType state, boolean safe, boolean bomb) {
+            if (safe) {
+                return "SAFE";
+            }
+            if (bomb) {
+                return "BOMB";
+            }
+            return null;
         }
 
         List<Fairness.Bomb> getUnsafe() {
@@ -242,7 +251,7 @@ public final class MinesModel {
             for (int y = 0; y < height; y++) {
                 Square[] columns = new Square[width];
                 for (int x = 0; x < width; x++) {
-                    Square sq = new Square(SquareType.UNKNOWN, false, false);
+                    Square sq = new Square(SquareType.UNKNOWN, false, false, false);
                     sq.at(x, y);
                     columns[x] = sq;
                 }

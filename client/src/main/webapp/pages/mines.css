@@ -227,8 +227,18 @@ table.field td.DISCOVERED div.sign::after {
 table.field td.MARKED div.sign::after {
     content: "\002620";
 }
-table.field td.safe div.sign::after {
+table.field div.SAFE {
+    color: white;
+}
+table.field div.BOMB {
+    color: white;
+}
+table.field div.SAFE div.hint::after {
     content: "\002618";
+}
+
+table.field div.BOMB div.hint::after {
+    content: "\002620";
 }
 table.field td.N_1 div.sign::after {
     content: "\002780";

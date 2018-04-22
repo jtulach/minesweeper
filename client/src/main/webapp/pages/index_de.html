@@ -107,9 +107,10 @@
                     <tr>
                         <!-- ko foreach: columns -->
                         <td data-bind="css: style, click: $parents[1].click" >
-                            <div class="cell">
+                            <div class="cell" data-bind="css: hint">
                                 <div class="fill"></div>
                                 <div class="sign"></div>
+                                <div class="hint"></div>
                             </div>
                         </td>
                         <!-- /ko -->
