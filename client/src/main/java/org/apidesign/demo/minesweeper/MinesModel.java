@@ -80,6 +80,7 @@ public final class MinesModel {
     @Model(className = "Square", instance = true, properties = {
         @Property(name = "state", type = SquareType.class),
         @Property(name = "mine", type = boolean.class),
+        @Property(name = "safe", type = boolean.class),
     })
     static class SquareModel {
         private int x, y;
@@ -87,6 +88,13 @@ public final class MinesModel {
         private int countMine;
         private int countEmpty;
         private Fairness.Bomb bomb;
+
+        @ModelOperation
+        static void clear(Square sq) {
+            sq.setState(SquareType.UNKNOWN);
+            sq.setMine(false);
+            sq.setSafe(false);
+        }
 
         @ModelOperation
         void at(Square square, int x, int y) {
@@ -105,7 +113,10 @@ public final class MinesModel {
         }
 
         @ComputedProperty
-        static String style(SquareType state) {
+        static String style(SquareType state, boolean safe) {
+            if (safe) {
+                return "safe";
+            }
             return state == null ? null : state.toString();
         }
 
@@ -139,6 +150,14 @@ public final class MinesModel {
 
         Fairness.Bomb getBomb() {
             return bomb;
+        }
+
+        int getCountMine() {
+            return countMine;
+        }
+
+        int getCountEmpty() {
+            return countEmpty;
         }
     }
 
@@ -223,7 +242,7 @@ public final class MinesModel {
             for (int y = 0; y < height; y++) {
                 Square[] columns = new Square[width];
                 for (int x = 0; x < width; x++) {
-                    Square sq = new Square(SquareType.UNKNOWN, false);
+                    Square sq = new Square(SquareType.UNKNOWN, false, false);
                     sq.at(x, y);
                     columns[x] = sq;
                 }
@@ -232,8 +251,7 @@ public final class MinesModel {
         } else {
             for (Row row : rows) {
                 for (Square sq : row.getColumns()) {
-                    sq.setState(SquareType.UNKNOWN);
-                    sq.setMine(false);
+                    sq.clear();
                 }
             }
         }

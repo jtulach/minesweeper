@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import org.apidesign.demo.minesweeper.MinesModel.SquareModel;
+import org.apidesign.demo.minesweeper.MinesModel.SquareType;
 
 final class Fairness implements Runnable {
     private final Mines mines;
@@ -73,11 +74,24 @@ final class Fairness implements Runnable {
         } else {
             finished = true;
             seachSquares((x, y, sq, m) -> {
-                if (!m.isSafe(countConsistent)) {
-                    sq.setMine(true);
+                if (x == 0) {
+                    System.err.println("");
+                }
+                if (sq.getState() != SquareType.UNKNOWN) {
+                    System.err.print(" _/_");
+                } else {
+                    System.err.print(" " + m.getCountMine() + "/" + m.getCountEmpty());
+                }
+                if (m.isSafe(countConsistent)) {
+                    if (sq.getState() == MinesModel.SquareType.UNKNOWN) {
+                        sq.setSafe(true);
+                    }
+                } else {
+                    sq.setSafe(false);
                 }
                 return false;
             });
+            System.err.println("\n****************");
             return finished;
         }
     }
