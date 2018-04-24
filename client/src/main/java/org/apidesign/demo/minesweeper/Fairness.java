@@ -227,26 +227,26 @@ final class Fairness implements Runnable {
                     return s.isVisible() ? 1 : 0;
                 });
                 arr.add(new Bomb(x, y, visibleAround));
+                return false;
             }
-            if (sq.getState() == SquareType.N_1) {
-                int[] coords = { -1, -1 };
-                int unknownAround = countMinesAround(mines, x, y, 0, (ax, ay, around, ____) -> {
-                    MinesModel.SquareType s = around.getState();
-                    if (s.isVisible()) {
-                        return 0;
-                    } else {
-                        coords[0] = ax;
-                        coords[1] = ay;
-                        return 1;
-                    }
-                });
-                if (unknownAround == 1) {
-                    final Square sureBomb = at(mines, coords[0], coords[1]);
-                    if (!sureBomb.isBomb()) {
-                        changed[0] = true;
-                        sureBomb.setBomb(true);
-                    }
+            int unknownAround = countMinesAround(mines, x, y, 0, (ax, ay, around, ____) -> {
+                MinesModel.SquareType s = around.getState();
+                if (s.isVisible()) {
+                    return 0;
+                } else {
+                    return 1;
                 }
+            });
+            if (unknownAround == sq.getState().ordinal()) {
+                countMinesAround(mines, x, y, 0, (ax, ay, around, ____) -> {
+                    MinesModel.SquareType s = around.getState();
+                    if (!s.isVisible()) {
+                        changed[0] = true;
+                        around.setBomb(true);
+                        return 0;
+                    }
+                    return 0;
+                });
             }
             return false;
         });

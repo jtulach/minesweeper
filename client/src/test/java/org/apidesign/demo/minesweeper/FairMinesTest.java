@@ -109,6 +109,27 @@ public class FairMinesTest {
         Mines m = new Mines();
         m.init(3, 3, 0);
         m.setMines(4);
+
+        Fairness.at(m, 1, 1).setState(SquareType.N_3);
+        Fairness.at(m, 0, 1).setState(SquareType.N_2);
+        Fairness.at(m, 2, 1).setState(SquareType.N_2);
+
+        for (Square s : m.getRows().get(2).getColumns()) {
+            s.setState(SquareType.N_0);
+        }
+
+        Fairness compute = new Fairness(m, null);
+
+        assertTrue("There has to be bomb in top line1", Fairness.at(m, 0, 0).isBomb());
+        assertTrue("There has to be bomb in top line2", Fairness.at(m, 1, 0).isBomb());
+        assertTrue("There has to be bomb in top line3", Fairness.at(m, 2, 0).isBomb());
+    }
+
+    @Test
+    public void threeBombsInTop() {
+        Mines m = new Mines();
+        m.init(3, 3, 0);
+        m.setMines(3);
         Fairness.at(m, 1, 1).setState(SquareType.N_4);
         Fairness.at(m, 1, 0).setState(SquareType.N_2);
         Fairness.at(m, 0, 1).setState(SquareType.N_2);
