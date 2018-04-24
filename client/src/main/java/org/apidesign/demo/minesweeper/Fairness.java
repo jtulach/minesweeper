@@ -60,15 +60,6 @@ final class Fairness implements Runnable {
             return true;
         }
 
-        int found = unknowns.size();
-        while (--found >= 0) {
-            Bomb mostExposed = unknowns.get(found);
-            if (mostExposed.expose != 8) {
-                break;
-            }
-            at(mines, mostExposed.x, mostExposed.y).setBomb(true);
-        }
-
         Bomb[] select = new Bomb[bombs.length];
         for (int i = 0; i < bombs.length; i++) {
             select[i] = unknowns.get(bombs[i]);
@@ -225,19 +216,55 @@ final class Fairness implements Runnable {
     }
 
     private List<Bomb> prepareNoMinesEverythingIsSafe() {
+        boolean changed[] = { false };
+
         List<Bomb> arr = new ArrayList<>();
         seachSquares((x, y, sq, m) -> {
             m.clean();
-            if (sq.getState() == MinesModel.SquareType.UNKNOWN) {
+            if (sq.getState() == SquareType.UNKNOWN) {
                 int visibleAround = countMinesAround(mines, x, y, 1, (__, ___, around, ____) -> {
                     MinesModel.SquareType s = around.getState();
                     return s.isVisible() ? 1 : 0;
                 });
                 arr.add(new Bomb(x, y, visibleAround));
             }
+            if (sq.getState() == SquareType.N_1) {
+                int[] coords = { -1, -1 };
+                int unknownAround = countMinesAround(mines, x, y, 0, (ax, ay, around, ____) -> {
+                    MinesModel.SquareType s = around.getState();
+                    if (s.isVisible()) {
+                        return 0;
+                    } else {
+                        coords[0] = ax;
+                        coords[1] = ay;
+                        return 1;
+                    }
+                });
+                if (unknownAround == 1) {
+                    final Square sureBomb = at(mines, coords[0], coords[1]);
+                    if (!sureBomb.isBomb()) {
+                        changed[0] = true;
+                        sureBomb.setBomb(true);
+                    }
+                }
+            }
             return false;
         });
         Collections.sort(arr);
+
+        int found = arr.size();
+        while (--found >= 0) {
+            Bomb mostExposed = arr.get(found);
+            if (mostExposed.expose != 8) {
+                break;
+            }
+            final Square sureBomb = at(mines, mostExposed.x, mostExposed.y);
+            if (!sureBomb.isBomb()) {
+                changed[0] = true;
+                sureBomb.setBomb(true);
+            }
+        }
+
         return arr;
     }
 

@@ -85,6 +85,27 @@ public class FairMinesTest {
     }
 
     @Test
+    public void oneInCornerImpliesBomb() {
+        Mines m = new Mines();
+        m.init(3, 3, 0);
+        m.setMines(1);
+        for (Row r : m.getRows()) {
+            for (Square s : r.getColumns()) {
+                s.setState(SquareType.N_0);
+            }
+        }
+        Fairness.at(m, 0, 0).setState(SquareType.UNKNOWN);
+        Fairness.at(m, 1, 0).setState(SquareType.N_1);
+        Fairness.at(m, 1, 1).setState(SquareType.N_1);
+        Fairness.at(m, 0, 1).setState(SquareType.N_1);
+
+        Fairness compute = new Fairness(m, null);
+        compute.run();
+
+        assertTrue("There has to be bomb", Fairness.at(m, 0, 0).isBomb());
+    }
+
+    @Test
     public void nextArrFromNextLine() {
         int[] arr = { 0, 5, 6 };
         assertNextLoc(arr, 7);
