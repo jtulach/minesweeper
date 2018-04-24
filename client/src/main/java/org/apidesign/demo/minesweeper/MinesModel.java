@@ -95,6 +95,7 @@ public final class MinesModel {
             sq.setState(SquareType.UNKNOWN);
             sq.setMine(false);
             sq.setSafe(false);
+            sq.setBomb(false);
         }
 
         @ModelOperation
