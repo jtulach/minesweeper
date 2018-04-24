@@ -62,6 +62,29 @@ public class FairMinesTest {
     }
 
     @Test
+    public void exposeInTheCorner() {
+        Mines m = new Mines();
+        m.init(3, 3, 0);
+        m.setMines(3);
+        Fairness.at(m, 1, 0).setState(SquareType.N_1);
+        Fairness.at(m, 1, 1).setState(SquareType.N_3);
+        Fairness.at(m, 0, 1).setState(SquareType.N_1);
+
+        Fairness compute = new Fairness(m, null);
+        compute.run();
+
+        int[] found = compute.seachSquares((x, y, sq, sqM) -> {
+            if (x != 2 && y != 0) {
+                return false;
+            }
+            assertEquals("Even in corner, we count expose as 8", sqM.getBomb().expose, 8);
+            return true;
+        });
+
+        assertNotNull("Found the corner", found);
+    }
+
+    @Test
     public void nextArrFromNextLine() {
         int[] arr = { 0, 5, 6 };
         assertNextLoc(arr, 7);

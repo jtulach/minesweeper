@@ -60,6 +60,15 @@ final class Fairness implements Runnable {
             return true;
         }
 
+        int found = unknowns.size();
+        while (--found >= 0) {
+            Bomb mostExposed = unknowns.get(found);
+            if (mostExposed.expose != 8) {
+                break;
+            }
+            at(mines, mostExposed.x, mostExposed.y).setBomb(true);
+        }
+
         Bomb[] select = new Bomb[bombs.length];
         for (int i = 0; i < bombs.length; i++) {
             select[i] = unknowns.get(bombs[i]);
@@ -129,23 +138,26 @@ final class Fairness implements Runnable {
 
 
     static int countMinesAround(Mines model, int x, int y, VisitSquare<Integer> fn) {
-        return minesAt(model, x - 1, y - 1, fn)
-            + minesAt(model, x - 1, y, fn)
-            + minesAt(model, x - 1, y + 1, fn)
-            + minesAt(model, x, y - 1, fn)
-            + minesAt(model, x, y + 1, fn)
-            + minesAt(model, x + 1, y - 1, fn)
-            + minesAt(model, x + 1, y, fn)
-            + minesAt(model, x + 1, y + 1, fn);
+        return countMinesAround(model, x, y, 0, fn);
+    }
+    static int countMinesAround(Mines model, int x, int y, int outValue, VisitSquare<Integer> fn) {
+        return minesAt(model, x - 1, y - 1, outValue, fn)
+            + minesAt(model, x - 1, y, outValue, fn)
+            + minesAt(model, x - 1, y + 1, outValue, fn)
+            + minesAt(model, x, y - 1, outValue, fn)
+            + minesAt(model, x, y + 1, outValue, fn)
+            + minesAt(model, x + 1, y - 1, outValue, fn)
+            + minesAt(model, x + 1, y, outValue, fn)
+            + minesAt(model, x + 1, y + 1, outValue, fn);
     }
 
-    private static int minesAt(Mines model, int x, int y, VisitSquare<Integer> fn) {
+    private static int minesAt(Mines model, int x, int y, int outValue, VisitSquare<Integer> fn) {
         if (y < 0 || y >= model.getRows().size()) {
-            return 0;
+            return outValue;
         }
         final List<Square> columns = model.getRows().get(y).getColumns();
         if (x < 0 || x >= columns.size()) {
-            return 0;
+            return outValue;
         }
         Square sq = columns.get(x);
         SquareModel[] arr = { null };
@@ -188,7 +200,7 @@ final class Fairness implements Runnable {
         assert arr[0] != null;
         return arr[0];
     }
-    
+
     private int[] searchSquares(int beginX, int beginY, VisitSquare<Boolean> v) {
         int y = 0;
         for (Row row : mines.getRows()) {
@@ -217,7 +229,7 @@ final class Fairness implements Runnable {
         seachSquares((x, y, sq, m) -> {
             m.clean();
             if (sq.getState() == MinesModel.SquareType.UNKNOWN) {
-                int visibleAround = countMinesAround(mines, x, y, (__, ___, around, ____) -> {
+                int visibleAround = countMinesAround(mines, x, y, 1, (__, ___, around, ____) -> {
                     MinesModel.SquareType s = around.getState();
                     return s.isVisible() ? 1 : 0;
                 });
@@ -228,7 +240,7 @@ final class Fairness implements Runnable {
         Collections.sort(arr);
         return arr;
     }
-    
+
     static Square at(Mines tmp, int x, int y) {
         return tmp.getRows().get(y).getColumns().get(x);
     }
