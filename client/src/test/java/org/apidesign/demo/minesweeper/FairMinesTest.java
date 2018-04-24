@@ -100,9 +100,27 @@ public class FairMinesTest {
         Fairness.at(m, 0, 1).setState(SquareType.N_1);
 
         Fairness compute = new Fairness(m, null);
-        compute.run();
 
         assertTrue("There has to be bomb", Fairness.at(m, 0, 0).isBomb());
+    }
+
+    @Test
+    public void fourCornerBombs() {
+        Mines m = new Mines();
+        m.init(3, 3, 0);
+        m.setMines(4);
+        Fairness.at(m, 1, 1).setState(SquareType.N_4);
+        Fairness.at(m, 1, 0).setState(SquareType.N_2);
+        Fairness.at(m, 0, 1).setState(SquareType.N_2);
+        Fairness.at(m, 1, 2).setState(SquareType.N_2);
+        Fairness.at(m, 2, 1).setState(SquareType.N_2);
+
+        Fairness compute = new Fairness(m, null);
+
+        assertTrue("There has to be bomb in corner1", Fairness.at(m, 0, 0).isBomb());
+        assertTrue("There has to be bomb in corner2", Fairness.at(m, 2, 0).isBomb());
+        assertTrue("There has to be bomb in corner3", Fairness.at(m, 0, 2).isBomb());
+        assertTrue("There has to be bomb in corner4", Fairness.at(m, 2, 2).isBomb());
     }
 
     @Test
