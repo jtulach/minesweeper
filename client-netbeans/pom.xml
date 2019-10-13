@@ -26,25 +26,10 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
     </description>
 
     <properties>
-        <netbeans.version>RELEASE81</netbeans.version>
+        <netbeans.version>RELEASE111</netbeans.version>
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <project.mainclass>org.apidesign.demo.minesweeper.NbMain</project.mainclass>
     </properties>
-    <repositories>
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>http://bits.netbeans.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>netbeans-snapshots</id>
-            <name>NetBeans Development</name>
-            <url>http://bits.netbeans.org/nexus/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
