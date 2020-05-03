@@ -26,8 +26,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.apidesign.demo.minesweeper"
-    android:versionCode="13"
-    android:versionName="3.2" >
+    android:versionCode="33"
+    android:versionName="3.3" >
 
    <uses-sdk
         android:minSdkVersion="19"
@@ -45,12 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <!-- Configuration section. Defines: 
-           - the HTML page to load on start
-           - the class that contains the main initialization method
-           - name of the initialization method in the given class
-        -->
         <meta-data android:name="loadPage" android:value="file:///android_asset/pages/index.html" />
         <meta-data android:name="loadClass" android:value="org.apidesign.demo.minesweeper.AndroidMain" />
         <meta-data android:name="invoke" android:value="main" />

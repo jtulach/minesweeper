@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.apidesign.demo</groupId>
         <artifactId>minesweeper-pom</artifactId>
-        <version>3.2-SNAPSHOT</version>
+        <version>3.3-SNAPSHOT</version>
     </parent>
     
     <groupId>org.apidesign.demo</groupId>
     <artifactId>minesweeper-nb</artifactId>
-    <version>3.2-SNAPSHOT</version>
+    <version>3.3-SNAPSHOT</version>
     <packaging>nbm-application</packaging>
 
     <name>Fair Minesweeper for NetBeans</name>
