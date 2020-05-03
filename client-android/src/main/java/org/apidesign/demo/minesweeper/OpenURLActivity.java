@@ -27,13 +27,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import org.apidesign.demo.minesweeper.js.OpenURL;
-import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = OpenURL.class)
 public final class OpenURLActivity extends OpenURL {
-    private static Context context;
+    private final Context context;
 
-    static void context(Context ctx) {
+    OpenURLActivity(Context ctx) {
         context = ctx;
     }
 

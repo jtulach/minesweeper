@@ -29,6 +29,8 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 
 public class NbMain {
+    private static final NbOpenURL openUrl = new NbOpenURL();
+
     private NbMain() {
     }
     

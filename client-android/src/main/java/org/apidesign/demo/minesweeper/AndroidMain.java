@@ -26,11 +26,13 @@ package org.apidesign.demo.minesweeper;
 import android.content.Context;
 
 public class AndroidMain {
+    private static OpenURLActivity openUrl;
+
     private AndroidMain() {
     }
 
     public static void main(Context ctx) throws Exception {
-        OpenURLActivity.context(ctx);
+        openUrl = new OpenURLActivity(ctx);
         Main.onPageLoad();
     }
 }

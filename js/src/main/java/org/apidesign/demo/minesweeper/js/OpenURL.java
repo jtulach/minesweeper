@@ -23,11 +23,19 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
-import java.util.ServiceLoader;
 import net.java.html.js.JavaScriptBody;
 
 public abstract class OpenURL {
+    private final OpenURL next;
+    private static OpenURL last;
+
     protected OpenURL() {
+        this(last);
+        last = this;
+    }
+
+    private OpenURL(OpenURL n) {
+        next = n;
     }
 
     protected abstract boolean handleURL(String url);
@@ -40,7 +48,7 @@ public abstract class OpenURL {
     public static native String relativeUrl(String rel);
 
     public static void openURL(String url) {
-        for (OpenURL handler : ServiceLoader.load(OpenURL.class)) {
+        for (OpenURL handler = last; handler != null; handler = handler.next) {
             if (handler.handleURL(url)) {
                 return;
             }

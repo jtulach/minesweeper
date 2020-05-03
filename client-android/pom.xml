@@ -111,7 +111,7 @@
                 <configuration>
                     <apkDebug>${debug}</apkDebug>
                     <sign>
-                        <debug>false</debug>
+                        <debug>auto</debug>
                     </sign>
                     <resourceDirectory>target/res</resourceDirectory>
                     <sdk>
@@ -195,12 +195,6 @@
                     <groupId>de.twentyeleven.skysail</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE113</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
