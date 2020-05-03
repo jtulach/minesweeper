@@ -32,6 +32,13 @@ public abstract class OpenURL {
 
     protected abstract boolean handleURL(String url);
 
+    @JavaScriptBody(args = { "rel" }, body = ""
+            + "var u = window.location.href;\n"
+            + "var l = u.lastIndexOf('/');\n"
+            + "return u.substring(0, l + 1) + rel;\n"
+    )
+    public static native String relativeUrl(String rel);
+
     public static void openURL(String url) {
         for (OpenURL handler : ServiceLoader.load(OpenURL.class)) {
             if (handler.handleURL(url)) {

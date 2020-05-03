@@ -341,6 +341,12 @@ public final class MinesModel {
     }
 
     @Function
+    static void urlPrivacy(Mines model) {
+        String url = OpenURL.relativeUrl("privacy.html"); // NOI18N
+        openURL(url);
+    }
+
+    @Function
     static void urlBck2Brwsr(Mines model) {
         String url = "http://bck2brwsr.apidesign.org"; // NOI18N
         openURL(url);
