@@ -38,13 +38,36 @@ import org.apidesign.demo.minesweeper.js.OpenURL;
  * Model of the mine field.
  */
 @Model(className = "Mines", targetId = "", properties = {
+    @Property(name = "show", type = MinesModel.ShowState.class),
     @Property(name = "state", type = MinesModel.GameState.class),
     @Property(name = "rows", type = Row.class, array = true),})
 public final class MinesModel {
+    enum ShowState {
+        INFO, PRIVACY, GAME
+    }
 
     enum GameState {
-
         IN_PROGRESS, MARKING_MINE, WON, LOST;
+    }
+
+    @ComputedProperty
+    static boolean showGame(ShowState show) {
+        return show == ShowState.GAME;
+    }
+
+    @ComputedProperty
+    static boolean showProse(ShowState show) {
+        return show == ShowState.INFO;
+    }
+
+    @ComputedProperty
+    static boolean showFooter(ShowState show) {
+        return show != ShowState.GAME;
+    }
+
+    @ComputedProperty
+    static boolean showPrivacy(ShowState show) {
+        return show == ShowState.GAME;
     }
 
     @ComputedProperty
@@ -63,7 +86,6 @@ public final class MinesModel {
         @Property(name = "mine", type = boolean.class)
     })
     static class SquareModel {
-
         @ComputedProperty
         static String style(SquareType state) {
             return state == null ? null : state.toString();
@@ -92,17 +114,13 @@ public final class MinesModel {
     }
 
     @ComputedProperty
-    static boolean fieldShowing(GameState state) {
-        return state != null;
-    }
-
-    @ComputedProperty
     static boolean gameInProgress(GameState state) {
         return state == GameState.IN_PROGRESS;
     }
 
     @Function
     static void showHelp(Mines model) {
+        model.setShow(ShowState.INFO);
         model.setState(null);
     }
 
@@ -120,6 +138,11 @@ public final class MinesModel {
     static void giveUp(Mines model) {
         showAllBombs(model, SquareType.EXPLOSION);
         model.setState(GameState.LOST);
+    }
+
+    @Function
+    static void showPrivacy(Mines model) {
+        model.setShow(ShowState.PRIVACY);
     }
 
     @Function
@@ -162,6 +185,7 @@ public final class MinesModel {
             mines--;
         }
 
+        model.setShow(ShowState.GAME);
         model.setState(GameState.IN_PROGRESS);
         if (rows != model.getRows()) {
             model.getRows().clear();
@@ -572,6 +596,7 @@ public final class MinesModel {
 
     public static void main(String... args) throws Exception {
         ui = new Mines();
+        ui.setShow(ShowState.INFO);
         ui.applyBindings();
     }
 }

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 
     The MIT License (MIT)
@@ -23,7 +24,6 @@
     THE SOFTWARE.
 
 -->
-<!DOCTYPE html>
 <html>
     <head>
         <title>Fair Minesweeper</title>
@@ -120,17 +120,27 @@
           </center>
         </script>
 
-        <div data-bind="template: { name : 'field', if: fieldShowing }"></div>
+        <div data-bind="template: { name : 'field', if: showGame }"></div>
         
-        <div class="jumbotron control-label" data-bind="visible: !fieldShowing() ">
+        <div class="jumbotron control-label" data-bind="visible: showProse ">
             <div class="navbar">
                 <div class="navbar-inner">
                     <div data-bind="template: 'horizontal-navbar'"></div>
                 </div>
             </div>
             <div class="container">
-                <h1>DukeScript Technology Showcase</h1>
+                <h1>Minesweeper</h1>
 
+                <p>
+                    Discover ten square fields that contain a mine and
+                    mark them with a &#x2730; sign.
+                    Touch a square to find out if there is
+                    a mine or not and
+                    how many mines are in the eight surrounding
+                    ones. Avoid random play, the game
+                    recognizes guessing and can re-arrange
+                    the mines. This game is <b>fair</b>!
+                </p>
                 <p>At first sight this is an old good <em>minesweeper</em>
                     game. At closer look, this is a demo of a revolutionary 
                     technology that allows you to use <strong>Java</strong>
@@ -138,29 +148,12 @@
                     <strong>HTML</strong> on any device capable of rendering
                     modern <strong>HTML5</strong> browser.
                 </p>
-                <p><a class="btn btn-primary btn-lg" role="button" 
-                      data-bind="click: $root.urlProjectPage" href="#"
-                >Visit Project Page!</a>
-                </p>
+                <p><a class="btn btn-default" href="#" data-bind="click: normalGame"role="button">Play &raquo;</a></p>
             </div>
         </div>
 
-    <div class="container" data-bind="visible: !fieldShowing()">
+    <div class="container" data-bind="visible: showProse">
       <div>
-        <div class="col-md-4">
-          <h2>Minesweeper</h2>
-          <p>
-              Discover ten square fields that contain a mine and
-              mark them with a &#x2730; sign.
-              Touch a square to find out if there is
-              a mine or not and
-              how many mines are in the eight surrounding 
-              ones. Avoid random play, the game 
-              recognizes guessing and can re-arrange
-              the mines. This game is <b>fair</b>!
-          </p>
-          <p><a class="btn btn-default" href="#" data-bind="click: normalGame"role="button">Play &raquo;</a></p>
-        </div>
         <div class="col-md-4">
           <h2>Documentation</h2>
           <p>
@@ -174,6 +167,15 @@
                 data-bind="click: $root.urlProjectDoc" href="#"
                 role="button">Read more &raquo;</a></p>
        </div>
+        <div class="col-md-4">
+          <h2>Privacy</h2>
+          <p>
+              This game runs fully on your device. It
+              doesn't connect back to server in any way.
+              No personal data are shared with the server.
+          </p>
+          <p><a class="btn btn-default" target="_blank" href="privacy.html" role="button">Privacy info</a></p>
+        </div>
         <div class="col-md-4">
           <h2>Run in a Browser</h2>
           <p>
@@ -190,7 +192,7 @@
        </div>
       </div>
     </div>
-<div class="container" data-bind="visible: !fieldShowing()">
+<div class="container" data-bind="visible: showProse">
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
         <img src="android_logo.jpg" width="120" height="120" alt="Android">

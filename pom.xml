@@ -35,10 +35,9 @@
         <tag>default</tag>
     </scm>
     <properties>
-        <net.java.html.version>1.6.1</net.java.html.version>
-        <bck2brwsr.version>0.31</bck2brwsr.version>
+        <net.java.html.version>1.7</net.java.html.version>
+        <bck2brwsr.version>0.32</bck2brwsr.version>
         <bck2brwsr.obfuscationlevel>FULL</bck2brwsr.obfuscationlevel>
-        <nb.html.version>1.0</nb.html.version>
         <jersey.version>2.13</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <license>LICENSE</license>
