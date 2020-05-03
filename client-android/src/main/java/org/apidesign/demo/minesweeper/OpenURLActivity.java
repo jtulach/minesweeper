@@ -36,13 +36,15 @@ public final class OpenURLActivity extends OpenURL {
     }
 
     @Override
+    protected String baseUrl() {
+        return "http://xelfi.cz/minesweeper/bck2brwsr/";
+    }
+
+    @Override
     protected boolean handleURL(String url) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        if (context != null) {
-            context.startActivity(browserIntent);
-            return true;
-        }
-        return false;
+        context.startActivity(browserIntent);
+        return true;
     }
 
 }

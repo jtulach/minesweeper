@@ -39,13 +39,20 @@ public abstract class OpenURL {
     }
 
     protected abstract boolean handleURL(String url);
+    protected abstract String baseUrl();
 
-    @JavaScriptBody(args = { "rel" }, body = ""
-            + "var u = window.location.href;\n"
-            + "var l = u.lastIndexOf('/');\n"
-            + "return u.substring(0, l + 1) + rel;\n"
-    )
-    public static native String relativeUrl(String rel);
+    public static String relativeUrl(String rel) {
+        String base = null;
+        for (OpenURL handler = last; handler != null && base == null; handler = handler.next) {
+            base = handler.baseUrl();
+        }
+        if (base == null) {
+            base = baseUrl0();
+        }
+
+        int slash = base.lastIndexOf('/');
+        return base.substring(0, slash + 1) + rel;
+    }
 
     public static void openURL(String url) {
         for (OpenURL handler = last; handler != null; handler = handler.next) {
@@ -61,4 +68,10 @@ public abstract class OpenURL {
         "window.open(url, '_blank');"
     )
     private static native void changeURL(String url);
+
+    @JavaScriptBody(args = {}, body = ""
+            + "return window.location.href;\n"
+    )
+    private static native String baseUrl0();
+
 }

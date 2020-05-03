@@ -39,6 +39,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = OpenURL.class)
 public final class NbOpenURL extends OpenURL {
     @Override
+    protected String baseUrl() {
+        return null;
+    }
+
+    @Override
     protected boolean handleURL(String url) {
         if (url.endsWith("/getting_started.html")) {
             if (invokeProjectWizard()) {
