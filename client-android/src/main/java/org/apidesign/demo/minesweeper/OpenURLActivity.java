@@ -1,7 +1,7 @@
-/**
- * The MIT License (MIT)
+/*
+ * The MIT License
  *
- * Copyright (C) 2013-2018 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+ * Copyright 2020 API Design.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.apidesign.demo.minesweeper.js;
+package org.apidesign.demo.minesweeper;
 
-import java.util.ServiceLoader;
-import net.java.html.js.JavaScriptBody;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import org.apidesign.demo.minesweeper.js.OpenURL;
+import org.openide.util.lookup.ServiceProvider;
 
-public abstract class OpenURL {
-    protected OpenURL() {
+@ServiceProvider(service = OpenURL.class)
+public final class OpenURLActivity extends OpenURL {
+    private static Context context;
+
+    static void context(Context ctx) {
+        context = ctx;
     }
 
-    protected abstract boolean handleURL(String url);
-
-    public static void openURL(String url) {
-        for (OpenURL handler : ServiceLoader.load(OpenURL.class)) {
-            if (handler.handleURL(url)) {
-                return;
-            }
+    @Override
+    protected boolean handleURL(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        if (context != null) {
+            context.startActivity(browserIntent);
+            return true;
         }
-
-        changeURL(url);
+        return false;
     }
 
-    @JavaScriptBody(wait4js = false, args = { "url" }, body =
-        "window.open(url, '_blank');"
-    )
-    private static native void changeURL(String url);
 }
