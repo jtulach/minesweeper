@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (C) 2013-2018 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+ * Copyright (C) 2013-2020 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,39 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
-import java.util.ServiceLoader;
 import net.java.html.js.JavaScriptBody;
 
 public abstract class OpenURL {
+    private final OpenURL next;
+    private static OpenURL last;
+
     protected OpenURL() {
+        this(last);
+        last = this;
+    }
+
+    private OpenURL(OpenURL n) {
+        next = n;
     }
 
     protected abstract boolean handleURL(String url);
+    protected abstract String baseUrl();
+
+    public static String relativeUrl(String rel) {
+        String base = null;
+        for (OpenURL handler = last; handler != null && base == null; handler = handler.next) {
+            base = handler.baseUrl();
+        }
+        if (base == null) {
+            base = baseUrl0();
+        }
+
+        int slash = base.lastIndexOf('/');
+        return base.substring(0, slash + 1) + rel;
+    }
 
     public static void openURL(String url) {
-        for (OpenURL handler : ServiceLoader.load(OpenURL.class)) {
+        for (OpenURL handler = last; handler != null; handler = handler.next) {
             if (handler.handleURL(url)) {
                 return;
             }
@@ -42,8 +64,14 @@ public abstract class OpenURL {
         changeURL(url);
     }
 
-    @JavaScriptBody(args = { "url" }, body =
+    @JavaScriptBody(wait4js = false, args = { "url" }, body =
         "window.open(url, '_blank');"
     )
     private static native void changeURL(String url);
+
+    @JavaScriptBody(args = {}, body = ""
+            + "return window.location.href;\n"
+    )
+    private static native String baseUrl0();
+
 }

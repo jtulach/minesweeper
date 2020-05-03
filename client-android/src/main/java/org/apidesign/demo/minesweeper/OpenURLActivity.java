@@ -21,37 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-h1 {
-    font-size: 8px;
-}
-.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
-    float: none;
- }
-.col-md-6 {
- width: 100%;
-}
-.col-md-5 {
- width: 100%;
-}
-.col-md-4 {
- width: 100%;
-}
-.col-md-3 {
- width: 100%;
-}
-.col-md-2 {
- width: 100%;
-}
-.col-md-1 {
- width: 100%;
-}
-.info-text {
-    font-size: xx-small;
-}
-table.field td {
-    border-color: black;
-    border-style: solid;
-    border-width: 1px;
-    vertical-align: middle;
-    text-align: center;
+package org.apidesign.demo.minesweeper;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import org.apidesign.demo.minesweeper.js.OpenURL;
+
+public final class OpenURLActivity extends OpenURL {
+    private final Context context;
+
+    OpenURLActivity(Context ctx) {
+        context = ctx;
+    }
+
+    @Override
+    protected String baseUrl() {
+        return "http://xelfi.cz/minesweeper/bck2brwsr/";
+    }
+
+    @Override
+    protected boolean handleURL(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        context.startActivity(browserIntent);
+        return true;
+    }
+
 }

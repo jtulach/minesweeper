@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (C) 2013-2018 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+ * Copyright (C) 2013-2020 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,8 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 
 public class NbMain {
+    private static final NbOpenURL openUrl = new NbOpenURL();
+
     private NbMain() {
     }
     

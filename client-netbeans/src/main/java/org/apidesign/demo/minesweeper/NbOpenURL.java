@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (C) 2013-2018 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+ * Copyright (C) 2013-2020 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = OpenURL.class)
 public final class NbOpenURL extends OpenURL {
+    @Override
+    protected String baseUrl() {
+        return null;
+    }
+
     @Override
     protected boolean handleURL(String url) {
         if (url.endsWith("/getting_started.html")) {

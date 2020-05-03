@@ -6,20 +6,20 @@
     <parent>
         <groupId>org.apidesign.demo</groupId>
         <artifactId>minesweeper-pom</artifactId>
-        <version>3.2-SNAPSHOT</version>
+        <version>3.4-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apidesign.demo</groupId>
     <artifactId>minesweeper-android</artifactId>
-    <version>3.2-SNAPSHOT</version>
+    <version>3.4-SNAPSHOT</version>
     <packaging>apk</packaging>
 
-    <name>minesweeper Client for Android</name>
+    <name>Fair MineSweeper for Android</name>
 
     <properties>
         <platform.version>4.1.1.4</platform.version>
-        <android.plugin.version>4.4.3</android.plugin.version>
         <retrolamda.version>2.3.0</retrolamda.version>
+        <android.plugin.version>4.6.0</android.plugin.version>
         <android.platform.version>19</android.platform.version>
         <debug>false</debug>
     </properties>
@@ -137,27 +137,29 @@
                 <extensions>true</extensions>
                 <configuration>
                     <apkDebug>${debug}</apkDebug>
+                    <sign>
+                        <debug>auto</debug>
+                    </sign>
                     <resourceDirectory>target/res</resourceDirectory>
                     <sdk>
                         <platform>${android.platform.version}</platform>
                     </sdk>
+                    <dexArguments>--min-sdk-version=${android.platform.version}</dexArguments>
                     <apk>
-                        <metaIncludes>
-                            <metaInclude>services/org.netbeans.**</metaInclude>
-                        </metaIncludes>
+                        <metaInf>
+                            <includes>
+                                <include>services/**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>services/**Processor*</exclude>
+                            </excludes>
+                        </metaInf>
                     </apk>
                     <extractDuplicates>true</extractDuplicates>
-                    <skipDependencies>true</skipDependencies>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>apk</id>
-                        <goals>
-                            <goal>apk</goal>
-                            <goal>dex</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

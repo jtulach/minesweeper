@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (C) 2013-2018 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+ * Copyright (C) 2013-2020 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,16 @@
  */
 package org.apidesign.demo.minesweeper;
 
+import android.content.Context;
+
 public class AndroidMain {
+    private static OpenURLActivity openUrl;
+
     private AndroidMain() {
     }
 
-    public static void main(String... args) throws Exception {
+    public static void main(Context ctx) throws Exception {
+        openUrl = new OpenURLActivity(ctx);
         Main.onPageLoad();
     }
 }

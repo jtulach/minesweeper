@@ -3,7 +3,7 @@
 
     The MIT License (MIT)
 
-    Copyright (C) 2013-2018 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+    Copyright (C) 2013-2020 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,12 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.apidesign.demo.minesweeper"
-    android:versionCode="9"
-    android:versionName="3.0" >
+    android:versionCode="34"
+    android:versionName="3.4" >
 
    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="16" />
+        android:minSdkVersion="19"
+        android:targetSdkVersion="29" />
    
     <application
         android:allowBackup="true"
@@ -45,12 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <!-- Configuration section. Defines: 
-           - the HTML page to load on start
-           - the class that contains the main initialization method
-           - name of the initialization method in the given class
-        -->
         <meta-data android:name="loadPage" android:value="file:///android_asset/pages/index.html" />
         <meta-data android:name="loadClass" android:value="org.apidesign.demo.minesweeper.AndroidMain" />
         <meta-data android:name="invoke" android:value="main" />
