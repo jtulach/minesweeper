@@ -26,7 +26,7 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
     </description>
 
     <properties>
-        <netbeans.version>RELEASE111</netbeans.version>
+        <netbeans.version>RELEASE120-1</netbeans.version>
         <netbeans.compile.on.save>none</netbeans.compile.on.save>
         <project.mainclass>org.apidesign.demo.minesweeper.NbMain</project.mainclass>
     </properties>
@@ -201,40 +201,6 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
             <artifactId>platform</artifactId>
             <version>${netbeans.version}</version>
             <type>pom</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-fx</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-script</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-geo</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-json</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-sound</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>org-netbeans-html-ko4j</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -266,40 +232,6 @@ Read &lt;a href="http://dukescript.com"&gt;more&lt;/a&gt;
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-htmlui</artifactId>
             <version>${netbeans.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-fx</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-boot-script</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-geo</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-json</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>net-java-html-sound</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.netbeans.external</groupId>
-                    <artifactId>org-netbeans-html-ko4j</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 </project>

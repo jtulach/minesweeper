@@ -24,25 +24,25 @@
 package org.apidesign.demo.minesweeper;
 
 import org.apidesign.demo.minesweeper.MinesModel.SquareType;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class MinesModelTest {
     @Test public void tenTenTen() {
         Mines m = new Mines();
         m.init(10, 10, 10);
         
-        assertEquals(m.getRows().size(), 10, "Ten rows");
+        assertEquals("Ten rows", 10, m.getRows().size());
         int cnt = 0;
         for (Row row : m.getRows()) {
-            assertEquals(row.getColumns().size(), 10, "Ten columns in each row");
+            assertEquals("Ten columns in each row", 10, row.getColumns().size());
             for (Square square : row.getColumns()) {
                 if (square.isMine()) {
                     cnt++;
                 }
             }
         }
-        assertEquals(cnt, 10, "Ten mines");
+        assertEquals("Ten mines", 10, cnt);
     }
     
     @Test public void clickRemovesMarkedSign() {
@@ -53,11 +53,11 @@ public class MinesModelTest {
         MinesModel.markMine(m);
         MinesModel.click(m, sq);
         
-        assertEquals(sq.getState(), SquareType.MARKED, "Changed to marked");
+        assertEquals("Changed to marked", SquareType.MARKED, sq.getState());
         
         MinesModel.click(m, sq);
         
-        assertEquals(sq.getState(), SquareType.UNKNOWN, "Changed back to unknown");
+        assertEquals("Changed back to unknown", SquareType.UNKNOWN, sq.getState());
     }
 
     @Test public void gameWonWhenAllMarked() {
@@ -73,7 +73,7 @@ public class MinesModelTest {
             }
         }
         
-        assertEquals(m.getState(), MinesModel.GameState.WON, "All mines found. You have won!");
+        assertEquals("All mines found. You have won!", MinesModel.GameState.WON, m.getState());
     }
     
     @Test public void gameNotWonWhenTooMuchIsMarked() {
@@ -93,12 +93,12 @@ public class MinesModelTest {
             } 
         }
         
-        assertEquals(m.getState(), MinesModel.GameState.IN_PROGRESS, "One additional mine is marked!");
+        assertEquals("One additional mine is marked!", MinesModel.GameState.IN_PROGRESS, m.getState());
         
         // remove the mark
         MinesModel.click(m, additional);
         
-        assertEquals(m.getState(), MinesModel.GameState.WON, "All mines found. You have won!");
+        assertEquals("All mines found. You have won!", MinesModel.GameState.WON, m.getState());
         
         
     }
@@ -131,10 +131,10 @@ public class MinesModelTest {
         m.init(2, 1, 0);
         set(m, 0, 0, SquareType.UNKNOWN, true);
         m.computeMines();
-        assertEquals(m.getState(), MinesModel.GameState.IN_PROGRESS);
+        assertEquals("In progress", MinesModel.GameState.IN_PROGRESS, m.getState());
         set(m, 1, 0, SquareType.N_0, false);
         m.computeMines();
-        assertEquals(m.getState(), MinesModel.GameState.WON, "All non-bomb squares discovered");
+        assertEquals("All non-bomb squares discovered", MinesModel.GameState.WON, m.getState());
     }
 
     @Test public void unhideNeibourghsOfEmptyPieces() {
@@ -161,6 +161,6 @@ public class MinesModelTest {
     
     private static void assertSquare(Mines m, int x, int y, SquareType t) {
         Square sq = m.getRows().get(y).getColumns().get(x);
-        assertEquals(sq.getState(), t, "Expecting at " + x + ":" + y);
+        assertEquals("Expecting at " + x + ":" + y, t, sq.getState());
     }
 }
