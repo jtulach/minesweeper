@@ -287,5 +287,76 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>aotjs</id>
+            <properties>
+                <browser.bootstrap>initialize aotjs --&gt;
+&lt;script type="text/javascript" src="aot.js"&gt;&lt;/script&gt;
+&lt;!-- end of initialization </browser.bootstrap>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.netbeans.html</groupId>
+                    <artifactId>ko4j</artifactId>
+                    <version>${net.java.html.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.aotjs</groupId>
+                        <artifactId>aotjs-maven-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>generate-aotjs</id>
+                                <goals>
+                                    <goal>aotjs</goal>
+                                </goals>
+                                <phase>process-classes</phase>
+                                <configuration>
+                                    <mainClass>${project.mainclass}</mainClass>
+                                    <targetDirectory>${project.build.directory}/aotjs</targetDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.4</version>
+                        <executions>
+                            <execution>
+                                <id>distro-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/teavm.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apidesign.bck2brwsr</groupId>
+                        <artifactId>bck2brwsr-maven-plugin</artifactId>
+                        <version>${bck2brwsr.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>brwsr</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <directory>${project.build.directory}/${project.build.finalName}-aotjs/public_html/</directory>
+                            <startpage>index.html</startpage>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
