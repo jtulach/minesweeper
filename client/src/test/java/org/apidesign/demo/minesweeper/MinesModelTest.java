@@ -23,10 +23,13 @@
  */
 package org.apidesign.demo.minesweeper;
 
+import net.java.html.junit.BrowserRunner;
 import org.apidesign.demo.minesweeper.MinesModel.SquareType;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(BrowserRunner.class)
 public class MinesModelTest {
     @Test public void tenTenTen() {
         Mines m = new Mines();
@@ -51,11 +54,11 @@ public class MinesModelTest {
         
         final Square sq = m.getRows().get(5).getColumns().get(5);
         MinesModel.markMine(m);
-        MinesModel.click(m, sq);
+        m.click(sq);
         
         assertEquals("Changed to marked", SquareType.MARKED, sq.getState());
         
-        MinesModel.click(m, sq);
+        m.click(sq);
         
         assertEquals("Changed back to unknown", SquareType.UNKNOWN, sq.getState());
     }
@@ -68,7 +71,7 @@ public class MinesModelTest {
             for (Square sq : row.getColumns()) {
                 if (sq.isMine()) {
                     MinesModel.markMine(m);
-                    MinesModel.click(m, sq);
+                    m.click(sq);
                 }
             }
         }
@@ -85,10 +88,10 @@ public class MinesModelTest {
             for (Square sq : row.getColumns()) {
                 if (sq.isMine()) {
                     MinesModel.markMine(m);
-                    MinesModel.click(m, sq);
+                    m.click(sq);
                 } else if (additional == null) {
                     MinesModel.markMine(m);
-                    MinesModel.click(m, additional = sq);
+                    m.click(additional = sq);
                 }
             } 
         }
@@ -96,7 +99,7 @@ public class MinesModelTest {
         assertEquals("One additional mine is marked!", MinesModel.GameState.IN_PROGRESS, m.getState());
         
         // remove the mark
-        MinesModel.click(m, additional);
+        m.click(additional);
         
         assertEquals("All mines found. You have won!", MinesModel.GameState.WON, m.getState());
         
@@ -141,7 +144,7 @@ public class MinesModelTest {
         Mines m = new Mines();
         m.init(3, 3, 0);
         set(m, 0, 0, SquareType.UNKNOWN, true);
-        MinesModel.click(m, m.getRows().get(2).getColumns().get(2));
+        m.click(m.getRows().get(2).getColumns().get(2));
 
         assertSquare(m, 0, 0, SquareType.DISCOVERED);
         assertSquare(m, 0, 1, SquareType.N_1);

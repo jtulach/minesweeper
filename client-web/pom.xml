@@ -148,9 +148,8 @@
         </dependency>
         <dependency>
             <groupId>org.apidesign.bck2brwsr</groupId>
-            <artifactId>emul</artifactId>
+            <artifactId>emul.mini</artifactId>
             <version>${bck2brwsr.version}</version>
-            <classifier>rt</classifier>
         </dependency>
         <dependency>
             <groupId>org.netbeans.html</groupId>
