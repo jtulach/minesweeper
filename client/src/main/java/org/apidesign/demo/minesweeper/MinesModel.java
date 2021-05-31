@@ -23,25 +23,27 @@
  */
 package org.apidesign.demo.minesweeper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import net.java.html.json.ComputedProperty;
 import net.java.html.json.Function;
 import net.java.html.json.Model;
 import net.java.html.json.ModelOperation;
+import net.java.html.json.Models;
 import net.java.html.json.Property;
 import net.java.html.sound.AudioClip;
 import org.apidesign.demo.minesweeper.js.OpenURL;
+import org.apidesign.demo.minesweeper.js.RandomGenerator;
 
 /**
  * Model of the mine field.
  */
-@Model(className = "Mines", targetId = "", properties = {
+@Model(className = "Mines", targetId = "", instance = true, properties = {
     @Property(name = "show", type = MinesModel.ShowState.class),
     @Property(name = "state", type = MinesModel.GameState.class),
     @Property(name = "rows", type = Row.class, array = true),})
 public final class MinesModel {
+    private final RandomGenerator random = new RandomGenerator();
+
     enum ShowState {
         INFO, PRIVACY, GAME
     }
@@ -153,10 +155,10 @@ public final class MinesModel {
     }
 
     @ModelOperation
-    static void init(Mines model, int width, int height, int mines) {
+    void init(Mines model, int width, int height, int mines) {
         List<Row> rows = model.getRows();
         if (rows.size() != height || rows.get(0).getColumns().size() != width) {
-            rows = new ArrayList<Row>(height);
+            rows = Models.asList();
             for (int y = 0; y < height; y++) {
                 Square[] columns = new Square[width];
                 for (int x = 0; x < width; x++) {
@@ -173,10 +175,9 @@ public final class MinesModel {
             }
         }
 
-        Random r = new Random();
         while (mines > 0) {
-            int x = r.nextInt(width);
-            int y = r.nextInt(height);
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
             final Square s = rows.get(y).getColumns().get(x);
             if (s.isMine()) {
                 continue;
@@ -195,8 +196,8 @@ public final class MinesModel {
 
     @ModelOperation
     static void computeMines(Mines model) {
-        List<Integer> xBombs = new ArrayList<Integer>();
-        List<Integer> yBombs = new ArrayList<Integer>();
+        List<Integer> xBombs = Models.asList();
+        List<Integer> yBombs = Models.asList();
         final List<Row> rows = model.getRows();
         boolean emptyHidden = false;
         SquareType[][] arr = new SquareType[rows.size()][];
@@ -278,8 +279,9 @@ public final class MinesModel {
         }
     }
 
+    @ModelOperation
     @Function
-    static void click(Mines model, Square data) {
+    void click(Mines model, Square data) {
         if (model.getState() == GameState.MARKING_MINE) {
             if (data.getState() == SquareType.UNKNOWN) {
                 data.setState(SquareType.MARKED);
@@ -470,8 +472,8 @@ public final class MinesModel {
         return null;
     }
 
-    private static boolean placeBombElseWhere(Mines model, Square moveBomb) {
-        List<Square> ok = new ArrayList<Square>();
+    private boolean placeBombElseWhere(Mines model, Square moveBomb) {
+        List<Square> ok = Models.asList();;
         moveBomb.setMine(false);
         final List<Row> rows = model.getRows();
         for (int y = 0; y < rows.size(); y++) {
@@ -492,7 +494,7 @@ public final class MinesModel {
             moveBomb.setMine(true);
             return false;
         } else {
-            int r = new Random().nextInt(ok.size());
+            int r = random.nextInt(ok.size());
             ok.get(r).setMine(true);
             return true;
         }
