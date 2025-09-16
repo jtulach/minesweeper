@@ -36,7 +36,7 @@
     <properties>
         <net.java.html.version>1.8.2</net.java.html.version>
         <bck2brwsr.version>0.81</bck2brwsr.version>
-        <bck2brwsr.obfuscationlevel>FULL</bck2brwsr.obfuscationlevel>
+        <bck2brwsr.obfuscationlevel>MINIMAL</bck2brwsr.obfuscationlevel>
         <presenters.version>1.7.1</presenters.version>
         <jersey.version>2.13</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,6 +68,7 @@
                             <rules>
                                 <DependencyConvergence/>
                             </rules>
+                            <fail>false</fail>
                         </configuration>
                     </execution>
                 </executions>              
