@@ -1,0 +1,43 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up GraalVM
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        cache: maven
+        
+    - name: Setup Xvfb
+      run: |
+        echo "DISPLAY=:66.0" >> $GITHUB_ENV
+        Xvfb :66 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+    - name: Setup Browser
+      run: |
+        xdg-open http://apidesign.org &
+        sleep 5
+        ps -Af
+        
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
