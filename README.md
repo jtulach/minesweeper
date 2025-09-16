@@ -8,3 +8,10 @@ client side only HTML. It runs on any device on the Planet:
 * Package as **OSGi** bundle: [Minesweeper as a plugin](http://plugins.netbeans.org/plugin/53864/)
 
 Write your cross-platform HTML applications in Java thanks too: Use [DukeScript](https://dukescript.com/getting_started.html)!
+
+### Build
+
+[![Continuous Integration Build](https://github.com/jtulach/minesweeper/actions/workflows/maven.yml/badge.svg)](https://github.com/jtulach/minesweeper/actions/workflows/maven.yml)
+
+- Recent version is using JDK 21
+- Builds with Maven 3.x
