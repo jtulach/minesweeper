@@ -120,9 +120,9 @@
           </center>
         </script>
 
-        <div data-bind="template: { name : 'field', if: fieldShowing }"></div>
+        <div data-bind="template: { name : 'field', if: showGame }"></div>
         
-        <div class="jumbotron control-label" data-bind="visible: !fieldShowing() ">
+        <div class="jumbotron control-label" data-bind="visible: showProse ">
             <div class="navbar">
                 <div class="navbar-inner">
                     <div data-bind="template: 'horizontal-navbar'"></div>
@@ -142,10 +142,11 @@
                       data-bind="click: $root.urlProjectPage" href="#"
                 >Navštívit stránky projektu</a>
                 </p>
+                <p><a class="btn btn-default" href="#" data-bind="click: normalGame"role="button">Play &raquo;</a></p>
             </div>
         </div>
 
-    <div class="container" data-bind="visible: !fieldShowing()">
+    <div class="container" data-bind="visible: showProse">
       <div>
         <div class="col-md-4">
           <h2>Miny</h2>
@@ -191,7 +192,7 @@
        </div>
       </div>
     </div>
-<div class="container" data-bind="visible: !fieldShowing()">
+<div class="container" data-bind="visible: showProse">
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
         <img src="android_logo.jpg" width="120" height="120" alt="Android">
@@ -270,17 +271,6 @@
     </div>
   </div>
 </div>
-        <!-- boot bck2brwsr -->
-        <script type="text/javascript" src="bck2brwsr.js"></script>
-        <script>
-            if (!this.hasOwnProperty("main")) {
-                this.main = function() {
-                    var vm = bck2brwsr('minesweeper.js');
-                    var c = vm.loadClass('org.apidesign.demo.minesweeper.MinesModel');
-                    c.invoke('main');
-                }
-            }
-            this.main();
-        </script>
+<!-- ${browser.bootstrap} -->
     </body>
 </html>
