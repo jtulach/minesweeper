@@ -64,13 +64,15 @@ public abstract class OpenURL {
         changeURL(url);
     }
 
-    @JavaScriptBody(wait4js = false, args = { "url" }, body =
-        "window.open(url, '_blank');"
+    @JavaScriptBody(wait4js = false, args = { "url" }, body = """
+        window.open(url, '_blank');
+        """
     )
     private static native void changeURL(String url);
 
-    @JavaScriptBody(args = {}, body = ""
-            + "return window.location.href;\n"
+    @JavaScriptBody(args = {}, body = """
+        return window.location.href;
+        """
     )
     private static native String baseUrl0();
 

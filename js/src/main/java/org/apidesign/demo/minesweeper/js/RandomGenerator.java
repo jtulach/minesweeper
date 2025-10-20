@@ -29,9 +29,6 @@ public final class RandomGenerator {
     private Object[] randoms;
     private int at;
 
-    public RandomGenerator() {
-    }
-
     public int nextInt(int upto) {
         if (randoms == null || at == randoms.length) {
             randoms = generateRandomNumbers(128);
@@ -42,12 +39,13 @@ public final class RandomGenerator {
         return (int) value;
     }
 
-    @JavaScriptBody(args = { "count" }, body = "\n"
-        + "var arr = [];\n"
-        + "while (count-- > 0) {\n"
-        + "  arr.push(Math.random());\n"
-        + "}\n"
-        + "return arr;\n"
+    @JavaScriptBody(args = { "count" }, body = """
+        var arr = [];
+        while (count-- > 0) {
+            arr.push(Math.random());
+        }
+        return arr;
+        """
     )
     private static native Object[] generateRandomNumbers(int count);
 
