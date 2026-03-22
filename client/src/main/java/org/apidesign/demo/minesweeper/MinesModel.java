@@ -33,6 +33,7 @@ import net.java.html.json.Property;
 import net.java.html.sound.AudioClip;
 import org.apidesign.demo.minesweeper.js.OpenURL;
 import org.apidesign.demo.minesweeper.js.RandomGenerator;
+import org.apidesign.demo.minesweeper.js.UrlLocation;
 
 /**
  * Model of the mine field.
@@ -306,6 +307,9 @@ public final class MinesModel {
         if (data.getState() != SquareType.UNKNOWN) {
             return;
         }
+        if (allUnknown(model)) {
+            UrlLocation.setHash("g" + this.random.nextInt(1000000));
+        }
         if (data.isMine()) {
             Square fair = atLeastOnePlaceWhereBombCantBe(model);
             if (fair == null) {
@@ -498,6 +502,17 @@ public final class MinesModel {
             ok.get(r).setMine(true);
             return true;
         }
+    }
+
+    private static boolean allUnknown(Mines model) {
+        for (var row : model.getRows()) {
+            for (var square : row.getColumns()) {
+                if (square.getState() != SquareType.UNKNOWN) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static void expandKnown(Mines model, Square data) {
