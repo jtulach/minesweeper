@@ -152,7 +152,9 @@ public final class MinesModel {
 
     @ModelOperation
     void init(Mines model, int width, int height, int mines, String seed) {
-        random.seedTo(seed);
+        if (seed != null) {
+            random.seedTo(seed);
+        }
         List<Row> rows = model.getRows();
         if (rows.size() != height || rows.get(0).getColumns().size() != width) {
             rows = Models.asList();
@@ -171,8 +173,7 @@ public final class MinesModel {
                 }
             }
         }
-
-        while (mines > 0) {
+        for (var i = 0; i < mines;) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
             final Square s = rows.get(y).getColumns().get(x);
@@ -180,48 +181,25 @@ public final class MinesModel {
                 continue;
             }
             s.setMine(true);
-            mines--;
+            i++;
         }
-
-        model.setShow(ShowState.GAME);
-        model.setState(GameState.IN_PROGRESS);
         if (rows != model.getRows()) {
             model.getRows().clear();
             model.getRows().addAll(rows);
         }
+        model.setState(GameState.IN_PROGRESS);
+        if (seed != null) {
+            model.clickOnEmpty("Info: " + width + "x" + height + "@" + mines);
+        }
+        model.setShow(ShowState.GAME);
     }
 
     @ModelOperation
     static void computeMines(Mines model) {
-        List<Integer> xBombs = Models.asList();
-        List<Integer> yBombs = Models.asList();
         final List<Row> rows = model.getRows();
-        boolean emptyHidden = false;
-        SquareType[][] arr = new SquareType[rows.size()][];
-        for (int y = 0; y < rows.size(); y++) {
-            final List<Square> columns = rows.get(y).getColumns();
-            arr[y] = new SquareType[columns.size()];
-            for (int x = 0; x < columns.size(); x++) {
-                Square sq = columns.get(x);
-                if (sq.isMine()) {
-                    xBombs.add(x);
-                    yBombs.add(y);
-                }
-                if (sq.getState().isVisible()) {
-                    arr[y][x] = SquareType.N_0;
-                } else {
-                    if (!sq.isMine()) {
-                        emptyHidden = true;
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < xBombs.size(); i++) {
-            int x = xBombs.get(i);
-            int y = yBombs.get(i);
+        boolean[] emptyHidden = { false };
 
-            incrementAround(arr, x, y);
-        }
+        var arr = computeSquareTypes(rows, emptyHidden);
         for (int y = 0; y < rows.size(); y++) {
             final List<Square> columns = rows.get(y).getColumns();
             for (int x = 0; x < columns.size(); x++) {
@@ -233,12 +211,43 @@ public final class MinesModel {
             }
         }
 
-        if (!emptyHidden) {
+        if (!emptyHidden[0]) {
             model.setState(GameState.WON);
             showAllBombs(model, SquareType.DISCOVERED);
             AudioClip applause = AudioClip.create("applause.mp3");
             applause.play();
         }
+    }
+
+    private static SquareType[][] computeSquareTypes(final List<Row> rows, boolean[] emptyHidden) {
+        var arr = new SquareType[rows.size()][];
+        List<Integer> xBombs = Models.asList();
+        List<Integer> yBombs = Models.asList();
+        for (int y = 0; y < rows.size(); y++) {
+            var columns = rows.get(y).getColumns();
+            arr[y] = new SquareType[columns.size()];
+            for (int x = 0; x < columns.size(); x++) {
+                var sq = columns.get(x);
+                if (sq.isMine()) {
+                    xBombs.add(x);
+                    yBombs.add(y);
+                }
+                if (emptyHidden == null || sq.getState().isVisible()) {
+                    arr[y][x] = SquareType.N_0;
+                } else {
+                    if (!sq.isMine()) {
+                        emptyHidden[0] = true;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < xBombs.size(); i++) {
+            int x = xBombs.get(i);
+            int y = yBombs.get(i);
+
+            incrementAround(arr, x, y);
+        }
+        return arr;
     }
 
     private static void incrementAround(SquareType[][] arr, int x, int y) {
@@ -274,6 +283,25 @@ public final class MinesModel {
                 }
             }
         }
+    }
+
+    @ModelOperation
+    void clickOnEmpty(Mines model, String info) {
+        var types = computeSquareTypes(model.getRows(), null);
+        var emptySquares = Models.<Square>asList();
+        for (var y = 0; y < types.length; y++) {
+            for (var x = 0; x < types[y].length; x++) {
+                var sqt = types[y][x];
+                if (sqt == SquareType.N_0) {
+                    emptySquares.add(model.getRows().get(y).getColumns().get(x));
+                }
+            }
+        }
+        if (emptySquares.isEmpty()) {
+            throw new IllegalStateException("No empty squares " + info + "\n" + model);
+        }
+        var select = random.nextInt(emptySquares.size());
+        model.click(emptySquares.get(select));
     }
 
     @ModelOperation
