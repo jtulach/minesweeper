@@ -26,6 +26,7 @@ package org.apidesign.demo.minesweeper;
 import net.java.html.junit.BrowserRunner;
 import org.apidesign.demo.minesweeper.MinesModel.SquareType;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,40 +34,69 @@ import org.junit.runner.RunWith;
 public class MinesModelTest {
     @Test public void tenTenTen() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
-        
+        m.init(10, 10, 10, null);
+
         assertEquals("Ten rows", 10, m.getRows().size());
-        int cnt = 0;
+        int minesCount = 0;
+        int emptyVisible = 0;
         for (Row row : m.getRows()) {
             assertEquals("Ten columns in each row", 10, row.getColumns().size());
             for (Square square : row.getColumns()) {
                 if (square.isMine()) {
-                    cnt++;
+                    minesCount++;
+                }
+                if (square.getState() == SquareType.N_0) {
+                    emptyVisible++;
                 }
             }
         }
-        assertEquals("Ten mines", 10, cnt);
+        assertEquals("Ten mines", 10, minesCount);
+        assertEquals("No fields are visible", 0, emptyVisible);
     }
-    
+
+    @Test
+    public void tenTenTenWithInitialClick() {
+        var m = new Mines();
+        var doClick = "";
+        m.init(10, 10, 10, doClick);
+
+        assertEquals("Ten rows", 10, m.getRows().size());
+        int minesCount = 0;
+        int emptyVisible = 0;
+        for (Row row : m.getRows()) {
+            assertEquals("Ten columns in each row", 10, row.getColumns().size());
+            for (Square square : row.getColumns()) {
+                if (square.isMine()) {
+                    minesCount++;
+                }
+                if (square.getState() == SquareType.N_0) {
+                    emptyVisible++;
+                }
+            }
+        }
+        assertEquals("Ten mines", 10, minesCount);
+        assertTrue("Some should be visible: " + emptyVisible, emptyVisible > 0);
+    }
+
     @Test public void clickRemovesMarkedSign() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
-        
+        m.init(10, 10, 10, null);
+
         final Square sq = m.getRows().get(5).getColumns().get(5);
         MinesModel.markMine(m);
         m.click(sq);
-        
+
         assertEquals("Changed to marked", SquareType.MARKED, sq.getState());
-        
+
         m.click(sq);
-        
+
         assertEquals("Changed back to unknown", SquareType.UNKNOWN, sq.getState());
     }
 
     @Test public void gameWonWhenAllMarked() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
-        
+        m.init(10, 10, 10, null);
+
         for (Row row : m.getRows()) {
             for (Square sq : row.getColumns()) {
                 if (sq.isMine()) {
@@ -75,14 +105,14 @@ public class MinesModelTest {
                 }
             }
         }
-        
+
         assertEquals("All mines found. You have won!", MinesModel.GameState.WON, m.getState());
     }
-    
+
     @Test public void gameNotWonWhenTooMuchIsMarked() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
-        
+        m.init(10, 10, 10, null);
+
         Square additional = null;
         for (Row row : m.getRows()) {
             for (Square sq : row.getColumns()) {
@@ -93,23 +123,23 @@ public class MinesModelTest {
                     MinesModel.markMine(m);
                     m.click(additional = sq);
                 }
-            } 
+            }
         }
-        
+
         assertEquals("One additional mine is marked!", MinesModel.GameState.IN_PROGRESS, m.getState());
-        
+
         // remove the mark
         m.click(additional);
-        
+
         assertEquals("All mines found. You have won!", MinesModel.GameState.WON, m.getState());
-        
-        
+
+
     }
-    
+
     @Test public void bombsSet() {
         Mines m = new Mines();
-        m.init(10, 10, 0);
-        
+        m.init(10, 10, 0, null);
+
         set(m, 1, 1, SquareType.UNKNOWN, true);
         set(m, 0, 0, SquareType.N_0, false);
         set(m, 0, 1, SquareType.N_2, false);
@@ -117,9 +147,9 @@ public class MinesModelTest {
         set(m, 1, 0, SquareType.N_5, false);
         set(m, 2, 0, SquareType.N_8, false);
         set(m, 3, 0, SquareType.N_2, false);
-        
+
         m.computeMines();
-        
+
         assertSquare(m, 0, 0, SquareType.N_1);
         assertSquare(m, 1, 0, SquareType.N_1);
         assertSquare(m, 2, 0, SquareType.N_1);
@@ -128,10 +158,10 @@ public class MinesModelTest {
         assertSquare(m, 0, 2, SquareType.N_1);
         assertSquare(m, 2, 2, SquareType.UNKNOWN);
     }
-    
+
     @Test public void gameIsWonIfAllMinesDiscovered() {
         Mines m = new Mines();
-        m.init(2, 1, 0);
+        m.init(2, 1, 0, null);
         set(m, 0, 0, SquareType.UNKNOWN, true);
         m.computeMines();
         assertEquals("In progress", MinesModel.GameState.IN_PROGRESS, m.getState());
@@ -142,7 +172,7 @@ public class MinesModelTest {
 
     @Test public void unhideNeibourghsOfEmptyPieces() {
         Mines m = new Mines();
-        m.init(3, 3, 0);
+        m.init(3, 3, 0, null);
         set(m, 0, 0, SquareType.UNKNOWN, true);
         m.click(m.getRows().get(2).getColumns().get(2));
 
@@ -155,13 +185,13 @@ public class MinesModelTest {
         assertSquare(m, 2, 2, SquareType.N_0);
         assertSquare(m, 1, 2, SquareType.N_0);
     }
-    
+
     private static void set(Mines m, int x, int y, SquareType squareType, boolean mine) {
         Square sq = m.getRows().get(y).getColumns().get(x);
         sq.setState(squareType);
         sq.setMine(mine);
     }
-    
+
     private static void assertSquare(Mines m, int x, int y, SquareType t) {
         Square sq = m.getRows().get(y).getColumns().get(x);
         assertEquals("Expecting at " + x + ":" + y, t, sq.getState());

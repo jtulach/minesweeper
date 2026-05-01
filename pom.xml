@@ -5,7 +5,7 @@
 
     <groupId>org.apidesign.demo</groupId>
     <artifactId>minesweeper-pom</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>minesweeper</name>
@@ -37,6 +37,7 @@
         <net.java.html.version>1.8.2</net.java.html.version>
         <bck2brwsr.version>0.81</bck2brwsr.version>
         <bck2brwsr.obfuscationlevel>MINIMAL</bck2brwsr.obfuscationlevel>
+        <graaljs.version>19.3.1</graaljs.version>
         <presenters.version>1.7.1</presenters.version>
         <jersey.version>2.13</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
