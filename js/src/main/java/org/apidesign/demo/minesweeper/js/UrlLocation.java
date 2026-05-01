@@ -44,8 +44,17 @@ public final class UrlLocation {
             var href = baseUrl + "#" + newHash;
             location(href);
         } else {
-            location(baseUrl);
+            location(baseUrl + "#");
         }
+    }
+
+    /** Reads the URL hash.
+     * @return the part after {@code #} in the URL or empty string
+     */
+    public static String getHash() {
+        var url = location();
+        var hash = url.lastIndexOf('#');
+        return url.substring(hash + 1);
     }
 
     @JavaScriptBody(args = {}, body = """

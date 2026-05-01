@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 public class MinesModelTest {
     @Test public void tenTenTen() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
+        m.init(10, 10, 10, "");
         
         assertEquals("Ten rows", 10, m.getRows().size());
         int cnt = 0;
@@ -50,7 +50,7 @@ public class MinesModelTest {
     
     @Test public void clickRemovesMarkedSign() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
+        m.init(10, 10, 10, "");
         
         final Square sq = m.getRows().get(5).getColumns().get(5);
         MinesModel.markMine(m);
@@ -65,7 +65,7 @@ public class MinesModelTest {
 
     @Test public void gameWonWhenAllMarked() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
+        m.init(10, 10, 10, "");
         
         for (Row row : m.getRows()) {
             for (Square sq : row.getColumns()) {
@@ -81,7 +81,7 @@ public class MinesModelTest {
     
     @Test public void gameNotWonWhenTooMuchIsMarked() {
         Mines m = new Mines();
-        m.init(10, 10, 10);
+        m.init(10, 10, 10, "");
         
         Square additional = null;
         for (Row row : m.getRows()) {
@@ -108,7 +108,7 @@ public class MinesModelTest {
     
     @Test public void bombsSet() {
         Mines m = new Mines();
-        m.init(10, 10, 0);
+        m.init(10, 10, 0, "");
         
         set(m, 1, 1, SquareType.UNKNOWN, true);
         set(m, 0, 0, SquareType.N_0, false);
@@ -131,7 +131,7 @@ public class MinesModelTest {
     
     @Test public void gameIsWonIfAllMinesDiscovered() {
         Mines m = new Mines();
-        m.init(2, 1, 0);
+        m.init(2, 1, 0, "");
         set(m, 0, 0, SquareType.UNKNOWN, true);
         m.computeMines();
         assertEquals("In progress", MinesModel.GameState.IN_PROGRESS, m.getState());
@@ -142,7 +142,7 @@ public class MinesModelTest {
 
     @Test public void unhideNeibourghsOfEmptyPieces() {
         Mines m = new Mines();
-        m.init(3, 3, 0);
+        m.init(3, 3, 0, "");
         set(m, 0, 0, SquareType.UNKNOWN, true);
         m.click(m.getRows().get(2).getColumns().get(2));
 

@@ -128,13 +128,9 @@ public final class MinesModel {
     }
 
     @Function
-    static void smallGame(Mines model) {
-        model.init(5, 5, 5);
-    }
-
-    @Function
     static void normalGame(Mines model) {
-        model.init(10, 10, 10);
+        var seed = UrlLocation.getHash();
+        model.init(10, 10, 10, seed);
     }
 
     @Function
@@ -156,7 +152,8 @@ public final class MinesModel {
     }
 
     @ModelOperation
-    void init(Mines model, int width, int height, int mines) {
+    void init(Mines model, int width, int height, int mines, String seed) {
+        random.seedTo(seed);
         List<Row> rows = model.getRows();
         if (rows.size() != height || rows.get(0).getColumns().size() != width) {
             rows = Models.asList();
@@ -308,7 +305,7 @@ public final class MinesModel {
             return;
         }
         if (allUnknown(model)) {
-            UrlLocation.setHash("g" + this.random.nextInt(1000000));
+            UrlLocation.setHash(random.getSeed());
         }
         if (data.isMine()) {
             Square fair = atLeastOnePlaceWhereBombCantBe(model);

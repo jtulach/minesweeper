@@ -49,4 +49,10 @@ public final class RandomGenerator {
     )
     private static native Object[] generateRandomNumbers(int count);
 
+    public void seedTo(String seed) {
+    }
+
+    public String getSeed() {
+        return "";
+    }
 }
