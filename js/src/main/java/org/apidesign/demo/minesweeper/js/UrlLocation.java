@@ -49,12 +49,12 @@ public final class UrlLocation {
     }
 
     /** Reads the URL hash.
-     * @return the part after {@code #} in the URL or empty string
+     * @return the part after {@code #} in the URL or an empty string
      */
     public static String getHash() {
         var url = location();
         var hash = url.lastIndexOf('#');
-        return url.substring(hash + 1);
+        return hash == -1 ? "" : url.substring(hash + 1);
     }
 
     @JavaScriptBody(args = {}, body = """

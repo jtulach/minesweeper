@@ -129,8 +129,7 @@ public final class MinesModel {
 
     @Function
     static void normalGame(Mines model) {
-        var seed = UrlLocation.getHash();
-        model.init(10, 10, 10, seed);
+        model.init(10, 10, 10, "");
     }
 
     @Function
@@ -617,6 +616,10 @@ public final class MinesModel {
     public static void main(String... args) throws Exception {
         ui = new Mines();
         ui.setShow(ShowState.INFO);
+        var seed = UrlLocation.getHash();
+        if (seed.length() != 0) {
+            ui.init(10, 10, 10, seed);
+        }
         ui.applyBindings();
     }
 }
