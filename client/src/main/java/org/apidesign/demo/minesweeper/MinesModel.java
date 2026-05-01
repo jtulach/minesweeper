@@ -153,6 +153,7 @@ public final class MinesModel {
     @ModelOperation
     void init(Mines model, int width, int height, int mines, String seed) {
         if (seed != null) {
+            // generate the same layout of mines
             random.seedTo(seed);
         }
         List<Row> rows = model.getRows();
@@ -192,6 +193,10 @@ public final class MinesModel {
             model.clickOnEmpty("Info: " + width + "x" + height + "@" + mines);
         }
         model.setShow(ShowState.GAME);
+        if (seed != null) {
+            // randomize after generating the same layout of mines
+            random.seedTo(null);
+        }
     }
 
     @ModelOperation
