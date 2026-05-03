@@ -72,6 +72,11 @@ public final class MinesModel {
     static boolean showPrivacy(ShowState show) {
         return show == ShowState.GAME;
     }
+    
+    @ComputedProperty
+    static boolean showLogo(ShowState show) {
+        return show == null;
+    }
 
     @ComputedProperty
     static String gameStyle(GameState state) {

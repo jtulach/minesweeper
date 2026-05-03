@@ -51,6 +51,11 @@
               rel="stylesheet" />
     </head>
     <body>
+        <center data-bind="visible: showLogo">
+            <h1>Fair Minesweeper!</h1>
+            <img src="DukeSweeperLarge.png" alt="Minesweeper Duke">
+        </center>
+
         <script type="text/html" id="horizontal-navbar">
             <div class="navbar-inner">
                 <a id="apptitle" class="brand" href="#" data-bind="click: showHelp">
@@ -121,8 +126,7 @@
         </script>
 
         <div data-bind="template: { name : 'field', if: showGame }"></div>
-        
-        <div class="jumbotron control-label" data-bind="visible: showProse ">
+        <div class="jumbotron control-label" data-bind="visible: showProse" style="display: none">
             <div class="navbar">
                 <div class="navbar-inner">
                     <div data-bind="template: 'horizontal-navbar'"></div>
@@ -152,7 +156,7 @@
             </div>
         </div>
 
-    <div class="container" data-bind="visible: showProse">
+    <div class="container" data-bind="visible: showProse" style="display: none">
       <div>
         <div class="col-md-4">
           <h2>Documentation</h2>
@@ -192,7 +196,7 @@
        </div>
       </div>
     </div>
-<div class="container" data-bind="visible: showProse">
+<div class="container" data-bind="visible: showProse" style="display: none">
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
         <img src="android_logo.jpg" width="120" height="120" alt="Android">
