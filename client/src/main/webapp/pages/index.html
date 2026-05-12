@@ -49,6 +49,7 @@
         <link href="mines-phone-smaller.css" 
               media="(max-width:300px), (max-height:300px)" 
               rel="stylesheet" />
+        <link href="styles.css" rel="stylesheet" />
     </head>
     <body>
         <center data-bind="visible: showLogo">
@@ -123,6 +124,11 @@
                 </tbody>
             </table>
           </center>
+            <main class="app-shell">
+              <section class="grid-container">
+                <div class="grid" id="grid"></div>
+              </section>
+            </main>
         </script>
 
         <div data-bind="template: { name : 'field', if: showGame }"></div>
