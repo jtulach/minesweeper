@@ -33,7 +33,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
 }
 
 .grid {
@@ -55,7 +54,7 @@ body {
   background: transparent;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0;
-  font-size: clamp(1rem, 2vw, 2rem);
+  font-size: calc(var(--cell-size) * 0.75);
   font-weight: 600;
   color: rgba(0, 0, 0, 0.88);
   user-select: none;
@@ -98,4 +97,5 @@ body {
   font-family: Inter, system-ui, sans-serif;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
   pointer-events: none;
+  display: none;
 }
