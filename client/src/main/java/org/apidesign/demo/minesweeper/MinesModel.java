@@ -334,18 +334,25 @@ public final class MinesModel {
         model.click(emptySquares.get(select));
     }
 
+
+    /** Return true if the game is finished/won by placing the mark */
+    @ModelOperation
+    final void placeMineMark(Mines model, Square data) {
+        if (data.getState() == SquareType.UNKNOWN) {
+            data.setState(SquareType.MARKED);
+            if (allMarked(model)) {
+                model.setState(GameState.WON);
+                return;
+            }
+            model.setState(GameState.IN_PROGRESS);
+        }
+    }
+
     @ModelOperation
     @Function
     void click(Mines model, Square data) {
         if (model.getState() == GameState.MARKING_MINE) {
-            if (data.getState() == SquareType.UNKNOWN) {
-                data.setState(SquareType.MARKED);
-                if (allMarked(model)) {
-                    model.setState(GameState.WON);
-                    return;
-                }
-            }
-            model.setState(GameState.IN_PROGRESS);
+            placeMineMark(model, data);
             return;
         }
         if (model.getState() != GameState.IN_PROGRESS) {
@@ -672,8 +679,14 @@ public final class MinesModel {
     private static Mines ui;
 
     public static void main(String... args) throws Exception {
-        var grid = Grid.create(10, 10);
         ui = new Mines();
+        var grid = new Grid(10, 10) {
+            @Override
+            protected void onDrop(int x, int y) {
+                var square = ui.getRows().get(y).getColumns().get(x);
+                ui.placeMineMark(square);
+            }
+        };
         ui.withGrid(grid);
         ui.setShow(ShowState.BOOT);
         var seed = UrlLocation.getHash();

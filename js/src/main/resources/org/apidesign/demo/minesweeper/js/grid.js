@@ -76,6 +76,7 @@ function initializeGrid(gridSize, pieceCount) {
             this.gridContainer = gridContainer;
             this.arrivalCounter = arrivalCounter;
             this.pieces = [];
+            this.onDrop = [];
         }
 
         calculateCellSize() {
@@ -138,7 +139,7 @@ function initializeGrid(gridSize, pieceCount) {
 
             if (snapped) {
                 const cell = this.getGridCoordinates(snapped.left, snapped.top, pieceSize);
-                if (cell && this.findPiece(cell.row, cell.col, piece) != null) {
+                if (cell && this.findPiece(cell.row, cell.col, piece) !== null) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
@@ -149,6 +150,9 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.style.transition = 'left 0.18s ease, top 0.18s ease';
                 piece.style.left = `${snapped.left}px`;
                 piece.style.top = `${snapped.top}px`;
+                piece.style.display = 'none';
+
+                this.onDrop.map(f => f(cell.col, cell.row));
             } else {
                 this.animatePieceBackToTarget(piece, cellSize, pieceSize);
             }
@@ -437,16 +441,20 @@ function initializeGrid(gridSize, pieceCount) {
         gridManager.updatePiecesForResize(arrivalCounter);
     });
 
+    var pieces = null;
     /*
-    setTimeout(() => {
         gridManager.createGrid();
-        let pieces = gridManager.createPieces(dragController);
-        setTimeout(() => animatePieces(pieces), 1000);
-
-    }, 100);
      */
-
     return {
-        'updateGrid' : function() { gridManager.updateGrid(); }
+        'updateGrid' : function() {
+            gridManager.updateGrid();
+            if (pieces === null) {
+                pieces = gridManager.createPieces(dragController);
+            }
+            animatePieces(pieces);
+        },
+        'registerDrop' : function(f) {
+            gridManager.onDrop.push(f);
+        }
     };
 }

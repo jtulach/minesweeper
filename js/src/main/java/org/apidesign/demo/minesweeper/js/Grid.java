@@ -23,23 +23,41 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
+import java.util.List;
+import java.util.function.BiFunction;
 import net.java.html.js.JavaScriptBody;
 import net.java.html.js.JavaScriptResource;
 
 @JavaScriptResource(value = "grid.js")
-public class Grid {
+public abstract class Grid {
     private final Object jsGrid;
+
+    /** Constructor for subclasses */
+    protected Grid(int size, int mines) {
+        this(initializeGrid(size, mines));
+    }
+
+    /** Subclasses has to implement this method. Then they obtain
+     * callbacks about bombs being dropped at particular piece.
+     *
+     * @param x
+     * @param y
+     */
+    protected abstract void onDrop(int x, int y);
+
+    /** Adjust the CSS variables & co. Right now.
+     */
+    public final void update() {
+        updateGrid(jsGrid);
+    }
+
+    //
+    // Internal implementaton of a bridge to JavaScript
+    //
 
     private Grid(Object jsGrid) {
         this.jsGrid = jsGrid;
-    }
-
-    public static Grid create(int size, int mines) {
-        return new Grid(initializeGrid(size, mines));
-    }
-
-    public final void update() {
-        updateGrid(jsGrid);
+        registerDrop(jsGrid, this);
     }
 
     @JavaScriptBody(args = {"size", "mines"}, body = """
@@ -49,4 +67,11 @@ public class Grid {
 
     @JavaScriptBody(args = {"grid"}, body = "grid.updateGrid();")
     private static native Object updateGrid(Object grid);
+
+    @JavaScriptBody(args = {"jsGrid", "self"}, keepAlive = true, javacall = true, body = """
+    jsGrid.registerDrop((x, y) => {
+      self.@org.apidesign.demo.minesweeper.js.Grid::onDrop(II)(x, y);
+    });
+    """)
+    private static native void registerDrop(Object jsGrid, Grid self);
 }
