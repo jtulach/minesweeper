@@ -47,7 +47,7 @@ public final class MinesModel {
     private final RandomGenerator random = new RandomGenerator();
 
     enum ShowState {
-        INFO, PRIVACY, GAME
+        BOOT, INFO, PRIVACY, GAME
     }
 
     enum GameState {
@@ -57,6 +57,11 @@ public final class MinesModel {
     @ComputedProperty
     static boolean showGame(ShowState show) {
         return show == ShowState.GAME;
+    }
+
+    @ComputedProperty
+    static boolean showHeader(ShowState show) {
+        return show == ShowState.INFO || show == ShowState.BOOT;
     }
 
     @ComputedProperty
@@ -655,7 +660,7 @@ public final class MinesModel {
 
     public static void main(String... args) throws Exception {
         ui = new Mines();
-        ui.setShow(ShowState.INFO);
+        ui.setShow(ShowState.BOOT);
         var seed = UrlLocation.getHash();
         if (seed.length() != 0) {
             ui.init(10, 10, 10, seed);
