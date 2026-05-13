@@ -45,6 +45,7 @@ import org.apidesign.demo.minesweeper.js.UrlLocation;
     @Property(name = "rows", type = Row.class, array = true),})
 public final class MinesModel {
     private final RandomGenerator random = new RandomGenerator();
+    private Grid grid;
 
     enum ShowState {
         BOOT, INFO, PRIVACY, GAME
@@ -78,7 +79,7 @@ public final class MinesModel {
     static boolean showPrivacy(ShowState show) {
         return show == ShowState.GAME;
     }
-    
+
     @ComputedProperty
     static boolean showLogo(ShowState show) {
         return show == null;
@@ -141,7 +142,6 @@ public final class MinesModel {
     @Function
     static void normalGame(Mines model) {
         model.init(10, 10, 10, "");
-        Grid.initializeGrid(10, 10);
     }
 
     @Function
@@ -208,6 +208,19 @@ public final class MinesModel {
         if (seed != null) {
             // randomize after generating the same layout of mines
             random.seedTo(null);
+        }
+        model.updateGrid();
+    }
+
+    @ModelOperation
+    void withGrid(Mines model, Grid grid) {
+        this.grid = grid;
+    }
+
+    @ModelOperation
+    void updateGrid() {
+        if (grid != null) {
+            grid.update();
         }
     }
 
@@ -659,12 +672,15 @@ public final class MinesModel {
     private static Mines ui;
 
     public static void main(String... args) throws Exception {
+        var grid = Grid.create(10, 10);
         ui = new Mines();
+        ui.withGrid(grid);
         ui.setShow(ShowState.BOOT);
         var seed = UrlLocation.getHash();
         if (seed.length() != 0) {
             ui.init(10, 10, 10, seed);
         }
         ui.applyBindings();
+        ui.updateGrid();
     }
 }

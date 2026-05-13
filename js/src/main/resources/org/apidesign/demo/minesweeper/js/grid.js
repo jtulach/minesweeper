@@ -154,7 +154,7 @@ function initializeGrid(gridSize, pieceCount) {
             }
         }
 
-        initGrid() {
+        updateGrid() {
             const cellSize = this.calculateCellSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
@@ -431,10 +431,9 @@ function initializeGrid(gridSize, pieceCount) {
         });
     }
 
-    gridManager.initGrid();
     // Handle window resize for responsiveness
     window.addEventListener('resize', () => {
-        gridManager.initGrid();
+        gridManager.updateGrid();
         gridManager.updatePiecesForResize(arrivalCounter);
     });
 
@@ -446,4 +445,8 @@ function initializeGrid(gridSize, pieceCount) {
 
     }, 100);
      */
+
+    return {
+        'updateGrid' : function() { gridManager.updateGrid(); }
+    };
 }

@@ -28,9 +28,25 @@ import net.java.html.js.JavaScriptResource;
 
 @JavaScriptResource(value = "grid.js")
 public class Grid {
-    private Grid() {
+    private final Object jsGrid;
+
+    private Grid(Object jsGrid) {
+        this.jsGrid = jsGrid;
     }
 
-    @JavaScriptBody(args = {"size", "mines"}, body = "initializeGrid(size, mines);")
-    public static native void initializeGrid(int size, int mines);
+    public static Grid create(int size, int mines) {
+        return new Grid(initializeGrid(size, mines));
+    }
+
+    public final void update() {
+        updateGrid(jsGrid);
+    }
+
+    @JavaScriptBody(args = {"size", "mines"}, body = """
+        return initializeGrid(size, mines);
+    """)
+    private static native Object initializeGrid(int size, int mines);
+
+    @JavaScriptBody(args = {"grid"}, body = "grid.updateGrid();")
+    private static native Object updateGrid(Object grid);
 }

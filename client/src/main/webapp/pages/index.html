@@ -33,21 +33,21 @@
         <link href="bootstrap-responsive.css" rel="stylesheet">
         <link href="mines.css" rel="stylesheet">
         <!-- Target tablets -->
-        <link href="mines-tablet-large.css" 
-              media="(min-width:640px), (min-height:660px)" 
+        <link href="mines-tablet-large.css"
+              media="(min-width:640px), (min-height:660px)"
               rel="stylesheet" />
-        <link href="mines-tablet-small.css" 
-              media="(min-width:510px) and (max-width:640px), (min-height:520px) and (max-height:660px)" 
+        <link href="mines-tablet-small.css"
+              media="(min-width:510px) and (max-width:640px), (min-height:520px) and (max-height:660px)"
               rel="stylesheet" />
         <!-- Target phones -->
-        <link href="mines-phone-large.css" 
-              media="(min-width:410px) and (max-width:510px), (min-height:400px) and (max-height:520px)" 
+        <link href="mines-phone-large.css"
+              media="(min-width:410px) and (max-width:510px), (min-height:400px) and (max-height:520px)"
               rel="stylesheet" />
-        <link href="mines-phone-small.css" 
-              media="(min-width:300px) and (max-width:410px), (min-height:300px) and (max-height:400px)" 
+        <link href="mines-phone-small.css"
+              media="(min-width:300px) and (max-width:410px), (min-height:300px) and (max-height:400px)"
               rel="stylesheet" />
-        <link href="mines-phone-smaller.css" 
-              media="(max-width:300px), (max-height:300px)" 
+        <link href="mines-phone-smaller.css"
+              media="(max-width:300px), (max-height:300px)"
               rel="stylesheet" />
         <link href="styles.css" rel="stylesheet" />
     </head>
@@ -99,7 +99,8 @@
                 </button>
             </div>
         </script>
-        <script type="text/html" id="field">
+
+        <div data-bind="visible: showGame" style="display: none">
             <div id="navbar-horizontal" class="navbar">
                 <div data-bind="template: 'horizontal-navbar'"></div>
             </div>
@@ -122,9 +123,8 @@
                   </div>
               </section>
             </main>
-        </script>
+        </div>
 
-        <div data-bind="template: { name : 'field', if: showGame }"></div>
         <div class="jumbotron control-label" data-bind="visible: showHeader" style="display: none">
             <div class="navbar">
                 <div class="navbar-inner">
@@ -145,7 +145,7 @@
                     the mines. This game is <b>fair</b>!
                 </p>
                 <p>At first sight this is an old good <em>minesweeper</em>
-                    game. At closer look, this is a demo of a revolutionary 
+                    game. At closer look, this is a demo of a revolutionary
                     technology that allows you to use <strong>Java</strong>
                     to code your application logic and present it using
                     <strong>HTML</strong> on any device capable of rendering
@@ -160,7 +160,7 @@
         <div class="col-md-4">
           <h2>Documentation</h2>
           <p>
-              In case you want to write application like 
+              In case you want to write application like
               this (e.g. use <strong>Java</strong> and <strong>HTML</strong>)
               you can learn more about the libraries that
               make that possible. Follow this link to
@@ -184,8 +184,8 @@
           <p>
               While primarily this technology runs on a desktop
               or as a tablet or phone application, it is possible
-              to execute the same unchanged code in a browser 
-              as well. To do so, one needs a 
+              to execute the same unchanged code in a browser
+              as well. To do so, one needs a
               <a href="#" data-bind="click: urlBck2Brwsr">bck2brwsr</a>
               virtual machine.
           </p>
@@ -214,7 +214,7 @@
         <p>
             <a href="#" data-bind="click: urlGooglePlay"
                class="btn btn-primary" role="button"
-               >Install &raquo;</a> 
+               >Install &raquo;</a>
         </p>
       </div>
     </div>
@@ -240,7 +240,7 @@
             <a href="#"
                data-bind="click: urlAppStore"
                class="btn btn-primary" role="button"
-               >Install &raquo;</a> 
+               >Install &raquo;</a>
         </p>
       </div>
     </div>
@@ -251,7 +251,7 @@
       <div class="caption">
         <h3>Develop Own App!</h3>
         <p>
-            One can package this application as a 
+            One can package this application as a
             <a href="#"
                data-bind="click: urlNetBeansPlugin"
             >plugin for NetBeans</a> or
@@ -259,14 +259,14 @@
             NetBeans</a> IDE to create
             application like this yourself. Enjoy the
             power of <em>HTML</em> and <em>Java</em>.
-            Write your applications once and deploy and display 
+            Write your applications once and deploy and display
             them on any device!
         </p>
         <p>
             <a href="#"
                data-bind="click: urlDevelop"
                class="btn btn-primary" role="button"
-               >Develop &raquo;</a> 
+               >Develop &raquo;</a>
         </p>
       </div>
     </div>
