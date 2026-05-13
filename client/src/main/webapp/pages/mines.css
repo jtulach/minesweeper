@@ -42,10 +42,10 @@ table {
     table-layout: fixed;
 }
 
-table.field {
+div.grid {
     position: relative;
 }
-table.field td {
+div.grid td {
     border-color: #e5e5e5;
     border-style: ridge;
     vertical-align: middle;
@@ -60,7 +60,7 @@ table.field td {
     #navbar-horizontal {
         display: none;
     }
-    table.field td {
+    div.grid td {
         width: 6vh;
         height: 6vh;
         font-size: 6vh;
@@ -72,7 +72,7 @@ table.field td {
     #navbar-vertical {
         display: none;
     }
-    table.field td {
+    div.grid td {
         width: 6vw;
         height: 6vw;
         font-size: 6vw;
@@ -140,7 +140,7 @@ table.field td {
     font-size: 10vh;
 }
 
-table.field td div {
+div.grid td div {
     position: relative;
     left: 0;
     top: 0;
@@ -163,7 +163,7 @@ table.field td div {
     50% { opacity: 0.1; }
     100% { opacity: 0.9; }
 } 
-table.MARKING td.UNKNOWN div.sign:before {
+table.MARKING div.UNKNOWN div.sign:before {
     content: "\002730";
     color: #802420;
     
@@ -183,19 +183,19 @@ table.MARKING td.UNKNOWN div.sign:before {
     animation-iteration-count: infinite;
 }
 
-table.field td.UNKNOWN {
+div.grid div.UNKNOWN {
     background-color: #D6E4E1;
     color: #D6E4E1;
     cursor: pointer;
 }
-table.field td.MARKED {
+div.grid div.MARKED {
     background-color: #D6E4E1;
     cursor: pointer;
 }
-table.field td.EXPLOSION {
+div.grid div.EXPLOSION {
     background-color: #A31E39;
 }
-table.field td.DISCOVERED {
+div.grid div.DISCOVERED {
     background-color: #9DB2B1;
 }
 
@@ -218,37 +218,37 @@ table td div.fill::after {
     content: "\002780";
     visibility: hidden;
 }
-table.field td.EXPLOSION div.sign::after {
+div.grid div.EXPLOSION div.sign::after {
     content: "\002717";
 }
-table.field td.DISCOVERED div.sign::after {
+div.grid div.DISCOVERED div.sign::after {
     content: "\002714";
 }
-table.field td.MARKED div.sign::after {
+div.grid div.MARKED div.sign::after {
     content: "\002730";
 }
-table.field td.N_1 div.sign::after {
+div.grid div.N_1 div.sign::after {
     content: "\002780";
 }
-table.field td.N_2 div.sign::after {
+div.grid div.N_2 div.sign::after {
     content: "\002781";
 }
-table.field td.N_3 div.sign::after {
+div.grid div.N_3 div.sign::after {
     content: "\002782";
 }
-table.field td.N_4 div.sign::after {
+div.grid div.N_4 div.sign::after {
     content: "\002783";
 }
-table.field td.N_5 div.sign::after {
+div.grid div.N_5 div.sign::after {
     content: "\002784";
 }
-table.field td.N_6 div.sign::after {
+div.grid div.N_6 div.sign::after {
     content: "\002785";
 }
-table.field td.N_7 div.sign::after {
+div.grid div.N_7 div.sign::after {
     content: "\002786";
 }
-table.field td.N_8 div.sign::after {
+div.grid div.N_8 div.sign::after {
     content: "\002787";
 }
 .but-orientation {

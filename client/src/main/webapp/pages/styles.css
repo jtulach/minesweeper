@@ -1,6 +1,6 @@
 :root {
   --bg: #09121f;
-  --surface: rgba(34, 57, 83, 0.95);
+  --surface: rgba(240, 240, 240, 0.95);
   --cell: rgba(255, 255, 255, 0.04);
   --piece: #70d6ff;
   --piece-shadow: rgba(112, 214, 255, 0.35);
@@ -33,6 +33,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
 }
 
 .grid {
@@ -52,11 +53,11 @@ body {
   display: grid;
   place-items: center;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0;
-  font-size: clamp(0.9rem, 1.25vw, 1.1rem);
+  font-size: clamp(1rem, 2vw, 2rem);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(0, 0, 0, 0.88);
   user-select: none;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;

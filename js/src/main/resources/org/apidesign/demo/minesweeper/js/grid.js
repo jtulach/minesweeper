@@ -131,10 +131,13 @@ function initializeGrid(gridSize, pieceCount) {
             }
         }
 
-        createGrid() {
+        initGrid() {
             const cellSize = this.calculateCellSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
+        }
+
+        createGrid() {
 
             for (let row = 0; row < gridSize; row++) {
                 for (let col = 0; col < gridSize; col++) {
@@ -405,15 +408,19 @@ function initializeGrid(gridSize, pieceCount) {
         });
     }
 
-    // 100ms delay to allow debugger to attach
+    gridManager.initGrid();
+    // Handle window resize for responsiveness
+    window.addEventListener('resize', () => {
+        gridManager.initGrid();
+        gridManager.updatePiecesForResize(arrivalCounter);
+    });
+
+    /*
     setTimeout(() => {
         gridManager.createGrid();
         let pieces = gridManager.createPieces(dragController);
         setTimeout(() => animatePieces(pieces), 1000);
 
-        // Handle window resize for responsiveness
-        window.addEventListener('resize', () => {
-            gridManager.updatePiecesForResize(arrivalCounter);
-        });
     }, 100);
+     */
 }
