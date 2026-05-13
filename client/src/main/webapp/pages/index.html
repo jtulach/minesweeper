@@ -49,6 +49,7 @@
         <link href="mines-phone-smaller.css" 
               media="(max-width:300px), (max-height:300px)" 
               rel="stylesheet" />
+        <link href="styles.css" rel="stylesheet" />
     </head>
     <body>
         <center data-bind="visible: showLogo">
@@ -105,24 +106,22 @@
             <div id="navbar-vertical" >
                 <div data-bind="template: 'vertical-navbar'"></div>
             </div>
-            <center>
-              <table class="field" data-bind="css: gameStyle">
-                <tbody>
+            <main class="app-shell">
+              <section class="grid-container">
+                  <div class="grid" id="grid" data-bind="css: gameStyle">
                     <!-- ko foreach: rows -->
-                    <tr>
                         <!-- ko foreach: columns -->
-                        <td data-bind="css: style, click: $parents[1].click" >
+                        <div class="grid-cell" data-bind="css: style, click: $parents[1].click">
                             <div class="cell">
                                 <div class="fill"></div>
                                 <div class="sign"></div>
                             </div>
-                        </td>
+                        </div>
                         <!-- /ko -->
-                    </tr>
                     <!-- /ko -->
-                </tbody>
-            </table>
-          </center>
+                  </div>
+              </section>
+            </main>
         </script>
 
         <div data-bind="template: { name : 'field', if: showGame }"></div>

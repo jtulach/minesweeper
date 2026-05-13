@@ -31,6 +31,7 @@ import net.java.html.json.ModelOperation;
 import net.java.html.json.Models;
 import net.java.html.json.Property;
 import net.java.html.sound.AudioClip;
+import org.apidesign.demo.minesweeper.js.Grid;
 import org.apidesign.demo.minesweeper.js.OpenURL;
 import org.apidesign.demo.minesweeper.js.RandomGenerator;
 import org.apidesign.demo.minesweeper.js.UrlLocation;
@@ -135,6 +136,7 @@ public final class MinesModel {
     @Function
     static void normalGame(Mines model) {
         model.init(10, 10, 10, "");
+        Grid.initializeGrid(10, 10);
     }
 
     @Function
