@@ -33,15 +33,6 @@
     background-color: #fafafa;
 }
 
-table {
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    table-layout: fixed;
-}
-
 div.grid {
     position: relative;
 }
@@ -163,7 +154,7 @@ div.grid td div {
     50% { opacity: 0.1; }
     100% { opacity: 0.9; }
 } 
-table.MARKING div.UNKNOWN div.sign:before {
+div.MARKING div.UNKNOWN div.sign:before {
     content: "\002730";
     color: #802420;
     
@@ -199,22 +190,7 @@ div.grid div.DISCOVERED {
     background-color: #9DB2B1;
 }
 
-table td div.cell::after {
-    position: relative;
-    left: 0px;
-    top: 0px;
-}
-table td div.fill {
-    position: relative;
-    left: 0px;
-    top: 0px;
-}
-table td div.sign {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-}
-table td div.fill::after {
+div.grid td div.fill::after {
     content: "\002780";
     visibility: hidden;
 }
