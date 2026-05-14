@@ -700,30 +700,7 @@ public final class MinesModel {
 
     public static void main(String... args) throws Exception {
         ui = new Mines();
-        var grid = new Grid(10, 10) {
-            @Override
-            protected boolean onDrop(int prevX, int prevY, int x, int y) {
-                var prev = findSquare(ui, prevX, prevY);
-                if (prev != null && prev.getState() == SquareType.MARKED) {
-                    prev.setState(SquareType.UNKNOWN);
-                }
-
-                var actions = new boolean[2];
-                var square = findSquare(ui, x, y);
-                if (square != null) {
-                    ui.placeMineMark(square, actions);
-                    if (actions[0]) {
-                        // placing was successful
-                        if (actions[1]) {
-                            // game was won
-                            ui.setState(GameState.WON);
-                        }
-                    }
-                }
-                return actions[0];
-            }
-
-        };
+        var grid = new MinesGrid(10, 10, ui);
         ui.withGrid(grid);
         ui.setShow(ShowState.BOOT);
         var seed = UrlLocation.getHash();
@@ -732,5 +709,40 @@ public final class MinesModel {
         }
         ui.applyBindings();
         ui.updateGrid();
+    }
+
+    /**
+     * Connecting drag and drop support provided by JavaScript with
+     * {@link Mines} model.
+     */
+    private static final class MinesGrid extends Grid {
+        private final Mines model;
+
+        public MinesGrid(int size, int mines, Mines ui) {
+            super(size, mines);
+            this.model = ui;
+        }
+
+        @Override
+        protected boolean onDrop(int prevX, int prevY, int x, int y) {
+            var prev = findSquare(model, prevX, prevY);
+            if (prev != null && prev.getState() == SquareType.MARKED) {
+                prev.setState(SquareType.UNKNOWN);
+            }
+
+            var actions = new boolean[2];
+            var square = findSquare(model, x, y);
+            if (square != null) {
+                model.placeMineMark(square, actions);
+                if (actions[0]) {
+                    // placing was successful
+                    if (actions[1]) {
+                        // game was won
+                        model.setState(GameState.WON);
+                    }
+                }
+            }
+            return actions[0];
+        }
     }
 }
