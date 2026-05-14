@@ -28,7 +28,7 @@ function initializeGrid(gridSize, pieceCount) {
             this.element = document.createElement('div');
             this.element.id = 'arrival-counter';
             this.element.textContent = '0';
-            document.body.appendChild(this.element);
+            gridContainer.appendChild(this.element);
         }
 
         updateText(count) {
