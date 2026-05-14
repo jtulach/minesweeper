@@ -40,4 +40,4 @@ jobs:
         ps -Af
         
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B install --file pom.xml

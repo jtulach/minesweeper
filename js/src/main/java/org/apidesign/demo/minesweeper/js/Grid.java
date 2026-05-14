@@ -27,19 +27,47 @@ import net.java.html.js.JavaScriptBody;
 import net.java.html.js.JavaScriptResource;
 
 @JavaScriptResource(value = "grid.js")
-public class Grid {
+public abstract class Grid {
     private final Object jsGrid;
+
+    /** Constructor for subclasses */
+    protected Grid(int size, int mines) {
+        this(initializeGrid(size, mines));
+    }
+
+    /** Subclasses has to implement this method. Then they obtain
+     * callbacks about bombs being dropped at particular piece.
+     *
+     * @param prevX column or {@code -1} when off-grid
+     * @param prevY row or {@code -1} when off-grid
+     * @param x column or {@code -1} when off-grid
+     * @param y row or {@code -1} when off-grid
+     * @return {@code true} if the drop is acceptable, {@code false} to cancel the drop
+     */
+    protected abstract boolean onDrop(int prevX, int prevY, int x, int y);
+
+    /** Adjust the CSS variables & co. Right now.
+     */
+    public final void update() {
+        updateGrid(jsGrid);
+    }
+
+    /** Clears a square from a piece if it has any.
+     *
+     * @param x column
+     * @param y row
+     */
+    public final void clear(int x, int y) {
+        backToTarget(jsGrid, x, y);
+    }
+
+    //
+    // Internal implementaton of a bridge to JavaScript
+    //
 
     private Grid(Object jsGrid) {
         this.jsGrid = jsGrid;
-    }
-
-    public static Grid create(int size, int mines) {
-        return new Grid(initializeGrid(size, mines));
-    }
-
-    public final void update() {
-        updateGrid(jsGrid);
+        registerDrop(jsGrid, this);
     }
 
     @JavaScriptBody(args = {"size", "mines"}, body = """
@@ -49,4 +77,14 @@ public class Grid {
 
     @JavaScriptBody(args = {"grid"}, body = "grid.updateGrid();")
     private static native Object updateGrid(Object grid);
+
+    @JavaScriptBody(args = {"grid", "x", "y"}, body = "grid.backToTarget(x, y);")
+    private static native Object backToTarget(Object grid, int x, int y);
+
+    @JavaScriptBody(args = {"jsGrid", "self"}, keepAlive = true, javacall = true, body = """
+    jsGrid.registerDrop((prevX, prevY, x, y) => {
+      return self.@org.apidesign.demo.minesweeper.js.Grid::onDrop(IIII)(prevX, prevY, x, y);
+    });
+    """)
+    private static native void registerDrop(Object jsGrid, Grid self);
 }

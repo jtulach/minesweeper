@@ -25,8 +25,8 @@
   --bg: #09121f;
   --surface: rgba(240, 240, 240, 0.95);
   --cell: rgba(255, 255, 255, 0.04);
-  --piece: #70d6ff;
-  --piece-shadow: rgba(112, 214, 255, 0.35);
+  --piece: #707070;
+  --piece-shadow: #333333;
   --grid-size: 10;
   --cell-size: 40px;
 }
@@ -46,8 +46,8 @@ body {
 }
 
 .grid-container {
-  width: min(90vw, 90vh);
-  height: min(90vw, 90vh);
+  width: min(70vw, 70vh);
+  height: min(70vw, 70vh);
   padding: 16px;
   background: var(--surface);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -94,10 +94,19 @@ body {
   width: calc(var(--cell-size) * 0.75);
   height: calc(var(--cell-size) * 0.75);
   border-radius: 50%;
-  background: linear-gradient(135deg, #7de2ff, #3d8bff);
+  background: linear-gradient(135deg, rgba(66, 66, 66, 0.5), rgba(133, 133, 133, 0.5));
   box-shadow: 0 12px 22px var(--piece-shadow);
   transition: transform 0s ease-in-out;
   touch-action: none;
+  place-items: center;
+  font-size: calc(var(--cell-size) * 0.75);
+  font-weight: 600;
+  color: transparent;
+  display: grid;
+}
+
+.piece.at-target {
+    color: rgba(0, 0, 0, 0.88);
 }
 
 .piece.moving {
@@ -120,5 +129,4 @@ body {
   font-family: Inter, system-ui, sans-serif;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
   pointer-events: none;
-  display: none;
 }

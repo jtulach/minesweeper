@@ -334,18 +334,39 @@ public final class MinesModel {
         model.click(emptySquares.get(select));
     }
 
+
+    /** Return true if the game is finished/won by placing the mark.
+     * @param results out argument - array of two booleans.
+     *    The {@code [0]} value signals whether the placing is successful.
+     *    The {@code [1]} value signals whether the game has finished or not
+     */
+    @ModelOperation
+    final void placeMineMark(Mines model, Square data, boolean[] results) {
+        if (data.getState() == SquareType.UNKNOWN) {
+            results[0] = true;
+            data.setState(SquareType.MARKED);
+            if (allMarked(model)) {
+                results[1] = true;
+                return;
+            }
+        }
+    }
+
     @ModelOperation
     @Function
     void click(Mines model, Square data) {
         if (model.getState() == GameState.MARKING_MINE) {
-            if (data.getState() == SquareType.UNKNOWN) {
-                data.setState(SquareType.MARKED);
-                if (allMarked(model)) {
+            var actions = new boolean[2];
+            placeMineMark(model, data, actions);
+            if (actions[0]) {
+                // the marking was successful
+                if (actions[1]) {
+                    // the game should end
                     model.setState(GameState.WON);
-                    return;
+                } else {
+                    model.setState(GameState.IN_PROGRESS);
                 }
             }
-            model.setState(GameState.IN_PROGRESS);
             return;
         }
         if (model.getState() != GameState.IN_PROGRESS) {
@@ -355,6 +376,20 @@ public final class MinesModel {
             data.setState(SquareType.UNKNOWN);
             if (allMarked(model)) {
                 model.setState(GameState.WON);
+            } else {
+                if (grid != null) {
+                    var rowY = 0;
+                    for (var row : model.getRows()) {
+                        var colX = 0;
+                        for (var sq : row.getColumns()) {
+                            if (sq == data) {
+                                grid.clear(colX, rowY);
+                            }
+                            colX++;
+                        }
+                        rowY++;
+                    }
+                }
             }
             return;
         }
@@ -668,12 +703,18 @@ public final class MinesModel {
         computeMines(m);
         return true;
     }
+    private static Square findSquare(Mines model, int x, int y) {
+        if (x < 0 || y < 0) {
+            return null;
+        }
+        return model.getRows().get(y).getColumns().get(x);
+    }
 
     private static Mines ui;
 
     public static void main(String... args) throws Exception {
-        var grid = Grid.create(10, 10);
         ui = new Mines();
+        var grid = new MinesGrid(10, 10, ui);
         ui.withGrid(grid);
         ui.setShow(ShowState.BOOT);
         var seed = UrlLocation.getHash();
@@ -682,5 +723,40 @@ public final class MinesModel {
         }
         ui.applyBindings();
         ui.updateGrid();
+    }
+
+    /**
+     * Connecting drag and drop support provided by JavaScript with
+     * {@link Mines} model.
+     */
+    private static final class MinesGrid extends Grid {
+        private final Mines model;
+
+        public MinesGrid(int size, int mines, Mines ui) {
+            super(size, mines);
+            this.model = ui;
+        }
+
+        @Override
+        protected boolean onDrop(int prevX, int prevY, int x, int y) {
+            var prev = findSquare(model, prevX, prevY);
+            if (prev != null && prev.getState() == SquareType.MARKED) {
+                prev.setState(SquareType.UNKNOWN);
+            }
+
+            var actions = new boolean[2];
+            var square = findSquare(model, x, y);
+            if (square != null) {
+                model.placeMineMark(square, actions);
+                if (actions[0]) {
+                    // placing was successful
+                    if (actions[1]) {
+                        // game was won
+                        model.setState(GameState.WON);
+                    }
+                }
+            }
+            return actions[0];
+        }
     }
 }
