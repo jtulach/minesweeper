@@ -102,7 +102,7 @@ function initializeGrid(gridSize, pieceCount) {
             }, { once: true });
         }
 
-        movePieceFromTargetToGridCell(row, col) {
+        movePieceFromTargetToGridCell(col, row) {
             const availablePiece = this.pieces.find(piece => piece.classList.contains('at-target') && !piece.classList.contains('dragging'));
             if (!availablePiece) return false;
 
@@ -112,8 +112,24 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.dataset.gridRow = row;
             availablePiece.dataset.gridCol = col;
             availablePiece.style.transition = 'left 0.18s ease, top 0.18s ease';
+            availablePiece.style.transitionDelay = '0.5s';
             availablePiece.style.left = `${left}px`;
             availablePiece.style.top = `${top}px`;
+            availablePiece.addEventListener('transitionend', event => {
+                let cancelled = availablePiece.classList.contains('at-target');
+                if (event.propertyName === 'left' || event.propertyName === 'top') {
+                    this.completePieceDrop(availablePiece);
+                    this.arrivalCounter.updateText(this.getRemainingPieces());
+                    this.updateGrid();
+                }
+            }, { once: true });
+            availablePiece.addEventListener('transitioncancel', event => {
+                if (!availablePiece.classList.contains('at-target')) {
+                    delete availablePiece.dataset.gridCol;
+                    delete availablePiece.dataset.gridRow;
+                    availablePiece.classList.add('at-target');
+                }
+            }, { once: true });
             return true;
         }
 
@@ -414,6 +430,9 @@ function initializeGrid(gridSize, pieceCount) {
         },
         'registerDrop' : function(f) {
             gridManager.onDrop.push(f);
+        },
+        'moveTo' : function(x, y) {
+            gridManager.movePieceFromTargetToGridCell(x, y);
         },
         'backToTarget' : function(x, y) {
             gridManager.backToTarget(x, y);

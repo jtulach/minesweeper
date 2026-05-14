@@ -126,6 +126,7 @@ public final class MinesModel {
             }
             return values()[ordinal() + 1];
         }
+
     }
 
     @ComputedProperty
@@ -352,6 +353,16 @@ public final class MinesModel {
         }
     }
 
+    @Function
+    void press(Mines model, Square data) {
+        if (data.getState() == SquareType.UNKNOWN) {
+            var at = findXY(model, data);
+            if (grid != null && at != null) {
+                grid.moveTo(at[0], at[1]);
+            }
+        }
+    }
+
     @ModelOperation
     @Function
     void click(Mines model, Square data) {
@@ -377,25 +388,14 @@ public final class MinesModel {
             if (allMarked(model)) {
                 model.setState(GameState.WON);
             } else {
-                if (grid != null) {
-                    var rowY = 0;
-                    for (var row : model.getRows()) {
-                        var colX = 0;
-                        for (var sq : row.getColumns()) {
-                            if (sq == data) {
-                                grid.clear(colX, rowY);
-                            }
-                            colX++;
-                        }
-                        rowY++;
-                    }
-                }
+                clearAt(model, data);
             }
             return;
         }
         if (data.getState() != SquareType.UNKNOWN) {
             return;
         }
+        clearAt(model, data);
         if (allUnknown(model)) {
             UrlLocation.setHash(random.getSeed());
         }
@@ -420,6 +420,17 @@ public final class MinesModel {
                 }
             }
             cleanedUp(model, data);
+        }
+    }
+
+    private void clearAt(Mines model, Square data) {
+        var g = grid;
+        if (g == null) {
+            return;
+        }
+        var at = findXY(model, data);
+        if (at != null) {
+            g.clear(at[0], at[1]);
         }
     }
 
@@ -703,12 +714,29 @@ public final class MinesModel {
         computeMines(m);
         return true;
     }
+
     private static Square findSquare(Mines model, int x, int y) {
         if (x < 0 || y < 0) {
             return null;
         }
         return model.getRows().get(y).getColumns().get(x);
     }
+
+    private static int[] findXY(Mines model, Square data) {
+        var rowY = 0;
+        for (var row : model.getRows()) {
+            var colX = 0;
+            for (var sq : row.getColumns()) {
+                if (sq == data) {
+                    return new int[] { colX, rowY };
+                }
+                colX++;
+            }
+            rowY++;
+        }
+        return null;
+    }
+
 
     private static Mines ui;
 

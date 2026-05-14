@@ -52,6 +52,15 @@ public abstract class Grid {
         updateGrid(jsGrid);
     }
 
+    /** Initiates a move of an unplaced piece (if available) to provided location.
+     *
+     * @param x column
+     * @param y row
+     */
+    public final void moveTo(int x, int y) {
+        moveTo(jsGrid, x, y);
+    }
+
     /** Clears a square from a piece if it has any.
      *
      * @param x column
@@ -77,6 +86,9 @@ public abstract class Grid {
 
     @JavaScriptBody(args = {"grid"}, body = "grid.updateGrid();")
     private static native Object updateGrid(Object grid);
+
+    @JavaScriptBody(args = {"grid", "x", "y"}, body = "grid.moveTo(x, y);")
+    private static native Object moveTo(Object grid, int x, int y);
 
     @JavaScriptBody(args = {"grid", "x", "y"}, body = "grid.backToTarget(x, y);")
     private static native Object backToTarget(Object grid, int x, int y);
