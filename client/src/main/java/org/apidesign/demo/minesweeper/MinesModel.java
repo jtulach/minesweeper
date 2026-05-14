@@ -335,16 +335,20 @@ public final class MinesModel {
     }
 
 
-    /** Return true if the game is finished/won by placing the mark */
+    /** Return true if the game is finished/won by placing the mark.
+     * @param results out argument - array of two booleans.
+     *    The {@code [0]} value signals whether the placing is successful.
+     *    The {@code [1]} value signals whether the game has finished or not
+     */
     @ModelOperation
-    final void placeMineMark(Mines model, Square data) {
+    final void placeMineMark(Mines model, Square data, boolean[] results) {
         if (data.getState() == SquareType.UNKNOWN) {
+            results[0] = true;
             data.setState(SquareType.MARKED);
             if (allMarked(model)) {
-                model.setState(GameState.WON);
+                results[1] = true;
                 return;
             }
-            model.setState(GameState.IN_PROGRESS);
         }
     }
 
@@ -352,7 +356,17 @@ public final class MinesModel {
     @Function
     void click(Mines model, Square data) {
         if (model.getState() == GameState.MARKING_MINE) {
-            placeMineMark(model, data);
+            var actions = new boolean[2];
+            placeMineMark(model, data, actions);
+            if (actions[0]) {
+                // the marking was successful
+                if (actions[1]) {
+                    // the game should end
+                    model.setState(GameState.WON);
+                } else {
+                    model.setState(GameState.IN_PROGRESS);
+                }
+            }
             return;
         }
         if (model.getState() != GameState.IN_PROGRESS) {
@@ -682,9 +696,18 @@ public final class MinesModel {
         ui = new Mines();
         var grid = new Grid(10, 10) {
             @Override
-            protected void onDrop(int x, int y) {
+            protected boolean onDrop(int x, int y) {
                 var square = ui.getRows().get(y).getColumns().get(x);
-                ui.placeMineMark(square);
+                var actions = new boolean[2];
+                ui.placeMineMark(square, actions);
+                if (actions[0]) {
+                    // placing was successful
+                    if (actions[1]) {
+                        // game was won
+                        ui.setState(GameState.WON);
+                    }
+                }
+                return actions[0];
             }
         };
         ui.withGrid(grid);

@@ -40,10 +40,18 @@ public abstract class Grid {
     /** Subclasses has to implement this method. Then they obtain
      * callbacks about bombs being dropped at particular piece.
      *
-     * @param x
-     * @param y
+     * @param x column
+     * @param y row
+     * @return {@code true} if the drop is acceptable, {@code false} to cancel the drop
      */
-    protected abstract void onDrop(int x, int y);
+    protected abstract boolean onDrop(int x, int y);
+
+    /** Unmarks drop of a piece.
+     *
+     */
+    public final void unDrop() {
+
+    }
 
     /** Adjust the CSS variables & co. Right now.
      */
@@ -70,7 +78,7 @@ public abstract class Grid {
 
     @JavaScriptBody(args = {"jsGrid", "self"}, keepAlive = true, javacall = true, body = """
     jsGrid.registerDrop((x, y) => {
-      self.@org.apidesign.demo.minesweeper.js.Grid::onDrop(II)(x, y);
+      return self.@org.apidesign.demo.minesweeper.js.Grid::onDrop(II)(x, y);
     });
     """)
     private static native void registerDrop(Object jsGrid, Grid self);

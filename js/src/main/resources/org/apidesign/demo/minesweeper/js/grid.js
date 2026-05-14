@@ -92,6 +92,16 @@ function initializeGrid(gridSize, pieceCount) {
             };
         }
 
+        backToTarget(col, row) {
+            const piece = this.findPiece(row, col);
+            if (piece !== null) {
+                const cellSize = this.calculateCellSize();
+                const pieceSize = parseFloat(piece.dataset.pieceSize);
+                piece.style.display = 'block';
+                this.animatePieceBackToTarget(piece, cellSize, pieceSize);
+            }
+        }
+
         animatePieceBackToTarget(piece, cellSize, pieceSize) {
             const { centerX, centerY } = this.getTargetPosition(cellSize);
             const targetX = centerX - pieceSize / 2;
@@ -143,6 +153,10 @@ function initializeGrid(gridSize, pieceCount) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
+                if (!this.onDrop.some(f => f(cell.col, cell.row))) {
+                    this.animatePieceBackToTarget(piece, cellSize, pieceSize);
+                    return;
+                }
 
                 piece.dataset.gridRow = cell.row;
                 piece.dataset.gridCol = cell.col;
@@ -151,8 +165,6 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.style.left = `${snapped.left}px`;
                 piece.style.top = `${snapped.top}px`;
                 piece.style.display = 'none';
-
-                this.onDrop.map(f => f(cell.col, cell.row));
             } else {
                 this.animatePieceBackToTarget(piece, cellSize, pieceSize);
             }
@@ -162,40 +174,6 @@ function initializeGrid(gridSize, pieceCount) {
             const cellSize = this.calculateCellSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
-        }
-
-        createGrid() {
-
-            for (let row = 0; row < gridSize; row++) {
-                for (let col = 0; col < gridSize; col++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'grid-cell';
-                    cell.dataset.value = '0';
-                    cell.textContent = '0';
-                    cell.addEventListener('click', () => {
-                        let piece = this.findPiece(row, col);
-                        let nextValue;
-                        if (piece != null) {
-                            const pieceSize = parseFloat(piece.dataset.pieceSize);
-                            const cellSize = this.calculateCellSize();
-                            this.animatePieceBackToTarget(piece, cellSize, pieceSize);
-                            nextValue = 0;
-                        } else {
-                            const currentValue = parseInt(cell.dataset.value || cell.textContent || '0', 10);
-                            nextValue = (currentValue + 1) % 10;
-                            if (nextValue === 9) {
-                                if (this.arrivalCounter.canDecrement()) {
-                                    this.movePieceFromTargetToGridCell(row, col);
-                                    this.arrivalCounter.decrement();
-                                }
-                            }
-                        }
-                        cell.dataset.value = `${nextValue}`;
-                        cell.textContent = `${nextValue}`;
-                    });
-                    this.gridElement.appendChild(cell);
-                }
-            }
         }
 
         createPieces(dragController) {
@@ -442,9 +420,6 @@ function initializeGrid(gridSize, pieceCount) {
     });
 
     var pieces = null;
-    /*
-        gridManager.createGrid();
-     */
     return {
         'updateGrid' : function() {
             gridManager.updateGrid();
