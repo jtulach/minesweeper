@@ -153,7 +153,9 @@ function initializeGrid(gridSize, pieceCount) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
-                if (!this.onDrop.some(f => f(cell.col, cell.row))) {
+                let prevCol = piece.dataset.gridCol || -1;
+                let prevRow = piece.dataset.gridRow || -1;
+                if (!this.onDrop.some(f => f(prevCol, prevRow, cell.col, cell.row))) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
@@ -164,7 +166,6 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.style.transition = 'left 0.18s ease, top 0.18s ease';
                 piece.style.left = `${snapped.left}px`;
                 piece.style.top = `${snapped.top}px`;
-                piece.style.display = 'none';
             } else {
                 this.animatePieceBackToTarget(piece, cellSize, pieceSize);
             }
@@ -174,6 +175,27 @@ function initializeGrid(gridSize, pieceCount) {
             const cellSize = this.calculateCellSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
+
+            const pieceSize = cellSize * 0.75;
+            const pieceOffset = (cellSize - pieceSize) / 2;
+
+            this.pieces.forEach(piece => {
+                if (piece.classList.contains('dragging')) return;
+                piece.dataset.pieceSize = pieceSize;
+                piece.style.transition = 'none';
+
+                if (piece.classList.contains('at-target')) {
+                    const { centerX, centerY } = this.getTargetPosition(cellSize);
+                    piece.style.left = `${centerX - pieceSize / 2}px`;
+                    piece.style.top = `${centerY - pieceSize / 2}px`;
+                } else if (piece.dataset.gridRow !== undefined && piece.dataset.gridCol !== undefined) {
+                    const row = parseInt(piece.dataset.gridRow, 10);
+                    const col = parseInt(piece.dataset.gridCol, 10);
+                    piece.style.left = `${col * cellSize + pieceOffset}px`;
+                    piece.style.top = `${row * cellSize + pieceOffset}px`;
+                }
+            });
+
         }
 
         createPieces(dragController) {
@@ -198,38 +220,13 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.dataset.gridCol = col;
                 piece.style.left = `${col * cellSize + pieceOffset}px`;
                 piece.style.top = `${row * cellSize + pieceOffset}px`;
+                piece.innerText = "\u2730";
                 dragController.attach(piece);
                 this.gridElement.appendChild(piece);
                 return piece;
             });
 
             return this.pieces;
-        }
-
-        updatePiecesForResize(arrivalCounter) {
-            const cellSize = this.calculateCellSize();
-            document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
-            const pieceSize = cellSize * 0.75;
-            const pieceOffset = (cellSize - pieceSize) / 2;
-
-            arrivalCounter.updatePosition(cellSize);
-
-            this.pieces.forEach(piece => {
-                if (piece.classList.contains('dragging')) return;
-                piece.dataset.pieceSize = pieceSize;
-                piece.style.transition = 'none';
-
-                if (piece.classList.contains('at-target')) {
-                    const { centerX, centerY } = this.getTargetPosition(cellSize);
-                    piece.style.left = `${centerX - pieceSize / 2}px`;
-                    piece.style.top = `${centerY - pieceSize / 2}px`;
-                } else if (piece.dataset.gridRow !== undefined && piece.dataset.gridCol !== undefined) {
-                    const row = parseInt(piece.dataset.gridRow, 10);
-                    const col = parseInt(piece.dataset.gridCol, 10);
-                    piece.style.left = `${col * cellSize + pieceOffset}px`;
-                    piece.style.top = `${row * cellSize + pieceOffset}px`;
-                }
-            });
         }
 
         getTargetPosition(cellSize) {
@@ -415,8 +412,9 @@ function initializeGrid(gridSize, pieceCount) {
 
     // Handle window resize for responsiveness
     window.addEventListener('resize', () => {
-        gridManager.updateGrid();
-        gridManager.updatePiecesForResize(arrivalCounter);
+        gridManager.updateGrid(arrivalCounter);
+        let cellSize = gridManager.calculateCellSize();
+        arrivalCounter.updatePosition(cellSize);
     });
 
     var pieces = null;

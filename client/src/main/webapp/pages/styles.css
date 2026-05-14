@@ -98,6 +98,11 @@ body {
   box-shadow: 0 12px 22px var(--piece-shadow);
   transition: transform 0s ease-in-out;
   touch-action: none;
+  place-items: center;
+  font-size: calc(var(--cell-size) * 0.75);
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.88);
+  display: grid;
 }
 
 .piece.moving {

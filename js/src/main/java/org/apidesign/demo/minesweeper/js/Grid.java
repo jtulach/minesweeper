@@ -23,8 +23,6 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
-import java.util.List;
-import java.util.function.BiFunction;
 import net.java.html.js.JavaScriptBody;
 import net.java.html.js.JavaScriptResource;
 
@@ -40,18 +38,13 @@ public abstract class Grid {
     /** Subclasses has to implement this method. Then they obtain
      * callbacks about bombs being dropped at particular piece.
      *
-     * @param x column
-     * @param y row
+     * @param prevX column or {@code -1} when off-grid
+     * @param prevY row or {@code -1} when off-grid
+     * @param x column or {@code -1} when off-grid
+     * @param y row or {@code -1} when off-grid
      * @return {@code true} if the drop is acceptable, {@code false} to cancel the drop
      */
-    protected abstract boolean onDrop(int x, int y);
-
-    /** Unmarks drop of a piece.
-     *
-     */
-    public final void unDrop() {
-
-    }
+    protected abstract boolean onDrop(int prevX, int prevY, int x, int y);
 
     /** Adjust the CSS variables & co. Right now.
      */
@@ -77,8 +70,8 @@ public abstract class Grid {
     private static native Object updateGrid(Object grid);
 
     @JavaScriptBody(args = {"jsGrid", "self"}, keepAlive = true, javacall = true, body = """
-    jsGrid.registerDrop((x, y) => {
-      return self.@org.apidesign.demo.minesweeper.js.Grid::onDrop(II)(x, y);
+    jsGrid.registerDrop((prevX, prevY, x, y) => {
+      return self.@org.apidesign.demo.minesweeper.js.Grid::onDrop(IIII)(prevX, prevY, x, y);
     });
     """)
     private static native void registerDrop(Object jsGrid, Grid self);

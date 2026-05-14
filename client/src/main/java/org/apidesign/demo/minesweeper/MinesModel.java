@@ -689,6 +689,12 @@ public final class MinesModel {
         computeMines(m);
         return true;
     }
+    private static Square findSquare(Mines model, int x, int y) {
+        if (x < 0 || y < 0) {
+            return null;
+        }
+        return model.getRows().get(y).getColumns().get(x);
+    }
 
     private static Mines ui;
 
@@ -696,19 +702,27 @@ public final class MinesModel {
         ui = new Mines();
         var grid = new Grid(10, 10) {
             @Override
-            protected boolean onDrop(int x, int y) {
-                var square = ui.getRows().get(y).getColumns().get(x);
+            protected boolean onDrop(int prevX, int prevY, int x, int y) {
+                var prev = findSquare(ui, prevX, prevY);
+                if (prev != null && prev.getState() == SquareType.MARKED) {
+                    prev.setState(SquareType.UNKNOWN);
+                }
+
                 var actions = new boolean[2];
-                ui.placeMineMark(square, actions);
-                if (actions[0]) {
-                    // placing was successful
-                    if (actions[1]) {
-                        // game was won
-                        ui.setState(GameState.WON);
+                var square = findSquare(ui, x, y);
+                if (square != null) {
+                    ui.placeMineMark(square, actions);
+                    if (actions[0]) {
+                        // placing was successful
+                        if (actions[1]) {
+                            // game was won
+                            ui.setState(GameState.WON);
+                        }
                     }
                 }
                 return actions[0];
             }
+
         };
         ui.withGrid(grid);
         ui.setShow(ShowState.BOOT);
