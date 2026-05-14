@@ -46,8 +46,8 @@ body {
 }
 
 .grid-container {
-  width: min(90vw, 90vh);
-  height: min(90vw, 90vh);
+  width: min(70vw, 70vh);
+  height: min(70vw, 70vh);
   padding: 16px;
   background: var(--surface);
   border: 1px solid rgba(255, 255, 255, 0.08);
