@@ -81,7 +81,7 @@ function initializeGrid(gridSize, pieceCount) {
         }
 
         animatePieceBackToTarget(piece, cellSize, pieceSize) {
-            const { centerX, centerY } = this.getTargetPosition(cellSize);
+            const { centerX, centerY } = this.getTargetPosition(piece);
             const targetX = centerX - pieceSize / 2;
             const targetY = centerY - pieceSize / 2;
 
@@ -180,7 +180,7 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.style.transition = 'none';
 
                 if (piece.classList.contains('at-target')) {
-                    const { centerX, centerY } = this.getTargetPosition(cellSize);
+                    const { centerX, centerY } = this.getTargetPosition(piece);
                     piece.style.left = `${centerX - pieceSize / 2}px`;
                     piece.style.top = `${centerY - pieceSize / 2}px`;
                 } else if (piece.dataset.gridRow !== undefined && piece.dataset.gridCol !== undefined) {
@@ -231,17 +231,20 @@ function initializeGrid(gridSize, pieceCount) {
             }, 0);
         }
 
-        getTargetPosition(cellSize) {
+        getTargetPosition(piece) {
+            let cellSize = this.calculateCellSize();
+            let cellHalf = cellSize / 2;
+            let index = this.findIndex(piece);
+
             let centerX, centerY;
 
             if (window.innerWidth > window.innerHeight) {
-                centerX = (gridSize + 0.5) * cellSize;
-                centerY = (gridSize - 0.5) * cellSize;
+                centerX = cellHalf + index * cellSize;
+                centerY = -cellHalf;
             } else {
-                centerX = (gridSize - 0.5) * cellSize;
-                centerY = (gridSize + 0.5) * cellSize;
+                centerX = -cellHalf;
+                centerY = cellHalf + index * cellSize;
             }
-
             return { centerX, centerY };
         }
 
@@ -294,6 +297,10 @@ function initializeGrid(gridSize, pieceCount) {
                 return coords && coords.row === row && coords.col === col;
             });
             return at >= 0 ? this.pieces[at] : null;
+        }
+
+        findIndex(piece) {
+            return this.pieces.indexOf(piece);
         }
     }
 
@@ -377,11 +384,11 @@ function initializeGrid(gridSize, pieceCount) {
         const cellSize = gridManager.calculateCellSize();
         arrivalCounter.updatePosition(cellSize);
         const pieceSize = cellSize * 0.75;
-        const { centerX, centerY } = gridManager.getTargetPosition(cellSize);
-        const targetX = centerX - pieceSize / 2;
-        const targetY = centerY - pieceSize / 2;
 
         pieces.forEach(piece => {
+            const { centerX, centerY } = gridManager.getTargetPosition(piece);
+            const targetX = centerX - pieceSize / 2;
+            const targetY = centerY - pieceSize / 2;
             const startX = parseFloat(piece.style.left);
             const startY = parseFloat(piece.style.top);
             const dx = targetX - startX;
