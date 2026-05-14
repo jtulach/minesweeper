@@ -210,11 +210,11 @@ function initializeGrid(gridSize, pieceCount) {
             let centerX, centerY;
 
             if (window.innerWidth > window.innerHeight) {
+                centerX = gridSize * cellSize + cellHalf;
+                centerY = cellHalf + index * cellSize;
+            } else {
                 centerX = cellHalf + index * cellSize;
                 centerY = -cellHalf;
-            } else {
-                centerX = -cellHalf;
-                centerY = cellHalf + index * cellSize;
             }
             return { centerX, centerY };
         }
