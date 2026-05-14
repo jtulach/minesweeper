@@ -52,6 +52,15 @@ public abstract class Grid {
         updateGrid(jsGrid);
     }
 
+    /** Clears a square from a piece if it has any.
+     *
+     * @param x column
+     * @param y row
+     */
+    public final void clear(int x, int y) {
+        backToTarget(jsGrid, x, y);
+    }
+
     //
     // Internal implementaton of a bridge to JavaScript
     //
@@ -68,6 +77,9 @@ public abstract class Grid {
 
     @JavaScriptBody(args = {"grid"}, body = "grid.updateGrid();")
     private static native Object updateGrid(Object grid);
+
+    @JavaScriptBody(args = {"grid", "x", "y"}, body = "grid.backToTarget(x, y);")
+    private static native Object backToTarget(Object grid, int x, int y);
 
     @JavaScriptBody(args = {"jsGrid", "self"}, keepAlive = true, javacall = true, body = """
     jsGrid.registerDrop((prevX, prevY, x, y) => {

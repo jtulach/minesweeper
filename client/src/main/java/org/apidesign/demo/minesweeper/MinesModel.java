@@ -376,6 +376,20 @@ public final class MinesModel {
             data.setState(SquareType.UNKNOWN);
             if (allMarked(model)) {
                 model.setState(GameState.WON);
+            } else {
+                if (grid != null) {
+                    var rowY = 0;
+                    for (var row : model.getRows()) {
+                        var colX = 0;
+                        for (var sq : row.getColumns()) {
+                            if (sq == data) {
+                                grid.clear(colX, rowY);
+                            }
+                            colX++;
+                        }
+                        rowY++;
+                    }
+                }
             }
             return;
         }

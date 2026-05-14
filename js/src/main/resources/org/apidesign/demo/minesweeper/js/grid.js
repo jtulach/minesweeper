@@ -96,6 +96,7 @@ function initializeGrid(gridSize, pieceCount) {
                         delete piece.dataset.gridCol;
                         piece.classList.add('at-target');
                         this.arrivalCounter.updateText(this.getRemainingPieces());
+                        this.updateGrid();
                     }
                 }
             }, { once: true });
@@ -397,7 +398,7 @@ function initializeGrid(gridSize, pieceCount) {
 
     // Handle window resize for responsiveness
     window.addEventListener('resize', () => {
-        gridManager.updateGrid(arrivalCounter);
+        gridManager.updateGrid();
         let cellSize = gridManager.calculateCellSize();
         arrivalCounter.updatePosition(cellSize);
     });
@@ -413,6 +414,9 @@ function initializeGrid(gridSize, pieceCount) {
         },
         'registerDrop' : function(f) {
             gridManager.onDrop.push(f);
+        },
+        'backToTarget' : function(x, y) {
+            gridManager.backToTarget(x, y);
         }
     };
 }
