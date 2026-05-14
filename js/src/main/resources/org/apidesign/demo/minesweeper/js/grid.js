@@ -22,37 +22,10 @@
  * THE SOFTWARE.
  */
 function initializeGrid(gridSize, pieceCount) {
-    class ArrivalCounter {
-        constructor(gridContainer) {
-            this.gridContainer = gridContainer;
-            this.element = document.createElement('div');
-            this.element.id = 'arrival-counter';
-            this.element.textContent = '0';
-            gridContainer.appendChild(this.element);
-        }
-
-        updateText(count) {
-            this.element.textContent = `${count}`;
-        }
-
-        updatePosition(cellSize) {
-            const rect = this.gridContainer.getBoundingClientRect();
-
-            if (window.innerWidth > window.innerHeight) {
-                this.element.style.left = `${rect.right + 16}px`;
-                this.element.style.top = `${rect.bottom - cellSize - 10}px`;
-            } else {
-                this.element.style.left = `${rect.right - cellSize}px`;
-                this.element.style.top = `${rect.bottom + 16}px`;
-            }
-        }
-    }
-
     class Grid {
-        constructor(gridElement, gridContainer, arrivalCounter) {
+        constructor(gridElement, gridContainer) {
             this.gridElement = gridElement;
             this.gridContainer = gridContainer;
-            this.arrivalCounter = arrivalCounter;
             this.pieces = [];
             this.onDrop = [];
         }
@@ -95,7 +68,6 @@ function initializeGrid(gridSize, pieceCount) {
                         delete piece.dataset.gridRow;
                         delete piece.dataset.gridCol;
                         piece.classList.add('at-target');
-                        this.arrivalCounter.updateText(this.getRemainingPieces());
                         this.updateGrid();
                     }
                 }
@@ -119,7 +91,6 @@ function initializeGrid(gridSize, pieceCount) {
                 let cancelled = availablePiece.classList.contains('at-target');
                 if (event.propertyName === 'left' || event.propertyName === 'top') {
                     this.completePieceDrop(availablePiece);
-                    this.arrivalCounter.updateText(this.getRemainingPieces());
                     this.updateGrid();
                 }
             }, { once: true });
@@ -305,9 +276,8 @@ function initializeGrid(gridSize, pieceCount) {
     }
 
     class DragController {
-        constructor(grid, arrivalCounter) {
+        constructor(grid) {
             this.grid = grid;
-            this.arrivalCounter = arrivalCounter;
             this.piece = null;
             this.offsetX = 0;
             this.offsetY = 0;
@@ -335,7 +305,6 @@ function initializeGrid(gridSize, pieceCount) {
 
             if (this.startedAtTarget) {
                 piece.classList.remove('at-target');
-                this.arrivalCounter.updateText(this.grid.getRemainingPieces());
             }
 
             piece.setPointerCapture(event.pointerId);
@@ -374,15 +343,12 @@ function initializeGrid(gridSize, pieceCount) {
 
     const gridElement = document.getElementById('grid');
     const gridContainer = document.querySelector('.grid-container');
-    const arrivalCounter = new ArrivalCounter(gridContainer);
-    const gridManager = new Grid(gridElement, gridContainer, arrivalCounter);
+    const gridManager = new Grid(gridElement, gridContainer);
     const PIECE_SPEED = 420; // pixels per second
-    const dragController = new DragController(gridManager, arrivalCounter);
+    const dragController = new DragController(gridManager);
 
     function animatePieces(pieces) {
-        arrivalCounter.updateText(0);
         const cellSize = gridManager.calculateCellSize();
-        arrivalCounter.updatePosition(cellSize);
         const pieceSize = cellSize * 0.75;
 
         pieces.forEach(piece => {
@@ -408,7 +374,6 @@ function initializeGrid(gridSize, pieceCount) {
                     piece.classList.add('at-target');
                     delete piece.dataset.gridRow;
                     delete piece.dataset.gridCol;
-                    arrivalCounter.updateText(gridManager.getRemainingPieces());
                 }
             }, { once: true });
 
@@ -422,8 +387,6 @@ function initializeGrid(gridSize, pieceCount) {
     // Handle window resize for responsiveness
     window.addEventListener('resize', () => {
         gridManager.updateGrid();
-        let cellSize = gridManager.calculateCellSize();
-        arrivalCounter.updatePosition(cellSize);
     });
 
     var pieces = null;
