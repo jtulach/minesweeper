@@ -91,6 +91,8 @@ body {
 
 .grid-cell:hover {
   background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+  user-select: none;
 }
 
 .piece {
@@ -107,10 +109,16 @@ body {
   font-weight: 600;
   color: transparent;
   display: grid;
+  pointer-events: none;
+  user-select: none;
 }
 
 .piece.at-target {
     color: rgba(0, 0, 0, 0.88);
+}
+
+.piece.at-target::after {
+    content: "\002730";
 }
 
 .piece.moving {
@@ -122,15 +130,10 @@ body {
   opacity: 0.95;
 }
 
-#arrival-counter {
-  position: fixed;
-  z-index: 20;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(3, 12, 25, 0.9);
-  color: white;
-  font-size: 14px;
-  font-family: Inter, system-ui, sans-serif;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
-  pointer-events: none;
+.grid.PLAYING .piece {
+    pointer-events: auto;
+}
+
+.grid.PLAYING .grid-cell {
+    pointer-events: auto;
 }

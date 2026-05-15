@@ -87,7 +87,12 @@ public final class MinesModel {
 
     @ComputedProperty
     static String gameStyle(GameState state) {
-        return state == GameState.MARKING_MINE ? "MARKING" : "PLAYING";
+        return switch (state) {
+            case MARKING_MINE -> "MARKING";
+            case WON -> "WON";
+            case LOST -> "LOST";
+            case null, default -> "PLAYING";
+        };
     }
 
     @Model(className = "Row", properties = {
@@ -355,7 +360,7 @@ public final class MinesModel {
 
     @Function
     void press(Mines model, Square data) {
-        if (data.getState() == SquareType.UNKNOWN) {
+        if (model.getState() == GameState.IN_PROGRESS && data.getState() == SquareType.UNKNOWN) {
             var at = findXY(model, data);
             if (grid != null && at != null) {
                 grid.moveTo(at[0], at[1]);

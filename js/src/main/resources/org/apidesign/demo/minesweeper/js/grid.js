@@ -186,7 +186,6 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.dataset.gridCol = col;
                 piece.style.left = `${col * cellSize + pieceOffset}px`;
                 piece.style.top = `${row * cellSize + pieceOffset}px`;
-                piece.innerText = "\u2730";
                 dragController.attach(piece);
                 this.gridElement.appendChild(piece);
                 return piece;
