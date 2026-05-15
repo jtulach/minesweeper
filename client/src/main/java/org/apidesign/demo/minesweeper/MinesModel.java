@@ -30,7 +30,7 @@ import net.java.html.json.Model;
 import net.java.html.json.ModelOperation;
 import net.java.html.json.Models;
 import net.java.html.json.Property;
-import net.java.html.sound.AudioClip;
+import org.apidesign.demo.minesweeper.js.Audio;
 import org.apidesign.demo.minesweeper.js.Grid;
 import org.apidesign.demo.minesweeper.js.OpenURL;
 import org.apidesign.demo.minesweeper.js.RandomGenerator;
@@ -245,7 +245,7 @@ public final class MinesModel {
         if (!emptyHidden[0]) {
             model.setState(GameState.WON);
             showAllBombs(model, SquareType.DISCOVERED);
-            AudioClip applause = AudioClip.create("applause.mp3");
+            var applause = Audio.create("applause.mp3");
             applause.play();
         }
     }
@@ -511,7 +511,7 @@ public final class MinesModel {
     }
 
     private static void cleanedUp(Mines model, Square data) {
-        AudioClip touch = AudioClip.create("move.mp3");
+        var touch = Audio.create("move.mp3");
         touch.play();
         expandKnown(model, data);
         model.computeMines();
@@ -520,7 +520,7 @@ public final class MinesModel {
     private static void explosion(Mines model) {
         showAllBombs(model, SquareType.EXPLOSION);
         model.setState(GameState.LOST);
-        AudioClip oops = AudioClip.create("oops.mp3");
+        var oops = Audio.create("oops.mp3");
         oops.play();
     }
 

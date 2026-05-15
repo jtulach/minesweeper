@@ -154,11 +154,6 @@
     </dependency>
     <dependency>
         <groupId>org.netbeans.html</groupId>
-        <artifactId>net.java.html.sound</artifactId>
-        <version>${net.java.html.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.netbeans.html</groupId>
         <artifactId>ko4j</artifactId>
         <version>${net.java.html.version}</version>
         <scope>runtime</scope>
