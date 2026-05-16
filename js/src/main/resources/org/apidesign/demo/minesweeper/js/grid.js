@@ -88,7 +88,9 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.addEventListener('transitionend', event => {
                 let cancelled = availablePiece.classList.contains('at-target');
                 if (event.propertyName === 'left' || event.propertyName === 'top') {
-                    this.completePieceDrop(availablePiece);
+                    if (!cancelled) {
+                        this.completePieceDrop(availablePiece);
+                    }
                     this.updateGrid();
                 }
             }, { once: true });
