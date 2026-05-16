@@ -48,7 +48,6 @@ function initializeGrid(gridSize, pieceCount) {
             if (piece !== null) {
                 const cellSize = this.calculateCellSize();
                 const pieceSize = parseFloat(piece.dataset.pieceSize);
-                piece.style.display = 'block';
                 this.animatePieceBackToTarget(piece, cellSize, pieceSize);
             }
         }
@@ -83,8 +82,7 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.classList.remove('at-target');
             availablePiece.dataset.gridRow = row;
             availablePiece.dataset.gridCol = col;
-            availablePiece.style.transition = 'left 0.18s ease, top 0.18s ease';
-            availablePiece.style.transitionDelay = '0.5s';
+            availablePiece.style.transition = '0.18s 0.5s ease';
             availablePiece.style.left = `${left}px`;
             availablePiece.style.top = `${top}px`;
             availablePiece.addEventListener('transitionend', event => {
