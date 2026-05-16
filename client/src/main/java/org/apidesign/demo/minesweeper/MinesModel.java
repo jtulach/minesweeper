@@ -250,7 +250,7 @@ public final class MinesModel {
         if (!emptyHidden[0]) {
             model.setState(GameState.WON);
             showAllBombs(model, SquareType.DISCOVERED);
-            var applause = Audio.create("applause.mp3");
+            var applause = Audio.create("audio/applause.mp3");
             applause.play();
         }
     }
@@ -353,7 +353,9 @@ public final class MinesModel {
             data.setState(SquareType.MARKED);
             if (allMarked(model)) {
                 results[1] = true;
-                return;
+            } else {
+                var hmm = Audio.create("audio/hmm.mp3");
+                hmm.play();
             }
         }
     }
@@ -516,7 +518,7 @@ public final class MinesModel {
     }
 
     private static void cleanedUp(Mines model, Square data) {
-        var touch = Audio.create("move.mp3");
+        var touch = Audio.create("audio/move.mp3");
         touch.play();
         expandKnown(model, data);
         model.computeMines();
@@ -525,7 +527,7 @@ public final class MinesModel {
     private static void explosion(Mines model) {
         showAllBombs(model, SquareType.EXPLOSION);
         model.setState(GameState.LOST);
-        var oops = Audio.create("oops.mp3");
+        var oops = Audio.create("audio/oops.mp3");
         oops.play();
     }
 
