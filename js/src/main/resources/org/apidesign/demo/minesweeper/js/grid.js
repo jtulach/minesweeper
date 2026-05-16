@@ -35,24 +35,29 @@ function initializeGrid(gridSize, pieceCount) {
             return Math.floor(containerSize / gridSize);
         }
 
-        getCellTargetPosition(row, col, pieceSize) {
+        calculatePieceSize() {
+            return this.calculateCellSize() * 0.75;
+        }
+
+        getCellTargetPosition(row, col) {
             const cellSize = this.calculateCellSize();
+            const pieceSize = this.calculatePieceSize();
             return {
                 left: col * cellSize + (cellSize - pieceSize) / 2,
-                top: row * cellSize + (cellSize - pieceSize) / 2,
+                top: row * cellSize + (cellSize - pieceSize) / 2
             };
         }
 
         backToTarget(col, row) {
             const piece = this.findPiece(row, col);
             if (piece !== null) {
-                const cellSize = this.calculateCellSize();
-                const pieceSize = parseFloat(piece.dataset.pieceSize);
-                this.animatePieceBackToTarget(piece, cellSize, pieceSize);
+                this.animatePieceBackToTarget(piece);
             }
         }
 
-        animatePieceBackToTarget(piece, cellSize, pieceSize) {
+        animatePieceBackToTarget(piece) {
+            const cellSize = this.calculateCellSize();
+            const pieceSize = this.calculatePieceSize();
             const { centerX, centerY } = this.getTargetPosition(piece);
             const targetX = centerX - pieceSize / 2;
             const targetY = centerY - pieceSize / 2;
@@ -77,7 +82,7 @@ function initializeGrid(gridSize, pieceCount) {
             const availablePiece = this.pieces.find(piece => piece.classList.contains('at-target') && !piece.classList.contains('dragging'));
             if (!availablePiece) return false;
 
-            const pieceSize = parseFloat(availablePiece.dataset.pieceSize);
+            const pieceSize = this.calculatePieceSize();
             const { left, top } = this.getCellTargetPosition(row, col, pieceSize);
             availablePiece.classList.remove('at-target');
             availablePiece.dataset.gridRow = row;
@@ -106,23 +111,23 @@ function initializeGrid(gridSize, pieceCount) {
 
         completePieceDrop(piece) {
             const cellSize = this.calculateCellSize();
-            const pieceSize = parseFloat(piece.dataset.pieceSize);
+            const pieceSize = this.calculatePieceSize();
             const left = parseFloat(piece.style.left);
             const top = parseFloat(piece.style.top);
-            const snapped = this.getSnappedGridPosition(left, top, pieceSize);
+            const snapped = this.getSnappedGridPosition(left, top);
 
             piece.classList.remove('dragging');
 
             if (snapped) {
-                const cell = this.getGridCoordinates(snapped.left, snapped.top, pieceSize);
+                const cell = this.getGridCoordinates(snapped.left, snapped.top);
                 if (cell && this.findPiece(cell.row, cell.col, piece) !== null) {
-                    this.animatePieceBackToTarget(piece, cellSize, pieceSize);
+                    this.animatePieceBackToTarget(piece);
                     return;
                 }
                 let prevCol = piece.dataset.gridCol || -1;
                 let prevRow = piece.dataset.gridRow || -1;
                 if (!this.onDrop.some(f => f(prevCol, prevRow, cell.col, cell.row))) {
-                    this.animatePieceBackToTarget(piece, cellSize, pieceSize);
+                    this.animatePieceBackToTarget(piece);
                     return;
                 }
 
@@ -133,21 +138,20 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.style.left = `${snapped.left}px`;
                 piece.style.top = `${snapped.top}px`;
             } else {
-                this.animatePieceBackToTarget(piece, cellSize, pieceSize);
+                this.animatePieceBackToTarget(piece);
             }
         }
 
         updateGrid() {
             const cellSize = this.calculateCellSize();
+            const pieceSize = this.calculatePieceSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
 
-            const pieceSize = cellSize * 0.75;
             const pieceOffset = (cellSize - pieceSize) / 2;
 
             this.pieces.forEach(piece => {
                 if (piece.classList.contains('dragging')) return;
-                piece.dataset.pieceSize = pieceSize;
                 piece.style.transition = 'none';
 
                 if (piece.classList.contains('at-target')) {
@@ -166,6 +170,7 @@ function initializeGrid(gridSize, pieceCount) {
 
         createPieces(dragController) {
             const cellSize = this.calculateCellSize();
+            const pieceSize = this.calculatePieceSize();
             const positions = new Set();
 
             while (positions.size < pieceCount) {
@@ -173,7 +178,6 @@ function initializeGrid(gridSize, pieceCount) {
                 positions.add(randomIndex);
             }
 
-            const pieceSize = cellSize * 0.75;
             const pieceOffset = (cellSize - pieceSize) / 2;
 
             this.pieces = Array.from(positions).map(index => {
@@ -181,7 +185,6 @@ function initializeGrid(gridSize, pieceCount) {
                 const col = index % gridSize;
                 const piece = document.createElement('div');
                 piece.className = 'piece';
-                piece.dataset.pieceSize = pieceSize;
                 piece.dataset.gridRow = row;
                 piece.dataset.gridCol = col;
                 piece.style.left = `${col * cellSize + pieceOffset}px`;
@@ -218,7 +221,8 @@ function initializeGrid(gridSize, pieceCount) {
             return { centerX, centerY };
         }
 
-        getSnappedGridPosition(left, top, pieceSize) {
+        getSnappedGridPosition(left, top) {
+            const pieceSize = this.calculatePieceSize();
             const gridWidth = this.gridElement.clientWidth;
             const gridHeight = this.gridElement.clientHeight;
 
@@ -238,7 +242,8 @@ function initializeGrid(gridSize, pieceCount) {
             return { left: snappedLeft, top: snappedTop };
         }
 
-        getGridCoordinates(left, top, pieceSize) {
+        getGridCoordinates(left, top) {
+            const pieceSize = this.calculatePieceSize();
             const gridWidth = this.gridElement.clientWidth;
             const gridHeight = this.gridElement.clientHeight;
             if (left < 0 || top < 0 || left + pieceSize > gridWidth || top + pieceSize > gridHeight) {
@@ -263,7 +268,7 @@ function initializeGrid(gridSize, pieceCount) {
                 const otherLeft = parseFloat(other.style.left);
                 const otherTop = parseFloat(other.style.top);
                 const otherPieceSize = parseFloat(other.dataset.pieceSize);
-                const coords = this.getGridCoordinates(otherLeft, otherTop, otherPieceSize);
+                const coords = this.getGridCoordinates(otherLeft, otherTop);
                 return coords && coords.row === row && coords.col === col;
             });
             return at >= 0 ? this.pieces[at] : null;
@@ -348,7 +353,7 @@ function initializeGrid(gridSize, pieceCount) {
 
     function animatePieces(pieces) {
         const cellSize = gridManager.calculateCellSize();
-        const pieceSize = cellSize * 0.75;
+        const pieceSize = gridManager.calculatePieceSize();
 
         pieces.forEach(piece => {
             const { centerX, centerY } = gridManager.getTargetPosition(piece);
