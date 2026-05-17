@@ -99,4 +99,9 @@ public abstract class Grid {
     });
     """)
     private static native void registerDrop(Object jsGrid, Grid self);
+
+    @JavaScriptBody(args = {}, body = """
+    return Date.now();
+    """)
+    public static long timeNow();
 }

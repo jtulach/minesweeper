@@ -360,12 +360,14 @@ public final class MinesModel {
         }
     }
 
+    private long markingTimeout;
     @Function
     void press(Mines model, Square data) {
         if (model.getState() == GameState.IN_PROGRESS && data.getState() == SquareType.UNKNOWN) {
             var at = findXY(model, data);
             if (grid != null && at != null) {
                 grid.moveTo(at[0], at[1]);
+                markingTimeout = Grid.timeNow() + 500;
             }
         }
     }
@@ -391,6 +393,9 @@ public final class MinesModel {
             return;
         }
         if (data.getState() == SquareType.MARKED) {
+            if (markingTimeout > Grid.timeNow()) {
+                return;
+            }
             data.setState(SquareType.UNKNOWN);
             if (allMarked(model)) {
                 model.setState(GameState.WON);
