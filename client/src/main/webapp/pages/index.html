@@ -116,7 +116,22 @@
                   <div class="grid" id="grid" data-bind="css: gameStyle">
                     <!-- ko foreach: rows -->
                         <!-- ko foreach: columns -->
-                        <div class="grid-cell" data-bind="css: style, click: $parents[1].click, event: { 'pointerdown': function(data, event) { $parents[1].press(data); event.preventDefault(); }, 'touchstart' : function(data, event) { event.preventDefault(); }, 'touchend' : function(data, event) { $parents[1].click(data, event); event.preventDefault(); } }">
+                        <div class="grid-cell" data-bind="
+                            css: style,
+                            click: $parents[1].click,
+                            event: {
+                                'pointerdown': function(data, event) {
+                                    $parents[1].press(data);
+                                    event.preventDefault();
+                                },
+                                'touchstart' : function(data, event) {
+                                    event.preventDefault();
+                                },
+                                'touchend' : function(data, event) {
+                                    $parents[1].click(data, event);
+                                    event.preventDefault();
+                                } 
+                            }">
                             <div class="cell">
                                 <div class="fill"></div>
                                 <div class="sign"></div>
