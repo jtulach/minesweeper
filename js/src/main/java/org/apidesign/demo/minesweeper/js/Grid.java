@@ -103,5 +103,5 @@ public abstract class Grid {
     @JavaScriptBody(args = {}, body = """
     return Date.now();
     """)
-    public static long timeNow();
+    public static native long timeNow();
 }
