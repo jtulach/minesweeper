@@ -23,6 +23,7 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
+import java.util.Arrays;
 import net.java.html.js.JavaScriptBody;
 import net.java.html.js.JavaScriptResource;
 
@@ -104,4 +105,11 @@ public abstract class Grid {
     return Date.now();
     """)
     public static native long timeNow();
+
+    @JavaScriptBody(args = {"msg", "arr"}, body = """
+    console.log(msg, ...arr);
+    """)
+    public static void log(String msg, Object... arr) {
+        System.err.println(msg + ": " + Arrays.deepToString(arr));
+    }
 }
