@@ -97,15 +97,17 @@ public class MinesModelTest {
         Mines m = new Mines();
         m.init(10, 10, 10, null);
 
+        var cnt = 0;
         for (Row row : m.getRows()) {
             for (Square sq : row.getColumns()) {
                 if (sq.isMine()) {
                     MinesModel.markMine(m);
+                    cnt++;
                     m.click(sq);
                 }
             }
         }
-
+        assertEquals("Found ten mines", 10, cnt);
         assertEquals("All mines found. You have won!", MinesModel.GameState.WON, m.getState());
     }
 
