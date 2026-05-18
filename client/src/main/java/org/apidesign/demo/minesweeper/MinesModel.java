@@ -360,12 +360,16 @@ public final class MinesModel {
         }
     }
 
+    private Square markingSquare;
     @Function
     void press(Mines model, Square data) {
+        var at = findXY(model, data);
+        Grid.log("press", at, model.getState(), data.getState());
         if (model.getState() == GameState.IN_PROGRESS && data.getState() == SquareType.UNKNOWN) {
-            var at = findXY(model, data);
             if (grid != null && at != null) {
                 grid.moveTo(at[0], at[1]);
+                markingSquare = data;
+                Grid.log("setting markingSquare", markingSquare);
             }
         }
     }
@@ -391,6 +395,12 @@ public final class MinesModel {
             return;
         }
         if (data.getState() == SquareType.MARKED) {
+            var now = Grid.timeNow();
+            Grid.log("Marking square", markingSquare, data, markingSquare == data);
+            if (markingSquare == data) {
+                markingSquare = null;
+                return;
+            }
             data.setState(SquareType.UNKNOWN);
             if (allMarked(model)) {
                 model.setState(GameState.WON);
