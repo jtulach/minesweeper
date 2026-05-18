@@ -360,7 +360,6 @@ public final class MinesModel {
         }
     }
 
-    private long markingTimeout;
     private Square markingSquare;
     @Function
     void press(Mines model, Square data) {
@@ -369,7 +368,6 @@ public final class MinesModel {
         if (model.getState() == GameState.IN_PROGRESS && data.getState() == SquareType.UNKNOWN) {
             if (grid != null && at != null) {
                 grid.moveTo(at[0], at[1]);
-                markingTimeout = Grid.timeNow() + 500;
                 markingSquare = data;
                 Grid.log("setting markingSquare", markingSquare);
             }
@@ -398,7 +396,6 @@ public final class MinesModel {
         }
         if (data.getState() == SquareType.MARKED) {
             var now = Grid.timeNow();
-            Grid.log("Now timeout: ", now, markingTimeout, markingTimeout > now);
             Grid.log("Marking square", markingSquare, data, markingSquare == data);
             if (markingSquare == data) {
                 markingSquare = null;
