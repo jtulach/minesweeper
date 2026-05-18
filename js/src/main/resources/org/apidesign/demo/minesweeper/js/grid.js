@@ -65,10 +65,13 @@ function initializeGrid(gridSize, pieceCount) {
             piece.addEventListener('transitionend', event => {
                 if (event.propertyName === 'left' || event.propertyName === 'top') {
                     if (!piece.classList.contains('at-target')) {
+                        let prevCol = piece.dataset.gridCol || -1;
+                        let prevRow = piece.dataset.gridRow || -1;
                         delete piece.dataset.gridRow;
                         delete piece.dataset.gridCol;
                         piece.classList.add('at-target');
                         this.updateGrid();
+                        this.onDrop.map(f => f(prevCol, prevRow, -1, -1));
                     }
                 }
             }, { once: true });
