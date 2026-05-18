@@ -48,7 +48,6 @@ function initializeGrid(gridSize, pieceCount) {
             if (piece !== null) {
                 const cellSize = this.calculateCellSize();
                 const pieceSize = parseFloat(piece.dataset.pieceSize);
-                piece.style.display = 'block';
                 this.animatePieceBackToTarget(piece, cellSize, pieceSize);
             }
         }
