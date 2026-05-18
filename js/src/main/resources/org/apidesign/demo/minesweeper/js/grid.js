@@ -354,35 +354,7 @@ function initializeGrid(gridSize, pieceCount) {
         const pieceSize = cellSize * 0.75;
 
         pieces.forEach(piece => {
-            const { centerX, centerY } = gridManager.getTargetPosition(piece);
-            const targetX = centerX - pieceSize / 2;
-            const targetY = centerY - pieceSize / 2;
-            const startX = parseFloat(piece.style.left);
-            const startY = parseFloat(piece.style.top);
-            const dx = targetX - startX;
-            const dy = targetY - startY;
-            const distance = Math.hypot(dx, dy);
-            const duration = Math.max(0.2, distance / PIECE_SPEED);
-
-            piece.style.transition = `transform ${duration}s ease-in-out`;
-            piece.addEventListener('transitionend', event => {
-                if (event.propertyName === 'transform') {
-                    const targetLeft = targetX;
-                    const targetTop = targetY;
-                    piece.style.transition = 'none';
-                    piece.style.left = `${targetLeft}px`;
-                    piece.style.top = `${targetTop}px`;
-                    piece.style.transform = 'none';
-                    piece.classList.add('at-target');
-                    delete piece.dataset.gridRow;
-                    delete piece.dataset.gridCol;
-                }
-            }, { once: true });
-
-            requestAnimationFrame(() => {
-                piece.style.transform = `translate(${dx}px, ${dy}px)`;
-                piece.classList.add('moving');
-            });
+            gridManager.animatePieceBackToTarget(piece, cellSize, pieceSize);
         });
     }
 
