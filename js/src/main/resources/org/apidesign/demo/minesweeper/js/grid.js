@@ -77,7 +77,7 @@ function initializeGrid(gridSize, pieceCount) {
             }, { once: true });
         }
 
-        movePieceFromTargetToGridCell(col, row) {
+        animatePieceFromTargetToGridCell(col, row) {
             const availablePiece = this.pieces.find(piece => piece.classList.contains('at-target') && !piece.classList.contains('dragging'));
             if (!availablePiece) return false;
 
@@ -376,7 +376,7 @@ function initializeGrid(gridSize, pieceCount) {
             gridManager.onDrop.push(f);
         },
         'moveTo' : function(x, y) {
-            gridManager.movePieceFromTargetToGridCell(x, y);
+            gridManager.animatePieceFromTargetToGridCell(x, y);
         },
         'backToTarget' : function(x, y) {
             gridManager.backToTarget(x, y);
