@@ -126,11 +126,11 @@
                                     event.preventDefault();
                                 },
                                 'touchstart' : function(data, event) {
-                                    console.log('pointerdown', data, event);
+                                    console.log('touchstart', data, event);
                                     event.preventDefault();
                                 },
                                 'touchend' : function(data, event) {
-                                    console.log('pointerdown', data, event);
+                                    console.log('touchend', data, event);
                                     $parents[1].click(data, event);
                                     event.preventDefault();
                                 }
