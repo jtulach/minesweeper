@@ -64,13 +64,12 @@ function initializeGrid(gridSize, pieceCount) {
             piece.addEventListener('transitionend', event => {
                 if (event.propertyName === 'left' || event.propertyName === 'top') {
                     if (!piece.classList.contains('at-target')) {
-                        let prevCol = piece.dataset.gridCol || -1;
-                        let prevRow = piece.dataset.gridRow || -1;
+                        const prev = this.findColRow(piece);
                         delete piece.dataset.gridRow;
                         delete piece.dataset.gridCol;
                         piece.classList.add('at-target');
                         this.updateGrid();
-                        this.onDrop.map(f => f(prevCol, prevRow, -1, -1));
+                        this.onDrop.map(f => f(prev.col, prev.row, -1, -1));
                     }
                 } else {
                     console.warn("animatePieceBackToTarget unexpected event", event);
@@ -125,9 +124,8 @@ function initializeGrid(gridSize, pieceCount) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
-                let prevCol = piece.dataset.gridCol || -1;
-                let prevRow = piece.dataset.gridRow || -1;
-                if (!this.onDrop.some(f => f(prevCol, prevRow, cell.col, cell.row))) {
+                let prev = this.findColRow(piece);
+                if (!this.onDrop.some(f => f(prev.col, prev.row, cell.col, cell.row))) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
@@ -158,8 +156,7 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.style.transition = 'none';
 
                 if (piece.dataset.gridRow && piece.dataset.gridCol) {
-                    const row = parseInt(piece.dataset.gridRow, 10);
-                    const col = parseInt(piece.dataset.gridCol, 10);
+                    const { col, row } = this.findColRow(piece);
                     piece.style.left = `${col * cellSize + pieceOffset}px`;
                     piece.style.top = `${row * cellSize + pieceOffset}px`;
                     if (markX && markY) {
@@ -297,6 +294,12 @@ function initializeGrid(gridSize, pieceCount) {
 
         findIndex(piece) {
             return this.pieces.indexOf(piece);
+        }
+
+        findColRow(piece) {
+            const row = piece.dataset.gridRow ? parseInt(piece.dataset.gridRow, 10) : -1;
+            const col = piece.dataset.gridCol ? parseInt(piece.dataset.gridCol, 10) : -1;
+            return { col, row };
         }
     }
 
