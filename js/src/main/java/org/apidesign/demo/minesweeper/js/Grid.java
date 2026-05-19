@@ -81,6 +81,12 @@ public abstract class Grid {
         backToTarget(jsGrid, x, y);
     }
 
+    /** Finishes all animations.
+     */
+    public final void flush() throws InterruptedException {
+        flushAnimations(jsGrid);
+    }
+
 
     /**
      * Return the number of remaining pieces.
@@ -122,6 +128,9 @@ public abstract class Grid {
 
     @JavaScriptBody(args = {"grid" }, body = "grid.initGrid();")
     private static native Object initGrid(Object grid);
+
+    @JavaScriptBody(args = {"grid" }, body = "grid.flushAnimations();")
+    private static native void flushAnimations(Object grid);
 
     @JavaScriptBody(args = {"grid" }, body = "return grid.getRemaining();")
     private static native int getRemaining(Object grid);

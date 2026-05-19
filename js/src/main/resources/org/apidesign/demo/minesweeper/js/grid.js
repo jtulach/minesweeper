@@ -28,6 +28,7 @@ function initializeGrid(gridSize, pieceCount) {
             this.gridContainer = gridContainer;
             this.pieces = [];
             this.onDrop = [];
+            this.pendings = [];
         }
 
         calculateCellSize() {
@@ -52,6 +53,30 @@ function initializeGrid(gridSize, pieceCount) {
             }
         }
 
+        /** Registers one-shot transition listener to a given piece.
+         *
+         * @param {type} piece
+         * @param {type} handler a function taking (type, propertyName)
+         */
+        addTransitionListener(piece, handler) {
+            let delivered = false;
+            let fn = function(event) {
+                if (!delivered) {
+                    delivered = true;
+                    handler('transitionend', event.propertyName);
+                }
+            };
+
+            piece.addEventListener('transitionend', fn, { once: true });
+            this.pendings.push(fn);
+            piece.addEventListener('transitioncancel', event => {
+                if (!delivered) {
+                    delivered = true;
+                    handler('transitioncancel', event.propertyName);
+                }
+            }, { once: true });
+        }
+
         animatePieceBackToTarget(piece, cellSize, pieceSize) {
             const { centerX, centerY } = this.getTargetPosition(piece);
             const targetX = centerX - pieceSize / 2;
@@ -61,20 +86,18 @@ function initializeGrid(gridSize, pieceCount) {
             piece.style.left = `${targetX}px`;
             piece.style.top = `${targetY}px`;
 
-            piece.addEventListener('transitionend', event => {
-                if (event.propertyName === 'left' || event.propertyName === 'top') {
-                    if (!piece.classList.contains('at-target')) {
-                        const prev = this.findColRow(piece);
-                        delete piece.dataset.gridRow;
-                        delete piece.dataset.gridCol;
-                        piece.classList.add('at-target');
-                        this.updateGrid();
-                        this.onDrop.map(f => f(prev.col, prev.row, -1, -1));
-                    }
-                } else {
-                    console.warn("animatePieceBackToTarget unexpected event", event);
+            this.addTransitionListener(piece, (type, propertyName) => {
+                let atTarget = piece.classList.contains('at-target');
+                console.log("animatePieceBackToTarget", type, propertyName, atTarget);
+                if (!atTarget) {
+                    const prev = this.findColRow(piece);
+                    delete piece.dataset.gridRow;
+                    delete piece.dataset.gridCol;
+                    piece.classList.add('at-target');
+                    this.updateGrid();
+                    this.onDrop.map(f => f(prev.col, prev.row, -1, -1));
                 }
-            }, { once: true });
+            });
         }
 
         animatePieceFromTargetToGridCell(col, row) {
@@ -90,22 +113,21 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.style.transitionDelay = '0.5s';
             availablePiece.style.left = `${left}px`;
             availablePiece.style.top = `${top}px`;
-            availablePiece.addEventListener('transitionend', event => {
-                let cancelled = availablePiece.classList.contains('at-target');
-                if (event.propertyName === 'left' || event.propertyName === 'top') {
-                    this.completePieceDrop(availablePiece);
-                    this.updateGrid();
-                } else {
-                    console.warn("animatePieceFromTargetToGridCell unexpected event", event);
+
+            this.addTransitionListener(availablePiece, (type, propertyName) => {
+                console.log("animatePieceFromTargetToGridCell", type, propertyName, col, row);
+                switch (type) {
+                    case 'transitionend':
+                        this.completePieceDrop(availablePiece);
+                        this.updateGrid();
+                        break;
+                    default:
+                        delete availablePiece.dataset.gridCol;
+                        delete availablePiece.dataset.gridRow;
+                        availablePiece.classList.add('at-target');
+                        break;
                 }
-            }, { once: true });
-            availablePiece.addEventListener('transitioncancel', event => {
-                if (!availablePiece.classList.contains('at-target')) {
-                    delete availablePiece.dataset.gridCol;
-                    delete availablePiece.dataset.gridRow;
-                    availablePiece.classList.add('at-target');
-                }
-            }, { once: true });
+            });
             return true;
         }
 
@@ -410,6 +432,12 @@ function initializeGrid(gridSize, pieceCount) {
         },
         'updateGrid' : function(markX, markY) {
             gridManager.updateGrid(markX, markY);
+        },
+        'flushAnimations' : function() {
+            for (let fn of gridManager.pendings) {
+                fn('transitionend', "flush");
+            }
+            gridManager.pendings = [];
         },
         'registerDrop' : function(f) {
             gridManager.onDrop.push(f);

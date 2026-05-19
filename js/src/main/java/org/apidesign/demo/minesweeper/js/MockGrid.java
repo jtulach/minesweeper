@@ -52,6 +52,10 @@ abstract class MockGrid extends Grid {
             contains(n) {
                 return this.has(n);
             }
+
+            remove(n) {
+                return this.delete(n);
+            }
         }
 
         class MockElem {
@@ -62,6 +66,8 @@ abstract class MockGrid extends Grid {
                 this.style = new MockStyle();
                 this.classList = new MockClassList();
                 this.listeners = new Map();
+                this.clientWidth = 400;
+                this.clientHeight = 600;
             }
 
             addEventListener(type, fn, config) {
@@ -111,6 +117,11 @@ abstract class MockGrid extends Grid {
         }
 
         class MockWindow extends MockElem {
+            constructor() {
+                super();
+                this.innerWidth = 480;
+                this.innerHeight = 640;
+            }
         }
         let global = (0 || eval)('this');
         global.document = new MockDoc();

@@ -23,14 +23,11 @@
  */
 package org.apidesign.demo.minesweeper;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import net.java.html.junit.BrowserRunner;
 import org.apidesign.demo.minesweeper.js.Grid;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.netbeans.html.boot.spi.Fn;
 
 /** Tests behavior of {@link Mines} model together with {@link Grid}.
  */
@@ -38,42 +35,26 @@ import org.netbeans.html.boot.spi.Fn;
 public class MinesGridTest {
     @Test
     public void movePieceToALocation() throws Exception {
-        var p = Fn.activePresenter();
-        if (p.getClass().getName().contains("ScriptPresenter")) {
-            // skipping as it has no transformations
-            return;
-        }
-
         try {
             var model = new Mines();
             var grid = new Grid(3, 2) {
-                CountDownLatch cdl;
-
                 @Override
                 protected boolean onDrop(int prevX, int prevY, int x, int y) {
                     var actions = new boolean[2];
                     model.onDrop(prevX, prevY, x, y, actions);
-                    System.err.println("onDrop: " + prevX);
-                    cdl.countDown();
                     return actions[0];
-                }
-
-                void awaitAction() throws InterruptedException {
-                    cdl.await(5, TimeUnit.SECONDS);
                 }
             };
             {
-                grid.cdl = new CountDownLatch(2);
                 model.withGrid(grid);
                 model.init(3, 3, 2, null);
-                grid.awaitAction();
+                grid.flush();
                 assertEquals("Two mines are pending", 2, grid.getRemaining());
             }
 
             {
-                grid.cdl = new CountDownLatch(1);
                 grid.moveTo(1, 1);
-                grid.awaitAction();
+                grid.flush();
                 assertEquals("One less is pending", 1, grid.getRemaining());
             }
             var sq = model.getRows().get(1).getColumns().get(1);
@@ -81,17 +62,15 @@ public class MinesGridTest {
 
             {
                 // unmark the mine
-                grid.cdl = new CountDownLatch(1);
                 model.click(sq);
                 assertEquals("Immediatelly marked as unknown", MinesModel.SquareType.UNKNOWN, sq.getState());
-                grid.awaitAction();
+                grid.flush();
                 assertEquals("All pending", 2, grid.getRemaining());
             }
 
             {
-                grid.cdl = new CountDownLatch(1);
                 grid.moveTo(2, 2);
-                grid.awaitAction();
+                grid.flush();
                 assertEquals("One less is pending", 1, grid.getRemaining());
             }
             assertEquals("Previous square state remains", MinesModel.SquareType.UNKNOWN, sq.getState());
