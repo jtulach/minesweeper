@@ -39,6 +39,10 @@ abstract class MockGrid extends Grid {
     }
 
     @JavaScriptBody(args = {}, body = """
+        class MockAudio {
+            play() {
+            }
+        }
         class MockStyle {
             setProperty(name, value) {
             }
@@ -61,10 +65,12 @@ abstract class MockGrid extends Grid {
             }
 
             addEventListener(type, fn, config) {
-                if (this.listeners.get(type)) {
-                    throw "Only supporting one listener of a type";
+                let arr = this.listeners.get(type);
+                if (!arr) {
+                    arr = [];
+                    this.listeners.set(type, arr);
                 }
-                this.listeners.set(type, {
+                arr.push({
                     'fn' : fn,
                     'config' : config
                 });
@@ -108,6 +114,7 @@ abstract class MockGrid extends Grid {
         }
         globalThis.document = new MockDoc();
         globalThis.window = new MockWindow();
+        globalThis.Audio = MockAudio;
     """)
     private static native void defineDom();
 
@@ -122,13 +129,15 @@ abstract class MockGrid extends Grid {
     static native Object[] children(Object e);
 
     @JavaScriptBody(args = { "e", "type", "propertyName" }, body = """
-        var fnAndConfig = e.listeners.get(type);
-        if (fnAndConfig) {
-            let fn = fnAndConfig.fn;
-            if (fnAndConfig.config && fnAndConfig.config.once) {
-                e.listeners.delete(type);
+        var arr = e.listeners.get(type);
+        if (arr) {
+            for (var fnAndConfig of arr) {
+                let fn = fnAndConfig.fn;
+                if (fnAndConfig.config && fnAndConfig.config.once) {
+                    e.listeners.delete(type);
+                }
+                fn({ 'propertyName' : propertyName });
             }
-            fn({ 'propertyName' : propertyName });
         }
     """)
     static native Object[] emitEvent(Object e, String type, String propertyName);

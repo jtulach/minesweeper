@@ -25,13 +25,25 @@ package org.apidesign.demo.minesweeper;
 
 import net.java.html.junit.BrowserRunner;
 import org.apidesign.demo.minesweeper.MinesModel.SquareType;
+import org.apidesign.demo.minesweeper.js.Grid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(BrowserRunner.class)
 public class MinesModelTest {
+    @Before
+    public void initializeDomMock() {
+        // creating grid checks for window object and if missing, it defines a mock
+        new Grid(1, 1) {
+            @Override
+            protected boolean onDrop(int prevX, int prevY, int x, int y) {
+                return false;
+            }
+        };
+    }
     @Test public void tenTenTen() {
         Mines m = new Mines();
         m.init(10, 10, 10, null);

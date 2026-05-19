@@ -366,9 +366,19 @@ function initializeGrid(gridSize, pieceCount) {
         }
     }
 
-    debugger;
-    const gridElement = document.getElementById('grid');
-    const gridContainer = document.querySelector('.grid-container');
+    let gridContainer = document.querySelector('.grid-container');
+    if (!gridContainer) {
+        // mock the elements if missing
+        gridContainer = document.createElement("div");
+        gridContainer.classList.add(".grid-container");
+        document.body.appendChild(gridContainer);
+    }
+    let gridElement = document.getElementById('grid');
+    if (!gridElement) {
+        gridElement = document.createElement("div");
+        gridElement.id = "grid";
+        gridContainer.appendChild(gridElement);
+    }
     const gridManager = new Grid(gridElement, gridContainer);
     const PIECE_SPEED = 420; // pixels per second
     const dragController = new DragController(gridManager);

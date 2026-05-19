@@ -58,14 +58,14 @@ public final class UrlLocation {
     }
 
     @JavaScriptBody(args = {}, body = """
-    return (typeof window !== 'undefined') ? window.location.href : "";
+    return (typeof window !== 'undefined' && typeof window.location !== 'undefined') ? window.location.href : "";
     """)
     private static String location() {
         return "";
     }
 
     @JavaScriptBody(args = {"href"}, body = """
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
         window.location.href = href;
     }
     """)

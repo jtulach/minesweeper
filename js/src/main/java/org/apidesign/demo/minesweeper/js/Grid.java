@@ -33,7 +33,7 @@ public abstract class Grid {
 
     /** Constructor for subclasses */
     protected Grid(int size, int mines) {
-        this(initializeGrid(size, mines));
+        this(initializeGridAndMock(size, mines));
     }
 
     /** Subclasses has to implement this method. Then they obtain
@@ -89,6 +89,19 @@ public abstract class Grid {
         this.jsGrid = jsGrid;
         registerDrop(jsGrid, this);
     }
+
+    private static Object initializeGridAndMock(int size, int mines) {
+        if (!isDefined("window")) {
+            MockGrid.children("Init mock");
+        }
+        return initializeGrid(size, mines);
+    }
+
+    @JavaScriptBody(args = {"symbol"}, body = """
+        let v = globalThis[symbol];
+        return typeof v !== 'undefined';
+    """)
+    private static native boolean isDefined(String symbol);
 
     @JavaScriptBody(args = {"size", "mines"}, body = """
         return initializeGrid(size, mines);
