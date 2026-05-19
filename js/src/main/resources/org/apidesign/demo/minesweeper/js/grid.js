@@ -87,15 +87,17 @@ function initializeGrid(gridSize, pieceCount) {
             piece.style.top = `${targetY}px`;
 
             this.addTransitionListener(piece, (type, propertyName) => {
-                let atTarget = piece.classList.contains('at-target');
-                console.log("animatePieceBackToTarget", type, propertyName, atTarget);
+                const atTarget = piece.classList.contains('at-target');
+                const prev = this.findColRow(piece);
+                console.log("animatePieceBackToTarget[" + this.findIndex(piece) + "]", prev.col + ":" + prev.row, type, propertyName, atTarget);
                 if (!atTarget) {
-                    const prev = this.findColRow(piece);
                     delete piece.dataset.gridRow;
                     delete piece.dataset.gridCol;
                     piece.classList.add('at-target');
                     this.updateGrid();
-                    this.onDrop.map(f => f(prev.col, prev.row, -1, -1));
+                    if (prev.col !== -1 && prev.row !== -1) {
+                        this.onDrop.map(f => f(prev.col, prev.row, -1, -1));
+                    }
                 }
             });
         }
@@ -115,7 +117,7 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.style.top = `${top}px`;
 
             this.addTransitionListener(availablePiece, (type, propertyName) => {
-                console.log("animatePieceFromTargetToGridCell", type, propertyName, col, row);
+                console.log("animatePieceFromTargetToGridCell[" + this.findIndex(availablePiece) + "]", type, propertyName, col, row);
                 switch (type) {
                     case 'transitionend':
                         this.completePieceDrop(availablePiece);
@@ -164,7 +166,6 @@ function initializeGrid(gridSize, pieceCount) {
         }
 
         updateGrid(markX, markY) {
-            debugger;
             const cellSize = this.calculateCellSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
@@ -319,8 +320,8 @@ function initializeGrid(gridSize, pieceCount) {
         }
 
         findColRow(piece) {
-            const row = piece.dataset.gridRow ? parseInt(piece.dataset.gridRow, 10) : -1;
             const col = piece.dataset.gridCol ? parseInt(piece.dataset.gridCol, 10) : -1;
+            const row = piece.dataset.gridRow ? parseInt(piece.dataset.gridRow, 10) : -1;
             return { col, row };
         }
     }
