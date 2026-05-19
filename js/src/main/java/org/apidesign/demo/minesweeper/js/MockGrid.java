@@ -1,7 +1,7 @@
-/*
- * The MIT License
+/**
+ * The MIT License (MIT)
  *
- * Copyright 2026 API Design.
+ * Copyright (C) 2013-2020 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,9 +57,17 @@ abstract class MockGrid extends Grid {
                 this.dataset = {};
                 this.style = new MockStyle();
                 this.classList = new MockClassList();
+                this.listeners = new Map();
             }
 
-            addEventListener(type, fn) {
+            addEventListener(type, fn, config) {
+                if (this.listeners.get(type)) {
+                    throw "Only supporting one listener of a type";
+                }
+                this.listeners.set(type, {
+                    'fn' : fn,
+                    'config' : config
+                });
             }
 
             appendChild(ch) {
@@ -113,6 +121,21 @@ abstract class MockGrid extends Grid {
     """)
     static native Object[] children(Object e);
 
+    @JavaScriptBody(args = { "e", "type", "propertyName" }, body = """
+        var fnAndConfig = e.listeners.get(type);
+        if (fnAndConfig) {
+            let fn = fnAndConfig.fn;
+            if (fnAndConfig.config && fnAndConfig.config.once) {
+                e.listeners.delete(type);
+            }
+            fn({ 'propertyName' : propertyName });
+        }
+    """)
+    static native Object[] emitEvent(Object e, String type, String propertyName);
 
+    @JavaScriptBody(args = {"e"}, body = """
+        return Array.from(e.classList);
+    """)
+    static native Object[] classList(Object e);
 
 }

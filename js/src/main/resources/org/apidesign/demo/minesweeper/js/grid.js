@@ -72,6 +72,8 @@ function initializeGrid(gridSize, pieceCount) {
                         this.updateGrid();
                         this.onDrop.map(f => f(prevCol, prevRow, -1, -1));
                     }
+                } else {
+                    console.warn("animatePieceBackToTarget unexpected event", event);
                 }
             }, { once: true });
         }
@@ -94,6 +96,8 @@ function initializeGrid(gridSize, pieceCount) {
                 if (event.propertyName === 'left' || event.propertyName === 'top') {
                     this.completePieceDrop(availablePiece);
                     this.updateGrid();
+                } else {
+                    console.warn("animatePieceFromTargetToGridCell unexpected event", event);
                 }
             }, { once: true });
             availablePiece.addEventListener('transitioncancel', event => {

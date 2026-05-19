@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (C) 2013-2026 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
+ * Copyright (C) 2013-2020 Jaroslav Tulach <jaroslav.tulach@apidesign.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,11 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
+import java.util.Arrays;
 import net.java.html.junit.BrowserRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +45,15 @@ public class GridTest {
 
         var e = MockGrid.getElementById("grid");
         assertNotNull("Found container", e);
-        var ch = MockGrid.children(e);
-        assertEquals("Ten pieces", 10, ch.length);
+        var arr = MockGrid.children(e);
+        assertEquals("Ten pieces", 10, arr.length);
+        for (var ch : arr) {
+            MockGrid.emitEvent(ch, "transitionend", "top");
+            MockGrid.emitEvent(ch, "transitionend", "left");
+        }
+        for (var ch : arr) {
+            var classList = Arrays.asList(MockGrid.classList(ch));
+            assertTrue("Contains at-target: " + classList, classList.contains("at-target"));
+        }
     }
 }
