@@ -228,12 +228,12 @@ public final class MinesModel {
     @ModelOperation
     void updateGrid(Mines model) {
         if (grid != null) {
-            if (model.getState() == GameState.IN_PROGRESS) {
-                var coords = findMarkedSquareCoords(model);
-                grid.update(coords[0], coords[1]);
-            } else {
+//            if (model.getState() == GameState.IN_PROGRESS) {
+//                var coords = findMarkedSquareCoords(model);
+//                grid.update(coords[0], coords[1]);
+//            } else {
                 grid.update(null, null);
-            }
+//            }
         }
     }
 
@@ -417,7 +417,6 @@ public final class MinesModel {
     @Function
     void click(Mines model, Square data) {
         handleClick(model, data);
-        updateGrid(model);
     }
 
     private void handleClick(Mines model, Square data) {
@@ -433,7 +432,7 @@ public final class MinesModel {
                     model.setState(GameState.IN_PROGRESS);
                 }
             }
-            updateGrid(model);
+            return;
         }
         if (model.getState() != GameState.IN_PROGRESS) {
             return;
@@ -843,7 +842,6 @@ public final class MinesModel {
                         // game was won
                         model.setState(GameState.WON);
                     }
-                    model.updateGrid();
                 }
             }
             return actions[0];
