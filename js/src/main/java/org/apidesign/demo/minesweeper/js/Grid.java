@@ -148,7 +148,8 @@ public abstract class Grid {
     public static native long timeNow();
 
     @JavaScriptBody(args = {"msg", "arr"}, body = """
-    console.log(msg, ...arr);
+    var all = [ msg ].push(...arr);
+    console.log(all);
     """)
     public static void log(String msg, Object... arr) {
         System.err.println(msg + ": " + Arrays.deepToString(arr));
