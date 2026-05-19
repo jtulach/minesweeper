@@ -366,6 +366,8 @@ function initializeGrid(gridSize, pieceCount) {
         }
     }
 
+    let global = (0 || eval)('this');
+    let document = global.document;
     let gridContainer = document.querySelector('.grid-container');
     if (!gridContainer) {
         // mock the elements if missing
@@ -414,6 +416,9 @@ function initializeGrid(gridSize, pieceCount) {
         },
         'backToTarget' : function(x, y) {
             gridManager.backToTarget(x, y);
+        },
+        'getRemaining' : function() {
+            return gridManager.getRemainingPieces();
         }
     };
 }

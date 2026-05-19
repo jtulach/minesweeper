@@ -226,6 +226,26 @@ public final class MinesModel {
     }
 
     @ModelOperation
+    void onDrop(Mines model, int prevX, int prevY, int x, int y, boolean[] actions) {
+        var prev = MinesModel.findSquare(model, prevX, prevY);
+        if (prev != null && prev.getState() == MinesModel.SquareType.MARKED) {
+            prev.setState(MinesModel.SquareType.UNKNOWN);
+        }
+        var square = MinesModel.findSquare(model, x, y);
+        if (square != null) {
+            model.placeMineMark(square, actions);
+            if (actions[0]) {
+                // placing was successful
+                if (actions[1]) {
+                    // game was won
+                    model.setState(MinesModel.GameState.WON);
+                }
+            }
+        }
+    }
+
+
+    @ModelOperation
     void updateGrid(Mines model) {
         if (grid != null) {
 //            if (model.getState() == GameState.IN_PROGRESS) {
@@ -775,7 +795,7 @@ public final class MinesModel {
         return true;
     }
 
-    private static Square findSquare(Mines model, int x, int y) {
+    static Square findSquare(Mines model, int x, int y) {
         if (x < 0 || y < 0) {
             return null;
         }
@@ -813,38 +833,4 @@ public final class MinesModel {
         ui.updateGrid();
     }
 
-    /**
-     * Connecting drag and drop support provided by JavaScript with
-     * {@link Mines} model.
-     */
-    private static final class MinesGrid extends Grid {
-        private final Mines model;
-
-        public MinesGrid(int size, int mines, Mines ui) {
-            super(size, mines);
-            this.model = ui;
-        }
-
-        @Override
-        protected boolean onDrop(int prevX, int prevY, int x, int y) {
-            var prev = findSquare(model, prevX, prevY);
-            if (prev != null && prev.getState() == SquareType.MARKED) {
-                prev.setState(SquareType.UNKNOWN);
-            }
-
-            var actions = new boolean[2];
-            var square = findSquare(model, x, y);
-            if (square != null) {
-                model.placeMineMark(square, actions);
-                if (actions[0]) {
-                    // placing was successful
-                    if (actions[1]) {
-                        // game was won
-                        model.setState(GameState.WON);
-                    }
-                }
-            }
-            return actions[0];
-        }
-    }
 }

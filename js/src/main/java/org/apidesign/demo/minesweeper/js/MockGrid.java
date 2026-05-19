@@ -112,14 +112,16 @@ abstract class MockGrid extends Grid {
 
         class MockWindow extends MockElem {
         }
-        globalThis.document = new MockDoc();
-        globalThis.window = new MockWindow();
-        globalThis.Audio = MockAudio;
+        let global = (0 || eval)('this');
+        global.document = new MockDoc();
+        global.window = new MockWindow();
+        global.Audio = MockAudio;
     """)
     private static native void defineDom();
 
     @JavaScriptBody(args = {"id"}, body = """
-        return globalThis.document.getElementById(id);
+        let global = (0 || eval)('this');
+        return global.document.getElementById(id);
     """)
     static native Object getElementById(String id);
 

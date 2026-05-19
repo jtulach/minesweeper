@@ -81,6 +81,17 @@ public abstract class Grid {
         backToTarget(jsGrid, x, y);
     }
 
+
+    /**
+     * Return the number of remaining pieces.
+     *
+     * @return count from {@code 0} to number of {@code mines}
+     */
+    public final int getRemaining() {
+        return getRemaining(jsGrid);
+    }
+
+
     //
     // Internal implementaton of a bridge to JavaScript
     //
@@ -98,7 +109,8 @@ public abstract class Grid {
     }
 
     @JavaScriptBody(args = {"symbol"}, body = """
-        let v = globalThis[symbol];
+        let global = (0 || eval)("this");
+        let v = global[symbol];
         return typeof v !== 'undefined';
     """)
     private static native boolean isDefined(String symbol);
@@ -110,6 +122,9 @@ public abstract class Grid {
 
     @JavaScriptBody(args = {"grid" }, body = "grid.initGrid();")
     private static native Object initGrid(Object grid);
+
+    @JavaScriptBody(args = {"grid" }, body = "return grid.getRemaining();")
+    private static native int getRemaining(Object grid);
 
     @JavaScriptBody(args = {"grid", "markX", "markY" }, body = "grid.updateGrid(markX, markY);")
     private static native Object updateGrid(Object grid, int[] markX, int[] markY);
