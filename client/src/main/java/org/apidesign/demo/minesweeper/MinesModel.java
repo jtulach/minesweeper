@@ -215,7 +215,9 @@ public final class MinesModel {
             // randomize after generating the same layout of mines
             random.seedTo(null);
         }
-        model.updateGrid();
+        if (grid != null) {
+            grid.init();
+        }
     }
 
     @ModelOperation
@@ -224,10 +226,47 @@ public final class MinesModel {
     }
 
     @ModelOperation
-    void updateGrid() {
+    void updateGrid(Mines model) {
         if (grid != null) {
-            grid.update();
+            if (model.getState() == GameState.IN_PROGRESS) {
+                var coords = findMarkedSquareCoords(model);
+                grid.update(coords[0], coords[1]);
+            } else {
+                grid.update(null, null);
+            }
         }
+    }
+
+    private static int[][] findMarkedSquareCoords(Mines model) {
+        var cnt = 0;
+        var rows = model.getRows();
+        for (int y = 0; y < rows.size(); y++) {
+            var columns = rows.get(y).getColumns();
+            for (int x = 0; x < columns.size(); x++) {
+                var sq = columns.get(x);
+                if (sq.getState() == SquareType.MARKED) {
+                    cnt++;
+                }
+            }
+        }
+        var markX = new int[cnt];
+        var markY = new int[cnt];
+        var at = 0;
+        for (int y = 0; y < rows.size(); y++) {
+            var columns = rows.get(y).getColumns();
+            for (int x = 0; x < columns.size(); x++) {
+                var sq = columns.get(x);
+                if (sq.getState() == SquareType.MARKED) {
+                    markX[at] = x;
+                    markY[at] = y;
+                    at++;
+                }
+            }
+        }
+        var coords = new int[2][];
+        coords[0] = markX;
+        coords[1] = markY;
+        return coords;
     }
 
     @ModelOperation
@@ -337,7 +376,7 @@ public final class MinesModel {
             throw new IllegalStateException("No empty squares " + info + "\n" + model);
         }
         var select = random.nextInt(emptySquares.size());
-        model.click(emptySquares.get(select));
+        handleClick(model, emptySquares.get(select));
     }
 
 
@@ -377,6 +416,11 @@ public final class MinesModel {
     @ModelOperation
     @Function
     void click(Mines model, Square data) {
+        handleClick(model, data);
+        updateGrid(model);
+    }
+
+    private void handleClick(Mines model, Square data) {
         if (model.getState() == GameState.MARKING_MINE) {
             var actions = new boolean[2];
             placeMineMark(model, data, actions);
@@ -389,7 +433,7 @@ public final class MinesModel {
                     model.setState(GameState.IN_PROGRESS);
                 }
             }
-            return;
+            updateGrid(model);
         }
         if (model.getState() != GameState.IN_PROGRESS) {
             return;
@@ -799,6 +843,7 @@ public final class MinesModel {
                         // game was won
                         model.setState(GameState.WON);
                     }
+                    model.updateGrid();
                 }
             }
             return actions[0];

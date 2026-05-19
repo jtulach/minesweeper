@@ -47,10 +47,20 @@ public abstract class Grid {
      */
     protected abstract boolean onDrop(int prevX, int prevY, int x, int y);
 
-    /** Adjust the CSS variables & co. Right now.
+    /**
+     * Move all pieces to target location.
      */
-    public final void update() {
-        updateGrid(jsGrid);
+    public final void init() {
+        initGrid(jsGrid);
+    }
+
+    /**
+     *  Adjust the CSS variables & co. Right now.
+     * @param markX x-coordinates of marked fields
+     * @param markY y-coordinates of marked fields
+     */
+    public final void update(int[] markX, int[] markY) {
+        updateGrid(jsGrid, markX, markY);
     }
 
     /** Initiates a move of an unplaced piece (if available) to provided location.
@@ -85,8 +95,11 @@ public abstract class Grid {
     """)
     private static native Object initializeGrid(int size, int mines);
 
-    @JavaScriptBody(args = {"grid"}, body = "grid.updateGrid();")
-    private static native Object updateGrid(Object grid);
+    @JavaScriptBody(args = {"grid" }, body = "grid.initGrid();")
+    private static native Object initGrid(Object grid);
+
+    @JavaScriptBody(args = {"grid", "markX", "markY" }, body = "grid.updateGrid(markX, markY);")
+    private static native Object updateGrid(Object grid, int[] markX, int[] markY);
 
     @JavaScriptBody(args = {"grid", "x", "y"}, body = "grid.moveTo(x, y);")
     private static native Object moveTo(Object grid, int x, int y);

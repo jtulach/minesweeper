@@ -139,7 +139,8 @@ function initializeGrid(gridSize, pieceCount) {
             }
         }
 
-        updateGrid() {
+        updateGrid(markX, markY) {
+            debugger;
             const cellSize = this.calculateCellSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
@@ -152,18 +153,37 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.dataset.pieceSize = pieceSize;
                 piece.style.transition = 'none';
 
-                if (piece.classList.contains('at-target')) {
-                    const { centerX, centerY } = this.getTargetPosition(piece);
-                    piece.style.left = `${centerX - pieceSize / 2}px`;
-                    piece.style.top = `${centerY - pieceSize / 2}px`;
-                } else if (piece.dataset.gridRow !== undefined && piece.dataset.gridCol !== undefined) {
+                if (piece.dataset.gridRow && piece.dataset.gridCol) {
                     const row = parseInt(piece.dataset.gridRow, 10);
                     const col = parseInt(piece.dataset.gridCol, 10);
                     piece.style.left = `${col * cellSize + pieceOffset}px`;
                     piece.style.top = `${row * cellSize + pieceOffset}px`;
+                    if (markX && markY) {
+                        for (let i = 0; i < Math.min(markX.length, markY.length); i++) {
+                            if (col === markX[i] && row === markY[i]) {
+                                markX.splice(i, 1);
+                                markY.splice(i, 1);
+                                return;
+                            }
+                        }
+                        // move to target
+                        this.animatePieceBackToTarget(piece);
+                    } else {
+                        return;
+                    }
+                }
+
+                if (piece.classList.contains('at-target')) {
+                    const { centerX, centerY } = this.getTargetPosition(piece);
+                    piece.style.left = `${centerX - pieceSize / 2}px`;
+                    piece.style.top = `${centerY - pieceSize / 2}px`;
                 }
             });
-
+            if (markX && markY) {
+                for (let i = 0; i < Math.min(markX.length, markY.length); i++) {
+                    this.animatePieceFromTargetToGridCell(markX[i], markY[i]);
+                }
+            }
         }
 
         createPieces(dragController) {
@@ -348,7 +368,8 @@ function initializeGrid(gridSize, pieceCount) {
     const PIECE_SPEED = 420; // pixels per second
     const dragController = new DragController(gridManager);
 
-    function animatePieces(pieces) {
+    var pieces = gridManager.createPieces(dragController);
+    function animatePieces() {
         const cellSize = gridManager.calculateCellSize();
         const pieceSize = cellSize * 0.75;
 
@@ -362,14 +383,13 @@ function initializeGrid(gridSize, pieceCount) {
         gridManager.updateGrid();
     });
 
-    var pieces = null;
     return {
-        'updateGrid' : function() {
+        'initGrid' : function() {
             gridManager.updateGrid();
-            if (pieces === null) {
-                pieces = gridManager.createPieces(dragController);
-            }
-            animatePieces(pieces);
+            animatePieces();
+        },
+        'updateGrid' : function(markX, markY) {
+            gridManager.updateGrid(markX, markY);
         },
         'registerDrop' : function(f) {
             gridManager.onDrop.push(f);
