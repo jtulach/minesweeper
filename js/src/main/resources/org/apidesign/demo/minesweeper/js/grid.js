@@ -362,6 +362,7 @@ function initializeGrid(gridSize, pieceCount) {
         }
     }
 
+    debugger;
     const gridElement = document.getElementById('grid');
     const gridContainer = document.querySelector('.grid-container');
     const gridManager = new Grid(gridElement, gridContainer);
