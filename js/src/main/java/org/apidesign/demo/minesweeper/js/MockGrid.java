@@ -67,7 +67,7 @@ abstract class MockGrid extends Grid {
                 this.classList = new MockClassList();
                 this.listeners = new Map();
                 this.clientWidth = 400;
-                this.clientHeight = 600;
+                this.clientHeight = 400;
             }
 
             addEventListener(type, fn, config) {
@@ -120,7 +120,7 @@ abstract class MockGrid extends Grid {
             constructor() {
                 super();
                 this.innerWidth = 480;
-                this.innerHeight = 640;
+                this.innerHeight = 480;
             }
         }
         let global = (0 || eval)('this');
