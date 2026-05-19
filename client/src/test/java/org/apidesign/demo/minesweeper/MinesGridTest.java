@@ -38,8 +38,11 @@ public class MinesGridTest {
         try {
             var model = new Mines();
             var grid = new Grid(3, 2) {
+                volatile int onDropCount;
+
                 @Override
                 protected boolean onDrop(int prevX, int prevY, int x, int y) {
+                    onDropCount++;
                     var actions = new boolean[2];
                     model.onDrop(prevX, prevY, x, y, actions);
                     return actions[0];
@@ -49,12 +52,16 @@ public class MinesGridTest {
                 model.withGrid(grid);
                 model.init(3, 3, 2, null);
                 grid.flush();
+                // Initially pieces are spread around the board and they
+                // return back to target area. Reset the counter.
+                grid.onDropCount = 0;
                 assertEquals("Two mines are pending", 2, grid.getRemaining());
             }
 
             {
                 grid.moveTo(1, 1);
                 grid.flush();
+                assertEquals("First onDrop event received", 1, grid.onDropCount);
                 assertEquals("One less is pending", 1, grid.getRemaining());
             }
             var sq = model.getRows().get(1).getColumns().get(1);
