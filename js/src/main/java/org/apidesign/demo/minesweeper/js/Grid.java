@@ -83,7 +83,7 @@ public abstract class Grid {
 
     /** Finishes all animations.
      */
-    public final void flush() throws InterruptedException {
+    public final void flush() {
         flushAnimations(jsGrid);
     }
 
