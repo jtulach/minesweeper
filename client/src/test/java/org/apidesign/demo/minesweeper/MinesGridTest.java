@@ -73,9 +73,7 @@ public class MinesGridTest {
         {
             model.withGrid(grid);
             model.init(3, 3, 2, null);
-            for (var i = 0; i < 10; i++) {
-                grid.flush();
-            }
+            grid.flush();
             // Initially pieces are spread around the board and they
             // return back to target area. Reset the counter.
             grid.onDropCount = 0;
