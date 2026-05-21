@@ -47,6 +47,7 @@ public final class Audio {
             audioPlay(js);
         }
     }
+
     @JavaScriptBody(args = { "url" }, body = """
         try {
             return new Audio(url);
@@ -58,7 +59,9 @@ public final class Audio {
     private static native Object audioNew(String url);
 
     @JavaScriptBody(args = {"audio"}, body = """
-        audio.play();
+        audio.play().catch((err) => {
+            // ignore the err
+        });
         """
     )
     private static native String audioPlay(Object audio);

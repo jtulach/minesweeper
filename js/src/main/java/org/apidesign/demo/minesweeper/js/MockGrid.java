@@ -41,6 +41,7 @@ abstract class MockGrid extends Grid {
     @JavaScriptBody(args = {}, body = """
         class MockAudio {
             play() {
+                return Promise.resolve();
             }
         }
         class MockStyle {
