@@ -60,9 +60,10 @@ function initializeGrid(gridSize, pieceCount) {
         /** Registers one-shot transition listener to a given piece.
          *
          * @param {type} piece
-         * @param {type} handler a function taking (type, propertyName)
+         * @param handler a function taking (type, propertyName)
+         * @param delay optional delay to set for the transition
          */
-        addTransitionListener(piece, handler) {
+        addTransitionListener(piece, handler, delay) {
             let delivered = false;
             let fn = function(event) {
                 if (!delivered) {
@@ -71,6 +72,10 @@ function initializeGrid(gridSize, pieceCount) {
                 }
             };
 
+            piece.style.transition = 'all 0.3s ease';
+            if (delay) {
+                piece.style.transitionDelay = delay;
+            }
             piece.addEventListener('transitionend', fn, { once: true });
             this.pendings.push(fn);
             piece.addEventListener('transitioncancel', event => {
@@ -93,7 +98,6 @@ function initializeGrid(gridSize, pieceCount) {
             const targetX = centerX - pieceSize / 2;
             const targetY = centerY - pieceSize / 2;
 
-            piece.style.transition = 'left 0.3s ease, top 0.3s ease';
             piece.style.left = `${targetX}px`;
             piece.style.top = `${targetY}px`;
             this.logPiece(piece, "animatePieceBackToTargetRequested");
@@ -123,14 +127,13 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.classList.remove('at-target');
             availablePiece.dataset.gridRow = row;
             availablePiece.dataset.gridCol = col;
-            availablePiece.style.transition = 'left 0.18s ease, top 0.18s ease';
-            availablePiece.style.transitionDelay = '0.5s';
             availablePiece.style.left = `${left}px`;
             availablePiece.style.top = `${top}px`;
             this.logPiece(availablePiece, "animatePieceFromTargetToGridCellRequested", col, row);
 
             this.addTransitionListener(availablePiece, (type, propertyName) => {
                 this.logPiece(availablePiece, "animatePieceFromTargetToGridCell", type, propertyName, col, row);
+                availablePiece.style.transitionDelay = 'none';
                 switch (type) {
                     case 'transitionend':
                         this.completePieceDrop(availablePiece);
@@ -142,7 +145,7 @@ function initializeGrid(gridSize, pieceCount) {
                         availablePiece.classList.add('at-target');
                         break;
                 }
-            });
+            }, '0.5s');
             return true;
         }
 
@@ -171,7 +174,6 @@ function initializeGrid(gridSize, pieceCount) {
                 piece.dataset.gridRow = cell.row;
                 piece.dataset.gridCol = cell.col;
                 piece.classList.remove('at-target');
-                piece.style.transition = 'left 0.18s ease, top 0.18s ease';
                 piece.style.left = `${snapped.left}px`;
                 piece.style.top = `${snapped.top}px`;
             } else {
@@ -190,7 +192,6 @@ function initializeGrid(gridSize, pieceCount) {
             this.pieces.forEach(piece => {
                 if (piece.classList.contains('dragging')) return;
                 piece.dataset.pieceSize = pieceSize;
-                piece.style.transition = 'none';
 
                 if (piece.dataset.gridRow && piece.dataset.gridCol) {
                     const { col, row } = this.findColRow(piece);
