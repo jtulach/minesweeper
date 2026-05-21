@@ -196,6 +196,14 @@ div.MARKING div.UNKNOWN div.sign:before {
     font-size: 10vh;
 }
 
+.btn-transparent {
+    background-color: transparent;
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+    border: 5px solid #4992B7;
+    border-radius: 50%;
+    opacity: 70%;
+}
+
 div.grid div.UNKNOWN {
     background-color: #D6E4E1;
     color: #D6E4E1;
