@@ -40,7 +40,7 @@ function initializeGrid(gridSize, pieceCount) {
             const cellSize = this.calculateCellSize();
             return {
                 left: col * cellSize + (cellSize - pieceSize) / 2,
-                top: row * cellSize + (cellSize - pieceSize) / 2,
+                top: row * cellSize + (cellSize - pieceSize) / 2
             };
         }
 
@@ -51,6 +51,10 @@ function initializeGrid(gridSize, pieceCount) {
                 const pieceSize = parseFloat(piece.dataset.pieceSize);
                 this.animatePieceBackToTarget(piece, cellSize, pieceSize);
             }
+        }
+
+        logPiece(piece, msg, ...args) {
+            console.log(msg + "[" + this.findIndex(piece) + "]", ...args);
         }
 
         /** Registers one-shot transition listener to a given piece.
@@ -85,11 +89,12 @@ function initializeGrid(gridSize, pieceCount) {
             piece.style.transition = 'left 0.3s ease, top 0.3s ease';
             piece.style.left = `${targetX}px`;
             piece.style.top = `${targetY}px`;
+            this.logPiece(piece, "animatePieceBackToTargetRequested");
 
             this.addTransitionListener(piece, (type, propertyName) => {
                 const atTarget = piece.classList.contains('at-target');
                 const prev = this.findColRow(piece);
-                console.log("animatePieceBackToTarget[" + this.findIndex(piece) + "]", prev.col + ":" + prev.row, type, propertyName, atTarget);
+                this.logPiece(piece, "animatePieceBackToTarget", prev.col + ":" + prev.row, type, propertyName, atTarget);
                 if (!atTarget) {
                     delete piece.dataset.gridRow;
                     delete piece.dataset.gridCol;
@@ -115,9 +120,10 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.style.transitionDelay = '0.5s';
             availablePiece.style.left = `${left}px`;
             availablePiece.style.top = `${top}px`;
+            this.logPiece(availablePiece, "animatePieceFromTargetToGridCellRequested", col, row);
 
             this.addTransitionListener(availablePiece, (type, propertyName) => {
-                console.log("animatePieceFromTargetToGridCell[" + this.findIndex(availablePiece) + "]", type, propertyName, col, row);
+                this.logPiece(availablePiece, "animatePieceFromTargetToGridCell", type, propertyName, col, row);
                 switch (type) {
                     case 'transitionend':
                         this.completePieceDrop(availablePiece);
