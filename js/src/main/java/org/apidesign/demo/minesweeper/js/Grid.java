@@ -33,7 +33,7 @@ public abstract class Grid {
 
     /** Constructor for subclasses */
     protected Grid(int size, int mines) {
-        this(initializeGrid(size, mines));
+        this(initializeGridAndMock(size, mines));
     }
 
     /** Subclasses has to implement this method. Then they obtain
@@ -47,10 +47,20 @@ public abstract class Grid {
      */
     protected abstract boolean onDrop(int prevX, int prevY, int x, int y);
 
-    /** Adjust the CSS variables & co. Right now.
+    /**
+     * Move all pieces to target location.
      */
-    public final void update() {
-        updateGrid(jsGrid);
+    public final void init() {
+        initGrid(jsGrid);
+    }
+
+    /**
+     *  Adjust the CSS variables & co. Right now.
+     * @param markX x-coordinates of marked fields
+     * @param markY y-coordinates of marked fields
+     */
+    public final void update(int[] markX, int[] markY) {
+        updateGrid(jsGrid, markX, markY);
     }
 
     /** Initiates a move of an unplaced piece (if available) to provided location.
@@ -71,6 +81,23 @@ public abstract class Grid {
         backToTarget(jsGrid, x, y);
     }
 
+    /** Finishes all animations.
+     */
+    public final void flush() {
+        flushAnimations(jsGrid);
+    }
+
+
+    /**
+     * Return the number of remaining pieces.
+     *
+     * @return count from {@code 0} to number of {@code mines}
+     */
+    public final int getRemaining() {
+        return getRemaining(jsGrid);
+    }
+
+
     //
     // Internal implementaton of a bridge to JavaScript
     //
@@ -80,13 +107,36 @@ public abstract class Grid {
         registerDrop(jsGrid, this);
     }
 
+    private static Object initializeGridAndMock(int size, int mines) {
+        if (!isDefined("window")) {
+            MockGrid.children("Init mock");
+        }
+        return initializeGrid(size, mines);
+    }
+
+    @JavaScriptBody(args = {"symbol"}, body = """
+        let global = (0 || eval)("this");
+        let v = global[symbol];
+        return typeof v !== 'undefined';
+    """)
+    private static native boolean isDefined(String symbol);
+
     @JavaScriptBody(args = {"size", "mines"}, body = """
         return initializeGrid(size, mines);
     """)
     private static native Object initializeGrid(int size, int mines);
 
-    @JavaScriptBody(args = {"grid"}, body = "grid.updateGrid();")
-    private static native Object updateGrid(Object grid);
+    @JavaScriptBody(args = {"grid" }, body = "grid.initGrid();")
+    private static native Object initGrid(Object grid);
+
+    @JavaScriptBody(args = {"grid" }, body = "grid.flushAnimations();")
+    private static native void flushAnimations(Object grid);
+
+    @JavaScriptBody(args = {"grid" }, body = "return grid.getRemaining();")
+    private static native int getRemaining(Object grid);
+
+    @JavaScriptBody(args = {"grid", "markX", "markY" }, body = "grid.updateGrid(markX, markY);")
+    private static native Object updateGrid(Object grid, int[] markX, int[] markY);
 
     @JavaScriptBody(args = {"grid", "x", "y"}, body = "grid.moveTo(x, y);")
     private static native Object moveTo(Object grid, int x, int y);
@@ -107,7 +157,8 @@ public abstract class Grid {
     public static native long timeNow();
 
     @JavaScriptBody(args = {"msg", "arr"}, body = """
-    console.log(msg, ...arr);
+    var all = [ msg ].push(...arr);
+    console.log(all);
     """)
     public static void log(String msg, Object... arr) {
         System.err.println(msg + ": " + Arrays.deepToString(arr));

@@ -23,47 +23,37 @@
  */
 package org.apidesign.demo.minesweeper.js;
 
-import net.java.html.js.JavaScriptBody;
+import java.util.Arrays;
+import net.java.html.junit.BrowserRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public final class Audio {
-    private final Object js;
+@RunWith(BrowserRunner.class)
+public class GridTest {
+    @Test
+    public void testGridInitialization() {
+        var grid = new MockGrid(10, 10) {
+            @Override
+            protected boolean onDrop(int prevX, int prevY, int x, int y) {
+                return false;
+            }
+        };
+        grid.init();
 
-    private Audio(Object js) {
-        this.js = js;
-    }
-
-    public static Audio create(String url) {
-        var js = audioNew(url);
-        if (js instanceof String) {
-            System.err.println(js);
-            return new Audio(null);
-        } else {
-            return new Audio(js);
+        var e = MockGrid.getElementById("grid");
+        assertNotNull("Found container", e);
+        var arr = MockGrid.children(e);
+        assertEquals("Ten pieces", 10, arr.length);
+        for (var ch : arr) {
+            MockGrid.emitEvent(ch, "transitionend", "top");
+            MockGrid.emitEvent(ch, "transitionend", "left");
+        }
+        for (var ch : arr) {
+            var classList = Arrays.asList(MockGrid.classList(ch));
+            assertTrue("Contains at-target: " + classList, classList.contains("at-target"));
         }
     }
-
-    public void play() {
-        if (js != null) {
-            audioPlay(js);
-        }
-    }
-
-    @JavaScriptBody(args = { "url" }, body = """
-        try {
-            return new Audio(url);
-        } catch (err) {
-            return "No Audio: " + err;
-        }
-        """
-    )
-    private static native Object audioNew(String url);
-
-    @JavaScriptBody(args = {"audio"}, body = """
-        audio.play().catch((err) => {
-            // ignore the err
-        });
-        """
-    )
-    private static native String audioPlay(Object audio);
-
 }

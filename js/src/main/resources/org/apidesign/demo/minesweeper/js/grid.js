@@ -28,6 +28,7 @@ function initializeGrid(gridSize, pieceCount) {
             this.gridContainer = gridContainer;
             this.pieces = [];
             this.onDrop = [];
+            this.pendings = [];
         }
 
         calculateCellSize() {
@@ -39,7 +40,7 @@ function initializeGrid(gridSize, pieceCount) {
             const cellSize = this.calculateCellSize();
             return {
                 left: col * cellSize + (cellSize - pieceSize) / 2,
-                top: row * cellSize + (cellSize - pieceSize) / 2,
+                top: row * cellSize + (cellSize - pieceSize) / 2
             };
         }
 
@@ -48,9 +49,48 @@ function initializeGrid(gridSize, pieceCount) {
             if (piece !== null) {
                 const cellSize = this.calculateCellSize();
                 const pieceSize = parseFloat(piece.dataset.pieceSize);
-                piece.style.display = 'block';
                 this.animatePieceBackToTarget(piece, cellSize, pieceSize);
             }
+        }
+
+        logPiece(piece, msg, ...args) {
+            console.log(msg + "[" + this.findIndex(piece) + "]", ...args);
+        }
+
+        /** Registers one-shot transition listener to a given piece.
+         *
+         * @param {type} piece
+         * @param handler a function taking (type, propertyName)
+         * @param delay optional delay to set for the transition
+         */
+        addTransitionListener(piece, handler, delay) {
+            let delivered = false;
+            let fn = function(event) {
+                if (!delivered) {
+                    delivered = true;
+                    handler('transitionend', event.propertyName);
+                }
+            };
+
+            piece.style.transition = 'all 0.3s ease';
+            if (delay) {
+                piece.style.transitionDelay = delay;
+            }
+            piece.addEventListener('transitionend', fn, { once: true });
+            this.pendings.push(fn);
+            piece.addEventListener('transitioncancel', event => {
+                if (!delivered) {
+                    delivered = true;
+                    handler('transitioncancel', event.propertyName);
+                }
+            }, { once: true });
+        }
+
+        flush() {
+            for (let fn of this.pendings) {
+                fn('transitionend', "flush");
+            }
+            this.pendings = [];
         }
 
         animatePieceBackToTarget(piece, cellSize, pieceSize) {
@@ -58,27 +98,28 @@ function initializeGrid(gridSize, pieceCount) {
             const targetX = centerX - pieceSize / 2;
             const targetY = centerY - pieceSize / 2;
 
-            piece.style.transition = 'left 0.3s ease, top 0.3s ease';
             piece.style.left = `${targetX}px`;
             piece.style.top = `${targetY}px`;
+            this.logPiece(piece, "animatePieceBackToTargetRequested");
 
-            piece.addEventListener('transitionend', event => {
-                if (event.propertyName === 'left' || event.propertyName === 'top') {
-                    if (!piece.classList.contains('at-target')) {
-                        let prevCol = piece.dataset.gridCol || -1;
-                        let prevRow = piece.dataset.gridRow || -1;
-                        delete piece.dataset.gridRow;
-                        delete piece.dataset.gridCol;
-                        piece.classList.add('at-target');
-                        this.updateGrid();
-                        this.onDrop.map(f => f(prevCol, prevRow, -1, -1));
+            this.addTransitionListener(piece, (type, propertyName) => {
+                const atTarget = this.isAtTarget(piece);
+                const prev = this.findColRow(piece);
+                this.logPiece(piece, "animatePieceBackToTarget", prev.col + ":" + prev.row, type, propertyName, atTarget);
+                if (!atTarget) {
+                    delete piece.dataset.gridRow;
+                    delete piece.dataset.gridCol;
+                    piece.classList.add('at-target');
+                    this.updateGrid();
+                    if (prev.col !== -1 && prev.row !== -1) {
+                        this.onDrop.map(f => f(prev.col, prev.row, -1, -1));
                     }
                 }
-            }, { once: true });
+            });
         }
 
-        movePieceFromTargetToGridCell(col, row) {
-            const availablePiece = this.pieces.find(piece => piece.classList.contains('at-target') && !piece.classList.contains('dragging'));
+        animatePieceFromTargetToGridCell(col, row) {
+            const availablePiece = this.pieces.find(piece => this.isAtTarget(piece) && !piece.classList.contains('dragging'));
             if (!availablePiece) return false;
 
             const pieceSize = parseFloat(availablePiece.dataset.pieceSize);
@@ -86,24 +127,25 @@ function initializeGrid(gridSize, pieceCount) {
             availablePiece.classList.remove('at-target');
             availablePiece.dataset.gridRow = row;
             availablePiece.dataset.gridCol = col;
-            availablePiece.style.transition = 'left 0.18s ease, top 0.18s ease';
-            availablePiece.style.transitionDelay = '0.5s';
             availablePiece.style.left = `${left}px`;
             availablePiece.style.top = `${top}px`;
-            availablePiece.addEventListener('transitionend', event => {
-                let cancelled = availablePiece.classList.contains('at-target');
-                if (event.propertyName === 'left' || event.propertyName === 'top') {
-                    this.completePieceDrop(availablePiece);
-                    this.updateGrid();
+            this.logPiece(availablePiece, "animatePieceFromTargetToGridCellRequested", col, row);
+
+            this.addTransitionListener(availablePiece, (type, propertyName) => {
+                this.logPiece(availablePiece, "animatePieceFromTargetToGridCell", type, propertyName, col, row);
+                availablePiece.style.transitionDelay = 'none';
+                switch (type) {
+                    case 'transitionend':
+                        this.completePieceDrop(availablePiece);
+                        this.updateGrid();
+                        break;
+                    default:
+                        delete availablePiece.dataset.gridCol;
+                        delete availablePiece.dataset.gridRow;
+                        availablePiece.classList.add('at-target');
+                        break;
                 }
-            }, { once: true });
-            availablePiece.addEventListener('transitioncancel', event => {
-                if (!availablePiece.classList.contains('at-target')) {
-                    delete availablePiece.dataset.gridCol;
-                    delete availablePiece.dataset.gridRow;
-                    availablePiece.classList.add('at-target');
-                }
-            }, { once: true });
+            }, '0.5s');
             return true;
         }
 
@@ -122,17 +164,16 @@ function initializeGrid(gridSize, pieceCount) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
-                let prevCol = piece.dataset.gridCol || -1;
-                let prevRow = piece.dataset.gridRow || -1;
-                if (!this.onDrop.some(f => f(prevCol, prevRow, cell.col, cell.row))) {
+                let prev = this.findColRow(piece);
+                if (!this.onDrop.some(f => f(prev.col, prev.row, cell.col, cell.row))) {
                     this.animatePieceBackToTarget(piece, cellSize, pieceSize);
                     return;
                 }
 
+                this.logPiece(piece, "completePieceDrop", cell.col, cell.row);
                 piece.dataset.gridRow = cell.row;
                 piece.dataset.gridCol = cell.col;
                 piece.classList.remove('at-target');
-                piece.style.transition = 'left 0.18s ease, top 0.18s ease';
                 piece.style.left = `${snapped.left}px`;
                 piece.style.top = `${snapped.top}px`;
             } else {
@@ -140,7 +181,7 @@ function initializeGrid(gridSize, pieceCount) {
             }
         }
 
-        updateGrid() {
+        updateGrid(markX, markY) {
             const cellSize = this.calculateCellSize();
             document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
             this.gridElement.style.setProperty('--grid-size', gridSize);
@@ -151,20 +192,37 @@ function initializeGrid(gridSize, pieceCount) {
             this.pieces.forEach(piece => {
                 if (piece.classList.contains('dragging')) return;
                 piece.dataset.pieceSize = pieceSize;
-                piece.style.transition = 'none';
 
-                if (piece.classList.contains('at-target')) {
+                if (piece.dataset.gridRow && piece.dataset.gridCol) {
+                    const { col, row } = this.findColRow(piece);
+                    piece.style.left = `${col * cellSize + pieceOffset}px`;
+                    piece.style.top = `${row * cellSize + pieceOffset}px`;
+                    if (markX && markY) {
+                        for (let i = 0; i < Math.min(markX.length, markY.length); i++) {
+                            if (col === markX[i] && row === markY[i]) {
+                                markX.splice(i, 1);
+                                markY.splice(i, 1);
+                                return;
+                            }
+                        }
+                        // move to target
+                        this.animatePieceBackToTarget(piece);
+                    } else {
+                        return;
+                    }
+                }
+
+                if (this.isAtTarget(piece)) {
                     const { centerX, centerY } = this.getTargetPosition(piece);
                     piece.style.left = `${centerX - pieceSize / 2}px`;
                     piece.style.top = `${centerY - pieceSize / 2}px`;
-                } else if (piece.dataset.gridRow !== undefined && piece.dataset.gridCol !== undefined) {
-                    const row = parseInt(piece.dataset.gridRow, 10);
-                    const col = parseInt(piece.dataset.gridCol, 10);
-                    piece.style.left = `${col * cellSize + pieceOffset}px`;
-                    piece.style.top = `${row * cellSize + pieceOffset}px`;
                 }
             });
-
+            if (markX && markY) {
+                for (let i = 0; i < Math.min(markX.length, markY.length); i++) {
+                    this.animatePieceFromTargetToGridCell(markX[i], markY[i]);
+                }
+            }
         }
 
         createPieces(dragController) {
@@ -199,7 +257,7 @@ function initializeGrid(gridSize, pieceCount) {
 
         getRemainingPieces() {
             return this.pieces.reduceRight((sum, p) => {
-                let isRemaining = p.classList.contains('at-target');
+                let isRemaining = this.isAtTarget(p);
                 return isRemaining ? sum + 1 : sum;
             }, 0);
         }
@@ -260,8 +318,12 @@ function initializeGrid(gridSize, pieceCount) {
 
         findPiece(row, col, excludedPiece) {
             let at = this.pieces.findIndex(other => {
-                if (other === excludedPiece) return false;
-                if (other.classList.contains('at-target')) return false;
+                if (other === excludedPiece) {
+                    return false;
+                }
+                if (this.isAtTarget(other)) {
+                    return false;
+                }
 
                 const otherLeft = parseFloat(other.style.left);
                 const otherTop = parseFloat(other.style.top);
@@ -274,6 +336,16 @@ function initializeGrid(gridSize, pieceCount) {
 
         findIndex(piece) {
             return this.pieces.indexOf(piece);
+        }
+
+        isAtTarget(piece) {
+            return piece.classList.contains('at-target');
+        }
+
+        findColRow(piece) {
+            const col = piece.dataset.gridCol ? parseInt(piece.dataset.gridCol, 10) : -1;
+            const row = piece.dataset.gridRow ? parseInt(piece.dataset.gridRow, 10) : -1;
+            return { col, row };
         }
     }
 
@@ -303,9 +375,10 @@ function initializeGrid(gridSize, pieceCount) {
             this.piece = piece;
             this.offsetX = pointerX;
             this.offsetY = pointerY;
-            this.startedAtTarget = piece.classList.contains('at-target');
+            this.startedAtTarget = this.grid.isAtTarget(piece);
 
             if (this.startedAtTarget) {
+                this.grid.logPiece(piece, "onPointerDown");
                 piece.classList.remove('at-target');
             }
 
@@ -343,46 +416,32 @@ function initializeGrid(gridSize, pieceCount) {
         }
     }
 
-    const gridElement = document.getElementById('grid');
-    const gridContainer = document.querySelector('.grid-container');
+    let global = (0 || eval)('this');
+    let document = global.document;
+    let gridContainer = document.querySelector('.grid-container');
+    if (!gridContainer) {
+        // mock the elements if missing
+        gridContainer = document.createElement("div");
+        gridContainer.classList.add(".grid-container");
+        document.body.appendChild(gridContainer);
+    }
+    let gridElement = document.getElementById('grid');
+    if (!gridElement) {
+        gridElement = document.createElement("div");
+        gridElement.id = "grid";
+        gridContainer.appendChild(gridElement);
+    }
     const gridManager = new Grid(gridElement, gridContainer);
     const PIECE_SPEED = 420; // pixels per second
     const dragController = new DragController(gridManager);
 
-    function animatePieces(pieces) {
+    var pieces = gridManager.createPieces(dragController);
+    function animatePieces() {
         const cellSize = gridManager.calculateCellSize();
         const pieceSize = cellSize * 0.75;
 
         pieces.forEach(piece => {
-            const { centerX, centerY } = gridManager.getTargetPosition(piece);
-            const targetX = centerX - pieceSize / 2;
-            const targetY = centerY - pieceSize / 2;
-            const startX = parseFloat(piece.style.left);
-            const startY = parseFloat(piece.style.top);
-            const dx = targetX - startX;
-            const dy = targetY - startY;
-            const distance = Math.hypot(dx, dy);
-            const duration = Math.max(0.2, distance / PIECE_SPEED);
-
-            piece.style.transition = `transform ${duration}s ease-in-out`;
-            piece.addEventListener('transitionend', event => {
-                if (event.propertyName === 'transform') {
-                    const targetLeft = targetX;
-                    const targetTop = targetY;
-                    piece.style.transition = 'none';
-                    piece.style.left = `${targetLeft}px`;
-                    piece.style.top = `${targetTop}px`;
-                    piece.style.transform = 'none';
-                    piece.classList.add('at-target');
-                    delete piece.dataset.gridRow;
-                    delete piece.dataset.gridCol;
-                }
-            }, { once: true });
-
-            requestAnimationFrame(() => {
-                piece.style.transform = `translate(${dx}px, ${dy}px)`;
-                piece.classList.add('moving');
-            });
+            gridManager.animatePieceBackToTarget(piece, cellSize, pieceSize);
         });
     }
 
@@ -391,23 +450,28 @@ function initializeGrid(gridSize, pieceCount) {
         gridManager.updateGrid();
     });
 
-    var pieces = null;
     return {
-        'updateGrid' : function() {
+        'initGrid' : function() {
             gridManager.updateGrid();
-            if (pieces === null) {
-                pieces = gridManager.createPieces(dragController);
-            }
-            animatePieces(pieces);
+            animatePieces();
+        },
+        'updateGrid' : function(markX, markY) {
+            gridManager.updateGrid(markX, markY);
+        },
+        'flushAnimations' : function() {
+            gridManager.flush();
         },
         'registerDrop' : function(f) {
             gridManager.onDrop.push(f);
         },
         'moveTo' : function(x, y) {
-            gridManager.movePieceFromTargetToGridCell(x, y);
+            gridManager.animatePieceFromTargetToGridCell(x, y);
         },
         'backToTarget' : function(x, y) {
             gridManager.backToTarget(x, y);
+        },
+        'getRemaining' : function() {
+            return gridManager.getRemainingPieces();
         }
     };
 }

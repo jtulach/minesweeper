@@ -215,7 +215,9 @@ public final class MinesModel {
             // randomize after generating the same layout of mines
             random.seedTo(null);
         }
-        model.updateGrid();
+        if (grid != null) {
+            grid.init();
+        }
     }
 
     @ModelOperation
@@ -224,10 +226,67 @@ public final class MinesModel {
     }
 
     @ModelOperation
-    void updateGrid() {
-        if (grid != null) {
-            grid.update();
+    void onDrop(Mines model, int prevX, int prevY, int x, int y, boolean[] actions) {
+        var prev = MinesModel.findSquare(model, prevX, prevY);
+        if (prev != null && prev.getState() == MinesModel.SquareType.MARKED) {
+            prev.setState(MinesModel.SquareType.UNKNOWN);
         }
+        var square = MinesModel.findSquare(model, x, y);
+        if (square != null) {
+            model.placeMineMark(square, actions);
+            if (actions[0]) {
+                // placing was successful
+                if (actions[1]) {
+                    // game was won
+                    model.setState(MinesModel.GameState.WON);
+                }
+            }
+        }
+    }
+
+
+    @ModelOperation
+    void updateGrid(Mines model) {
+        if (grid != null) {
+//            if (model.getState() == GameState.IN_PROGRESS) {
+//                var coords = findMarkedSquareCoords(model);
+//                grid.update(coords[0], coords[1]);
+//            } else {
+                grid.update(null, null);
+//            }
+        }
+    }
+
+    private static int[][] findMarkedSquareCoords(Mines model) {
+        var cnt = 0;
+        var rows = model.getRows();
+        for (int y = 0; y < rows.size(); y++) {
+            var columns = rows.get(y).getColumns();
+            for (int x = 0; x < columns.size(); x++) {
+                var sq = columns.get(x);
+                if (sq.getState() == SquareType.MARKED) {
+                    cnt++;
+                }
+            }
+        }
+        var markX = new int[cnt];
+        var markY = new int[cnt];
+        var at = 0;
+        for (int y = 0; y < rows.size(); y++) {
+            var columns = rows.get(y).getColumns();
+            for (int x = 0; x < columns.size(); x++) {
+                var sq = columns.get(x);
+                if (sq.getState() == SquareType.MARKED) {
+                    markX[at] = x;
+                    markY[at] = y;
+                    at++;
+                }
+            }
+        }
+        var coords = new int[2][];
+        coords[0] = markX;
+        coords[1] = markY;
+        return coords;
     }
 
     @ModelOperation
@@ -337,7 +396,7 @@ public final class MinesModel {
             throw new IllegalStateException("No empty squares " + info + "\n" + model);
         }
         var select = random.nextInt(emptySquares.size());
-        model.click(emptySquares.get(select));
+        handleClick(model, emptySquares.get(select));
     }
 
 
@@ -377,6 +436,10 @@ public final class MinesModel {
     @ModelOperation
     @Function
     void click(Mines model, Square data) {
+        handleClick(model, data);
+    }
+
+    private void handleClick(Mines model, Square data) {
         if (model.getState() == GameState.MARKING_MINE) {
             var actions = new boolean[2];
             placeMineMark(model, data, actions);
@@ -732,7 +795,7 @@ public final class MinesModel {
         return true;
     }
 
-    private static Square findSquare(Mines model, int x, int y) {
+    static Square findSquare(Mines model, int x, int y) {
         if (x < 0 || y < 0) {
             return null;
         }
@@ -770,38 +833,4 @@ public final class MinesModel {
         ui.updateGrid();
     }
 
-    /**
-     * Connecting drag and drop support provided by JavaScript with
-     * {@link Mines} model.
-     */
-    private static final class MinesGrid extends Grid {
-        private final Mines model;
-
-        public MinesGrid(int size, int mines, Mines ui) {
-            super(size, mines);
-            this.model = ui;
-        }
-
-        @Override
-        protected boolean onDrop(int prevX, int prevY, int x, int y) {
-            var prev = findSquare(model, prevX, prevY);
-            if (prev != null && prev.getState() == SquareType.MARKED) {
-                prev.setState(SquareType.UNKNOWN);
-            }
-
-            var actions = new boolean[2];
-            var square = findSquare(model, x, y);
-            if (square != null) {
-                model.placeMineMark(square, actions);
-                if (actions[0]) {
-                    // placing was successful
-                    if (actions[1]) {
-                        // game was won
-                        model.setState(GameState.WON);
-                    }
-                }
-            }
-            return actions[0];
-        }
-    }
 }

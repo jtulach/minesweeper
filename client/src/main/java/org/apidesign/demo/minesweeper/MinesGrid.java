@@ -21,49 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.apidesign.demo.minesweeper.js;
+package org.apidesign.demo.minesweeper;
 
-import net.java.html.js.JavaScriptBody;
+import org.apidesign.demo.minesweeper.js.Grid;
 
-public final class Audio {
-    private final Object js;
+/**
+ * Connecting drag and drop support provided by JavaScript with
+ * {@link Mines} model.
+ */
+final class MinesGrid extends Grid {
 
-    private Audio(Object js) {
-        this.js = js;
+    private final Mines model;
+
+    public MinesGrid(int size, int mines, Mines ui) {
+        super(size, mines);
+        this.model = ui;
     }
 
-    public static Audio create(String url) {
-        var js = audioNew(url);
-        if (js instanceof String) {
-            System.err.println(js);
-            return new Audio(null);
-        } else {
-            return new Audio(js);
-        }
+    @Override
+    protected boolean onDrop(int prevX, int prevY, int x, int y) {
+        var actions = new boolean[2];
+        model.onDrop(prevX, prevY, x, y, actions);
+        return actions[0];
     }
-
-    public void play() {
-        if (js != null) {
-            audioPlay(js);
-        }
-    }
-
-    @JavaScriptBody(args = { "url" }, body = """
-        try {
-            return new Audio(url);
-        } catch (err) {
-            return "No Audio: " + err;
-        }
-        """
-    )
-    private static native Object audioNew(String url);
-
-    @JavaScriptBody(args = {"audio"}, body = """
-        audio.play().catch((err) => {
-            // ignore the err
-        });
-        """
-    )
-    private static native String audioPlay(Object audio);
-
 }
