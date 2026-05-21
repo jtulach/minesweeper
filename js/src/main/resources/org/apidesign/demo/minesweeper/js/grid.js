@@ -81,6 +81,13 @@ function initializeGrid(gridSize, pieceCount) {
             }, { once: true });
         }
 
+        flush() {
+            for (let fn of this.pendings) {
+                fn('transitionend', "flush");
+            }
+            this.pendings = [];
+        }
+
         animatePieceBackToTarget(piece, cellSize, pieceSize) {
             const { centerX, centerY } = this.getTargetPosition(piece);
             const targetX = centerX - pieceSize / 2;
@@ -92,7 +99,7 @@ function initializeGrid(gridSize, pieceCount) {
             this.logPiece(piece, "animatePieceBackToTargetRequested");
 
             this.addTransitionListener(piece, (type, propertyName) => {
-                const atTarget = piece.classList.contains('at-target');
+                const atTarget = this.isAtTarget(piece);
                 const prev = this.findColRow(piece);
                 this.logPiece(piece, "animatePieceBackToTarget", prev.col + ":" + prev.row, type, propertyName, atTarget);
                 if (!atTarget) {
@@ -108,7 +115,7 @@ function initializeGrid(gridSize, pieceCount) {
         }
 
         animatePieceFromTargetToGridCell(col, row) {
-            const availablePiece = this.pieces.find(piece => piece.classList.contains('at-target') && !piece.classList.contains('dragging'));
+            const availablePiece = this.pieces.find(piece => this.isAtTarget(piece) && !piece.classList.contains('dragging'));
             if (!availablePiece) return false;
 
             const pieceSize = parseFloat(availablePiece.dataset.pieceSize);
@@ -160,6 +167,7 @@ function initializeGrid(gridSize, pieceCount) {
                     return;
                 }
 
+                this.logPiece(piece, "completePieceDrop", cell.col, cell.row);
                 piece.dataset.gridRow = cell.row;
                 piece.dataset.gridCol = cell.col;
                 piece.classList.remove('at-target');
@@ -203,7 +211,7 @@ function initializeGrid(gridSize, pieceCount) {
                     }
                 }
 
-                if (piece.classList.contains('at-target')) {
+                if (this.isAtTarget(piece)) {
                     const { centerX, centerY } = this.getTargetPosition(piece);
                     piece.style.left = `${centerX - pieceSize / 2}px`;
                     piece.style.top = `${centerY - pieceSize / 2}px`;
@@ -248,7 +256,7 @@ function initializeGrid(gridSize, pieceCount) {
 
         getRemainingPieces() {
             return this.pieces.reduceRight((sum, p) => {
-                let isRemaining = p.classList.contains('at-target');
+                let isRemaining = this.isAtTarget(p);
                 return isRemaining ? sum + 1 : sum;
             }, 0);
         }
@@ -309,8 +317,12 @@ function initializeGrid(gridSize, pieceCount) {
 
         findPiece(row, col, excludedPiece) {
             let at = this.pieces.findIndex(other => {
-                if (other === excludedPiece) return false;
-                if (other.classList.contains('at-target')) return false;
+                if (other === excludedPiece) {
+                    return false;
+                }
+                if (this.isAtTarget(other)) {
+                    return false;
+                }
 
                 const otherLeft = parseFloat(other.style.left);
                 const otherTop = parseFloat(other.style.top);
@@ -323,6 +335,10 @@ function initializeGrid(gridSize, pieceCount) {
 
         findIndex(piece) {
             return this.pieces.indexOf(piece);
+        }
+
+        isAtTarget(piece) {
+            return piece.classList.contains('at-target');
         }
 
         findColRow(piece) {
@@ -358,9 +374,10 @@ function initializeGrid(gridSize, pieceCount) {
             this.piece = piece;
             this.offsetX = pointerX;
             this.offsetY = pointerY;
-            this.startedAtTarget = piece.classList.contains('at-target');
+            this.startedAtTarget = this.grid.isAtTarget(piece);
 
             if (this.startedAtTarget) {
+                this.grid.logPiece(piece, "onPointerDown");
                 piece.classList.remove('at-target');
             }
 
@@ -441,10 +458,7 @@ function initializeGrid(gridSize, pieceCount) {
             gridManager.updateGrid(markX, markY);
         },
         'flushAnimations' : function() {
-            for (let fn of gridManager.pendings) {
-                fn('transitionend', "flush");
-            }
-            gridManager.pendings = [];
+            gridManager.flush();
         },
         'registerDrop' : function(f) {
             gridManager.onDrop.push(f);
