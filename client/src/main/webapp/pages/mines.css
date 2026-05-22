@@ -190,10 +190,10 @@ div.MARKING div.UNKNOWN div.sign:before {
 .result button {
     justify-content: center;
     align-items: center;
-    height: 10vh;
-    width: 10vw;
+    height: max(15vh, 15vw);
+    width: max(15vh, 15vw);
     user-select: none;
-    font-size: 10vh;
+    font-size: max(10vh, 10vw);
 }
 
 .btn-transparent {
