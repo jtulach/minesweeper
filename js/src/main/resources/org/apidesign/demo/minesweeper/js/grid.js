@@ -98,11 +98,13 @@ function initializeGrid(gridSize, pieceCount) {
             const targetX = centerX - pieceSize / 2;
             const targetY = centerY - pieceSize / 2;
 
+            this.logPiece(piece, "animatePieceBackToTargetRequested", piece.style.left, targetX, piece.style.top, targetY);
             piece.style.left = `${targetX}px`;
             piece.style.top = `${targetY}px`;
-            this.logPiece(piece, "animatePieceBackToTargetRequested");
+            piece.style.opacity = '99%';
 
             this.addTransitionListener(piece, (type, propertyName) => {
+                piece.style.opacity = 'inherit';
                 const atTarget = this.isAtTarget(piece);
                 const prev = this.findColRow(piece);
                 this.logPiece(piece, "animatePieceBackToTarget", prev.col + ":" + prev.row, type, propertyName, atTarget);
@@ -124,16 +126,18 @@ function initializeGrid(gridSize, pieceCount) {
 
             const pieceSize = parseFloat(availablePiece.dataset.pieceSize);
             const { left, top } = this.getCellTargetPosition(row, col, pieceSize);
+            this.logPiece(availablePiece, "animatePieceFromTargetToGridCellRequested", col, row, availablePiece.style.left, left, availablePiece.style.top, top);
             availablePiece.classList.remove('at-target');
             availablePiece.dataset.gridRow = row;
             availablePiece.dataset.gridCol = col;
             availablePiece.style.left = `${left}px`;
             availablePiece.style.top = `${top}px`;
-            this.logPiece(availablePiece, "animatePieceFromTargetToGridCellRequested", col, row);
+            availablePiece.style.opacity = '98%';
 
             this.addTransitionListener(availablePiece, (type, propertyName) => {
                 this.logPiece(availablePiece, "animatePieceFromTargetToGridCell", type, propertyName, col, row);
                 availablePiece.style.transitionDelay = 'none';
+                availablePiece.style.opacity = 'inherit';
                 switch (type) {
                     case 'transitionend':
                         this.completePieceDrop(availablePiece);
