@@ -32,7 +32,6 @@ import net.java.html.json.Models;
 import net.java.html.json.Property;
 import org.apidesign.demo.minesweeper.js.Audio;
 import org.apidesign.demo.minesweeper.js.Grid;
-import org.apidesign.demo.minesweeper.js.OpenURL;
 import org.apidesign.demo.minesweeper.js.RandomGenerator;
 import org.apidesign.demo.minesweeper.js.UrlLocation;
 
@@ -42,7 +41,9 @@ import org.apidesign.demo.minesweeper.js.UrlLocation;
 @Model(className = "Mines", targetId = "", instance = true, properties = {
     @Property(name = "show", type = MinesModel.ShowState.class),
     @Property(name = "state", type = MinesModel.GameState.class),
-    @Property(name = "rows", type = Row.class, array = true),})
+    @Property(name = "rows", type = Row.class, array = true),
+    @Property(name = "docs", type = Docs.class)
+})
 public final class MinesModel {
     private final RandomGenerator random = new RandomGenerator();
     private Grid grid;
@@ -512,82 +513,6 @@ public final class MinesModel {
         if (at != null) {
             g.clear(at[0], at[1]);
         }
-    }
-
-    @Function
-    static void urlProjectPage(Mines model) {
-        String url = "https://dukescript.com";
-        openURL(url);
-    }
-
-    @Function
-    static void urlProjectDoc(Mines model) {
-        String url = "https://dukescript.com/documentation.html"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlPrivacy(Mines model) {
-        String url = OpenURL.relativeUrl("privacy.html"); // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlBck2Brwsr(Mines model) {
-        String url = "http://bck2brwsr.apidesign.org"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlBrowserSweeper(Mines model) {
-        String url = "http://xelfi.cz/minesweeper/bck2brwsr/"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlPresenters(Mines model) {
-        String url = "https://github.com/dukescript/dukescript-presenters"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlGooglePlay(Mines model) {
-        String url = "https://play.google.com/store/apps/details?id=org.apidesign.demo.minesweeper"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlRoboVM(Mines model) {
-        String url = "http://www.robovm.org"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlAppStore(Mines model) {
-        String url = "https://itunes.apple.com/us/app/fair-minesweeper/id903688146"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlNetBeansPlugin(Mines model) {
-        String url = "http://plugins.netbeans.org/plugin/53864/"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlNetBeans(Mines model) {
-        String url = "http://www.netbeans.org"; // NOI18N
-        openURL(url);
-    }
-
-    @Function
-    static void urlDevelop(Mines model) {
-        String url = "https://dukescript.com/getting_started.html"; // NOI18N
-        openURL(url);
-    }
-
-    private static void openURL(String url) {
-        OpenURL.openURL(url);
     }
 
     private static void cleanedUp(Mines model, Square data) {

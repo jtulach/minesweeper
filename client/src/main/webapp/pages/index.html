@@ -187,7 +187,7 @@
             </div>
         </div>
 
-    <div class="container" data-bind="visible: showProse" style="display: none">
+    <div class="container" data-bind="visible: showProse, with: docs" style="display: none">
       <div>
         <div class="col-md-4">
           <h2>Documentation</h2>
@@ -199,7 +199,7 @@
               our documentation.
           </p>
           <p><a class="btn btn-default"
-                data-bind="click: $root.urlProjectDoc" href="#"
+                data-bind="click: urlProjectDoc" href="#"
                 role="button">Read more &raquo;</a></p>
        </div>
         <div class="col-md-4">
@@ -227,7 +227,7 @@
        </div>
       </div>
     </div>
-<div class="container" data-bind="visible: showProse" style="display: none">
+<div class="container" data-bind="visible: showProse, with: docs" style="display: none">
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
         <img src="android_logo.jpg" width="120" height="120" alt="Android">
