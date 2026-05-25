@@ -420,7 +420,7 @@ function initializeGrid(gridSize, pieceCount) {
         }
     }
 
-    let global = (0 || eval)('this');
+    let global = (0, eval)('this');
     let document = global.document;
     let gridContainer = document.querySelector('.grid-container');
     if (!gridContainer) {

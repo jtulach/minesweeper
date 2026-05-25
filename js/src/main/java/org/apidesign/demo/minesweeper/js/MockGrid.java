@@ -124,7 +124,7 @@ abstract class MockGrid extends Grid {
                 this.innerHeight = 480;
             }
         }
-        let global = (0 || eval)('this');
+        let global = (0, eval)('this');
         global.document = new MockDoc();
         global.window = new MockWindow();
         global.Audio = MockAudio;
