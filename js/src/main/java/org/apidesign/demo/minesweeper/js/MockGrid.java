@@ -29,13 +29,15 @@ import net.java.html.js.JavaScriptBody;
  * Helper class for using Grid in tests.
  */
 abstract class MockGrid extends Grid {
-
-    static {
-        defineDom();
+    MockGrid(int size, int mines) {
+        super(defineDomIfMissing(size), mines);
     }
 
-    MockGrid(int size, int mines) {
-        super(size, mines);
+    private static <T> T defineDomIfMissing(T value) {
+        if (!isDefined("window")) {
+            defineDom();
+        }
+        return value;
     }
 
     @JavaScriptBody(args = {}, body = """
@@ -167,5 +169,12 @@ abstract class MockGrid extends Grid {
         return Array.from(e.classList);
     """)
     static native Object[] classList(Object e);
+
+    @JavaScriptBody(args = {"symbol"}, body = """
+        let global = (0, eval)("this");
+        let v = global[symbol];
+        return typeof v !== 'undefined';
+    """)
+    private static native boolean isDefined(String symbol);
 
 }
