@@ -138,20 +138,27 @@ abstract class MockGrid extends Grid {
     static native Object getElementById(String id);
 
     @JavaScriptBody(args = {"e"}, body = """
-        return e.children;
+        return e.children ? Array.from(e.children) : null;
     """)
     static native Object[] children(Object e);
 
     @JavaScriptBody(args = { "e", "type", "propertyName" }, body = """
-        var arr = e.listeners.get(type);
-        if (arr) {
-            for (var fnAndConfig of arr) {
-                let fn = fnAndConfig.fn;
-                if (fnAndConfig.config && fnAndConfig.config.once) {
-                    e.listeners.delete(type);
+        if (e.listeners) {
+            // in mocked DOM
+            var arr = e.listeners.get(type);
+            if (arr) {
+                for (var fnAndConfig of arr) {
+                    let fn = fnAndConfig.fn;
+                    if (fnAndConfig.config && fnAndConfig.config.once) {
+                        e.listeners.delete(type);
+                    }
+                    fn({ 'propertyName' : propertyName });
                 }
-                fn({ 'propertyName' : propertyName });
             }
+        } else {
+            // real DOM
+            let evt = new TransitionEvent("transitionend", { 'propertyName' : propertyName });
+            e.dispatchEvent(evt);
         }
     """)
     static native Object[] emitEvent(Object e, String type, String propertyName);
