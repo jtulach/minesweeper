@@ -78,7 +78,6 @@
     <dependency>
       <groupId>com.dukescript.api</groupId>
       <artifactId>junit-browser-runner</artifactId>
-      <version>1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

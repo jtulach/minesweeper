@@ -51,6 +51,22 @@
                 <scope>test</scope>
                 <version>6.8.8</version>
             </dependency>
+            <dependency>
+                <groupId>com.dukescript.api</groupId>
+                <artifactId>junit-browser-runner</artifactId>
+                <scope>test</scope>
+                <version>1.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.netbeans.html</groupId>
+                        <artifactId>net.java.html</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.netbeans.html</groupId>
+                        <artifactId>net.java.html.boot</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

@@ -210,18 +210,6 @@
     <dependency>
       <groupId>com.dukescript.api</groupId>
       <artifactId>junit-browser-runner</artifactId>
-      <version>1.0</version>
-      <scope>test</scope>
-      <exclusions>
-          <exclusion>
-              <groupId>org.netbeans.html</groupId>
-              <artifactId>net.java.html</artifactId>
-          </exclusion>
-          <exclusion>
-              <groupId>org.netbeans.html</groupId>
-              <artifactId>net.java.html.boot</artifactId>
-          </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
   <profiles>

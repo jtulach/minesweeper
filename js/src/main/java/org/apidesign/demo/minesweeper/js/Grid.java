@@ -108,18 +108,8 @@ public abstract class Grid {
     }
 
     private static Object initializeGridAndMock(int size, int mines) {
-        if (!isDefined("window")) {
-            MockGrid.children("Init mock");
-        }
         return initializeGrid(size, mines);
     }
-
-    @JavaScriptBody(args = {"symbol"}, body = """
-        let global = (0 || eval)("this");
-        let v = global[symbol];
-        return typeof v !== 'undefined';
-    """)
-    private static native boolean isDefined(String symbol);
 
     @JavaScriptBody(args = {"size", "mines"}, body = """
         return initializeGrid(size, mines);

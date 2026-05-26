@@ -28,14 +28,16 @@ import net.java.html.js.JavaScriptBody;
 /**
  * Helper class for using Grid in tests.
  */
-abstract class MockGrid extends Grid {
-
-    static {
-        defineDom();
+public abstract class MockGrid extends Grid {
+    protected MockGrid(int size, int mines) {
+        super(defineDomIfMissing(size), mines);
     }
 
-    MockGrid(int size, int mines) {
-        super(size, mines);
+    private static <T> T defineDomIfMissing(T value) {
+        if (!isDefined("window")) {
+            defineDom();
+        }
+        return value;
     }
 
     @JavaScriptBody(args = {}, body = """
@@ -124,7 +126,7 @@ abstract class MockGrid extends Grid {
                 this.innerHeight = 480;
             }
         }
-        let global = (0 || eval)('this');
+        let global = (0, eval)('this');
         global.document = new MockDoc();
         global.window = new MockWindow();
         global.Audio = MockAudio;
@@ -138,20 +140,27 @@ abstract class MockGrid extends Grid {
     static native Object getElementById(String id);
 
     @JavaScriptBody(args = {"e"}, body = """
-        return e.children;
+        return e.children ? Array.from(e.children) : null;
     """)
     static native Object[] children(Object e);
 
     @JavaScriptBody(args = { "e", "type", "propertyName" }, body = """
-        var arr = e.listeners.get(type);
-        if (arr) {
-            for (var fnAndConfig of arr) {
-                let fn = fnAndConfig.fn;
-                if (fnAndConfig.config && fnAndConfig.config.once) {
-                    e.listeners.delete(type);
+        if (e.listeners) {
+            // in mocked DOM
+            var arr = e.listeners.get(type);
+            if (arr) {
+                for (var fnAndConfig of arr) {
+                    let fn = fnAndConfig.fn;
+                    if (fnAndConfig.config && fnAndConfig.config.once) {
+                        e.listeners.delete(type);
+                    }
+                    fn({ 'propertyName' : propertyName });
                 }
-                fn({ 'propertyName' : propertyName });
             }
+        } else {
+            // real DOM
+            let evt = new TransitionEvent("transitionend", { 'propertyName' : propertyName });
+            e.dispatchEvent(evt);
         }
     """)
     static native Object[] emitEvent(Object e, String type, String propertyName);
@@ -160,5 +169,12 @@ abstract class MockGrid extends Grid {
         return Array.from(e.classList);
     """)
     static native Object[] classList(Object e);
+
+    @JavaScriptBody(args = {"symbol"}, body = """
+        let global = (0, eval)("this");
+        let v = global[symbol];
+        return typeof v !== 'undefined';
+    """)
+    private static native boolean isDefined(String symbol);
 
 }
