@@ -140,15 +140,26 @@ public final class MinesModel {
         return state == GameState.IN_PROGRESS;
     }
 
-    @Function
-    static void showHelp(Mines model) {
-        model.setShow(ShowState.INFO);
-        model.setState(null);
+    @ComputedProperty
+    static boolean gameCanStart(GameState state) {
+        return state == null || state != GameState.IN_PROGRESS;
     }
 
     @Function
     static void normalGame(Mines model) {
         model.init(10, 10, 10, "");
+    }
+
+    @Function
+    static void revealGame(Mines model) {
+        var newState = switch (model.getShow()) {
+            case GAME -> ShowState.INFO;
+            default -> ShowState.GAME;
+        };
+        if (!model.isGameInProgress()) {
+            normalGame(model);
+        }
+        model.setShow(newState);
     }
 
     @Function
