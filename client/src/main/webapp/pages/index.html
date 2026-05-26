@@ -134,11 +134,17 @@
                   <div class="result" data-bind="visible: gameStyle() === 'LOST'">
                         <button class="btn btn-danger btn-transparent" disabled="true" data-bind="disable: false, click: normalGame">
                             <span>&#x21bb;</span>
+                            <label>Play!</label>
+                        </button>
+                        <button class="btn btn-info btn-transparent" disabled="true" data-bind="disable: false, visible: navigatorShare, click: shareGame">
+                            <span>&#x2672;</span>
+                            <label>Share!</label>
                         </button>
                   </div>
                   <div class="result" data-bind="visible: gameStyle() === 'WON'">
                         <button class="btn btn-success btn-transparent" disabled="true" data-bind="disable: false, click: normalGame">
                             <span>&#x21bb;</span>
+                            <label>Play!</label>
                         </button>
                   </div>
               </section>

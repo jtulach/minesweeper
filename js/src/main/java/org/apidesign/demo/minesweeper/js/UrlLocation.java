@@ -57,6 +57,24 @@ public final class UrlLocation {
         return hash == -1 ? "" : url.substring(hash + 1);
     }
 
+    /**
+     * Shares the current URL via {@code Navigator.share}
+     * @param title title of the post
+     * @param text text of the post
+     * @return {@code true} if sharing worked
+     */
+    public static boolean share(String title, String text) {
+        var url = location();
+        return share(url, title, text);
+    }
+
+    @JavaScriptBody(args = {}, body = """
+        return Navigator.canShare && Navigator.canShare();
+    """)
+    public static boolean canShare() {
+        return false;
+    }
+
     @JavaScriptBody(args = {}, body = """
     return (typeof window !== 'undefined' && typeof window.location !== 'undefined') ? window.location.href : "";
     """)
@@ -70,5 +88,16 @@ public final class UrlLocation {
     }
     """)
     private static void location(String href) {
+    }
+
+    @JavaScriptBody(args = {"location", "title", "text"}, body = """
+        return Navigator.share && Navigator.share({
+            'url' : location,
+            'title' : title,
+            'text' : text
+        });
+    """)
+    private static boolean share(String location, String title, String text) {
+        return false;
     }
 }

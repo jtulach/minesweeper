@@ -42,7 +42,8 @@ import org.apidesign.demo.minesweeper.js.UrlLocation;
     @Property(name = "show", type = MinesModel.ShowState.class),
     @Property(name = "state", type = MinesModel.GameState.class),
     @Property(name = "rows", type = Row.class, array = true),
-    @Property(name = "docs", type = Docs.class)
+    @Property(name = "docs", type = Docs.class),
+    @Property(name = "navigatorShare", type = boolean.class)
 })
 public final class MinesModel {
     private final RandomGenerator random = new RandomGenerator();
@@ -178,6 +179,20 @@ public final class MinesModel {
         if (model.getState() == GameState.IN_PROGRESS) {
             model.setState(GameState.MARKING_MINE);
         }
+    }
+
+    @Function
+    static void shareGame(Mines model) {
+        String title;
+        if (model.getState() == GameState.WON) {
+            title = "Win!";
+        } else {
+            title = "Fair game!";
+        }
+        var text = """
+        Fair Minesweeper quiz. Can you solve it?
+        """;
+        UrlLocation.share(title, text);
     }
 
     @ModelOperation
@@ -758,6 +773,7 @@ public final class MinesModel {
 
     public static void main(String... args) throws Exception {
         ui = new Mines();
+        ui.setNavigatorShare(UrlLocation.canShare());
         var grid = new MinesGrid(10, 10, ui);
         ui.withGrid(grid);
         ui.setShow(ShowState.BOOT);

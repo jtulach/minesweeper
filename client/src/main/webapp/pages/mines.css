@@ -200,7 +200,8 @@ div.MARKING div.UNKNOWN div.sign:before {
     background-color: transparent;
     transition: background .2s ease-in-out, border .2s ease-in-out;
     border: 5px solid #4992B7;
-    border-radius: 50%;
+    border-radius: 20%;
+    margin: max(2vh, 2vw);
     opacity: 70%;
 }
 
