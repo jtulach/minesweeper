@@ -28,8 +28,8 @@ import net.java.html.js.JavaScriptBody;
 /**
  * Helper class for using Grid in tests.
  */
-abstract class MockGrid extends Grid {
-    MockGrid(int size, int mines) {
+public abstract class MockGrid extends Grid {
+    protected MockGrid(int size, int mines) {
         super(defineDomIfMissing(size), mines);
     }
 
