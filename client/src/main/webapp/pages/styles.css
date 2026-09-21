@@ -48,8 +48,9 @@ body {
 }
 
 .grid-container {
-  width: min(70vw, 70vh);
-  height: min(70vw, 70vh);
+  --board-size: min(70vw, 70vh);
+  width: var(--board-size);
+  height: var(--board-size);
   padding: 16px;
   background: var(--surface);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -60,6 +61,56 @@ body {
   justify-content: center;
   user-select: none;
   position: relative;
+  box-sizing: border-box;
+}
+
+/* Any portrait window: 70vw/70vh badly underuses a tall, narrow
+   viewport (board ends up tiny with wasted space all around). app-shell's
+   24px+24px padding was the main remaining offender (bootstrap-responsive.css
+   used to also put 20px+20px on body below 767px wide, a leftover from
+   the old table-based layout; that rule has been removed outright since
+   nothing in the current design needs it). Shrink app-shell's padding to
+   a thin 8px edge margin and size the board from the freed-up width, the
+   true constraint in portrait.
+   This is applied unconditionally for ALL portrait widths (no
+   "phone-only" breakpoint) on purpose: an earlier version gated it at
+   max-width:600px, which didn't line up with the old body-padding rule's
+   own 767px cutoff. That mismatch made the board visibly *shrink* again
+   between 601-767px as the window widened. A single unconditional
+   formula keeps growth monotonic regardless of breakpoints elsewhere.
+   grid.js also stages the row of unplaced mine markers just above the
+   grid whenever innerWidth <= innerHeight (see getTargetPosition() in
+   grid.js); the extra height added below makes room for that row (JS
+   only reads container *width* for cell sizing, so extra height is
+   free), and align-items:flex-end turns it into headroom above. */
+@media (orientation: portrait) {
+  .app-shell {
+    padding: 8px;
+  }
+  .grid-container {
+    --board-size: min(calc(100vw - 16px), 70vh);
+    width: var(--board-size);
+    height: calc(var(--board-size) + var(--cell-size, 40px) + 16px);
+    align-items: flex-end;
+  }
+}
+
+/* Any landscape window (e.g. a phone rotated): height is the
+   constraint here, but 70vh still only claims 70% of it, and
+   #navbar-vertical is an absolutely-positioned overlay (mines.css) that
+   doesn't need the flow space app-shell's "100vh - 48px" min-height
+   sets aside for it. Reclaim that space and shrink app-shell's own
+   padding, unconditionally for the same reason as portrait above: a
+   width/height-gated version would just relocate the discontinuity
+   instead of removing it. */
+@media (orientation: landscape) {
+  .app-shell {
+    min-height: 100vh;
+    padding: 8px;
+  }
+  .grid-container {
+    --board-size: min(calc(100vh - 16px), 92vw);
+  }
 }
 
 .grid {
